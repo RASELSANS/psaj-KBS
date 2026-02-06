@@ -51,10 +51,10 @@
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle <?= (uri_string() == 'layanan') ? 'active' : '' ?>" href="#" id="distDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle <?= (uri_string() == 'layanan') ? 'active' : '' ?>" href="#" id="layananDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Layanan
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="distDropdown">
+                    <ul class="dropdown-menu" aria-labelledby="layananDropdown">
                         <li><a class="dropdown-item" href="<?= base_url('layanan/penunjang-diagnostik') ?>">Penunjang Diagnostik</a></li>
                         <li><a class="dropdown-item" href="<?= base_url('layanan/poliklinik') ?>">Poliklinik</a></li>
                         <li><a class="dropdown-item" href="<?= base_url('layanan/khitan-center') ?>">Khitan Center</a></li>
@@ -63,6 +63,16 @@
 
                 <li class="nav-item">
                     <a class="nav-link <?= (uri_string() == 'doctors') ? 'active' : '' ?>" href="<?= base_url('doctors') ?>">Dokter</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="infoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Informasi Penting
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="infoDropdown">
+                        <li><a class="dropdown-item" href="<?= base_url('artikel') ?>">Artikel</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('faq') ?>">FAQ</a></li>
+                    </ul>
                 </li>
 
                 <li class="nav-item">
