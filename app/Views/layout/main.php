@@ -16,6 +16,7 @@
         }
 
         body { 
+            padding-top: 80px; /* Jarak aman biar gak ketutup navbar sticky */
             font-family: 'Poppins', sans-serif; 
             background-color: #ffffff; 
             color: #333;
@@ -34,7 +35,7 @@
         }
 
         .btn-orange { 
-            background-color: #ff8a3d; 
+            background-color: #ff8a3d; /* */
             color: white; 
             border-radius: 10px; 
             padding: 8px 25px; 
@@ -53,6 +54,11 @@
         section {
             padding-top: 20px;
         }
+
+        /* Biar transisi navbar lebih halus saat scroll */
+        .navbar {
+            transition: all 0.3s ease-in-out;
+        }
     </style>
     <?= $this->renderSection('extra-css'); ?>
 </head>
@@ -64,9 +70,7 @@
         <?= $this->renderSection('content'); ?>
     </main>
 
-    <footer class="py-4 text-center border-top mt-5">
-        <p class="text-muted small">&copy; <?= date('Y') ?> Klinik Brayan Sehat. All rights reserved.</p>
-    </footer>
+    <?= $this->include('layout/footer'); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <?= $this->renderSection('extra-js'); ?>

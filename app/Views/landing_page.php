@@ -2,35 +2,28 @@
 
 <?= $this->section('content'); ?>
 <style>
-    /* Hero Style - Padding bawah dikurangi agar lebih rapat */
-    .hero-section { 
-        padding-top: 60px; 
-        padding-bottom: 20px; 
-    }
+    /* Hero Style */
+    .hero-section { padding: 60px 0 20px 0; }
     .badge-health { background-color: #fff2e7; color: #ff8a3d; font-size: 12px; font-weight: 600; padding: 8px 15px; display: inline-block; margin-bottom: 20px; }
     .hero-title { font-weight: 700; font-size: 3.5rem; line-height: 1.2; margin-bottom: 20px; }
     .hero-desc { color: #777; margin-bottom: 30px; max-width: 450px; }
-    .hero-img { border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 100%; }
+    .hero-img { border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 100%; object-fit: cover; }
 
-    /* Services Style - Padding atas dikurangi drastis untuk menghilangkan ruang kosong */
-    .services-section { 
-        padding-top: 20px; 
-        padding-bottom: 80px; 
-        scroll-margin-top: 100px; 
-    } 
+    /* Services Style */
+    .services-section { padding: 20px 0 80px 0; scroll-margin-top: 100px; } 
     .section-title { color: #ff8a3d; font-weight: 600; font-size: 2.5rem; margin-bottom: 40px; }
     
     .service-card {
         background-color: #fff2e7;
         border-radius: 20px;
         padding: 40px 30px;
-        height: 100%;
-        border: none;
         transition: transform 0.3s ease;
         position: relative;
         margin-top: 40px;
+        border: none;
     }
     .service-card:hover { transform: translateY(-10px); }
+    
     .icon-wrapper {
         width: 80px; height: 80px;
         background: white; border-radius: 50%;
@@ -40,8 +33,28 @@
         box-shadow: 0 10px 20px rgba(0,0,0,0.05);
         border: 2px solid #333;
     }
+
+    /* CSS Tombol More Info agar muncul */
+    .btn-more {
+        background-color: transparent;
+        color: #ff8a3d;
+        border: 2px solid #ff8a3d;
+        border-radius: 8px;
+        padding: 5px 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        display: inline-block;
+        text-decoration: none;
+        margin-top: 15px;
+    }
+    .btn-more:hover {
+        background-color: #ff8a3d;
+        color: white;
+    }
+
     .service-card h4 { font-weight: 700; margin-top: 20px; margin-bottom: 20px; color: #000; }
-    .service-card p { font-size: 0.9rem; color: #444; line-height: 1.6; }
+    .service-card p { font-size: 0.9rem; color: #444; line-height: 1.6; margin-bottom: 20px; }
 </style>
 
 <section class="hero-section mb-5">
@@ -54,41 +67,50 @@
                 <a href="#" class="btn btn-orange btn-lg px-5">Reservasi</a>
             </div>
             <div class="col-lg-6 mt-5 mt-lg-0">
-    <img src="<?= base_url('img/klinik.jpeg') ?>" alt="Klinik Brayan Sehat" class="hero-img">
-</div>
+                <img src="<?= base_url('img/klinik.jpeg') ?>" alt="Klinik Brayan Sehat" class="hero-img">
+            </div> </div> </div> </section>
 
-<section id="services" class="services-section text-center mt-5">
+<section id="services" class="services-section text-center">
     <div class="container">
         <h2 class="section-title">Our Services</h2>
         
         <div class="row g-4 justify-content-center mt-5">
             <div class="col-md-4">
-                <div class="service-card">
+                <div class="service-card d-flex flex-column h-100">
                     <div class="icon-wrapper">
                         <i class="fa-solid fa-hand-holding-medical fa-2x"></i>
                     </div>
                     <h4>Layanan</h4>
                     <p>Medical Check Up Berbasis Okupasi, Instalasi Farmasi, Laboratorium, Wound Care Dressing Modern (Rawat Luka Modern), Konsultasi Kesehatan Dan Keselamatan Kerja (K3) Kedokteran Kerja, Serta Khitan Center.</p>
+                    <div class="mt-auto">
+                        <a href="<?= base_url('layanan') ?>" class="btn-more">More Info <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                    </div>
                 </div>
             </div>
 
             <div class="col-md-4">
-                <div class="service-card">
+                <div class="service-card d-flex flex-column h-100">
                     <div class="icon-wrapper">
                         <i class="fa-solid fa-clipboard-check fa-2x"></i>
                     </div>
                     <h4>Penunjangan Diagnostik</h4>
                     <p>Treadmill Test, Spirometri, Audiometri, EKG/ Rekam Jantung, Echocardiography, USG (Abdomen, Tiroid, Mamae), Serta Tes MMPI.</p>
+                    <div class="mt-auto">
+                        <a href="#" class="btn-more">More Info <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                    </div>
                 </div>
             </div>
 
             <div class="col-md-4">
-                <div class="service-card">
+                <div class="service-card d-flex flex-column h-100">
                     <div class="icon-wrapper">
                         <i class="fa-solid fa-house-user fa-2x"></i>
                     </div>
                     <h4>Poliklinik</h4>
                     <p>Poli Umum, Poli Gigi, Poli Saraf, Poli Jantung Dan Pembuluh Darah, THT, Bedah, Penyakit Dalam, Kedokteran Jiwa, Radiologi, Paru, Serta Anestesi.</p>
+                    <div class="mt-auto">
+                        <a href="#" class="btn-more">More Info <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
