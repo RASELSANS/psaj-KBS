@@ -11,20 +11,20 @@
 </style>
 
 <section class="detail-header">
-    <div class="container">
-        <h1 class="fw-bold">Detail Layanan Kami</h1>
-        <p class="text-muted">Komitmen kami memberikan pelayanan kesehatan paripurna untuk Anda.</p>
+    <div class="max-w-7xl mx-auto px-4">
+        <h1 class="font-bold">Detail Layanan Kami</h1>
+        <p class="text-gray-600">Komitmen kami memberikan pelayanan kesehatan paripurna untuk Anda.</p>
     </div>
 </section>
 
 <section class="detail-content">
-    <div class="container">
-        <div class="row align-items-center mb-5">
-            <div class="col-md-6">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mb-5">
+            <div>
                 <img src="https://via.placeholder.com/600x400" alt="Layanan Umum" class="img-detail">
             </div>
-            <div class="col-md-6 ps-md-5 mt-4 mt-md-0">
-                <h2 class="fw-bold mb-4" style="color: #ff8a3d;">Medical Check Up & Rawat Luka</h2>
+            <div class="pl-0 md:pl-5 mt-4 md:mt-0">
+                <h2 class="font-bold mb-4" style="color: #ff8a3d;">Medical Check Up & Rawat Luka</h2>
                 <p>Kami menyediakan fasilitas pemeriksaan kesehatan menyeluruh yang didukung oleh tenaga profesional.</p>
                 <ul class="list-service">
                     <li><i class="fa-solid fa-check-circle"></i> Pemeriksaan Fisik Lengkap</li>

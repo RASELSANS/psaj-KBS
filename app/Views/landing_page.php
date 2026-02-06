@@ -55,62 +55,73 @@
 
     .service-card h4 { font-weight: 700; margin-top: 20px; margin-bottom: 20px; color: #000; }
     .service-card p { font-size: 0.9rem; color: #444; line-height: 1.6; margin-bottom: 20px; }
+    
+    .btn-orange {
+        background-color: #ff8a3d;
+        color: white;
+        border-radius: 8px;
+        padding: 12px 40px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-block;
+        text-decoration: none;
+    }
+    .btn-orange:hover {
+        background-color: #e67a2d;
+        color: white;
+    }
 </style>
 
 <section class="hero-section mb-5">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div>
                 <div class="badge-health">WE TAKE CARE OF YOUR HEALTH</div>
                 <h1 class="hero-title">Memberikan Pelayanan terbaik dengan ketulusan</h1>
                 <p class="hero-desc">Start your free assesment and consult with a licensed doctor. Expert medical advice is just a click away!</p>
-                <a href="#" class="btn btn-orange btn-lg px-5">Reservasi</a>
+                <a href="#" class="btn btn-orange">Reservasi</a>
             </div>
-            <div class="col-lg-6 mt-5 mt-lg-0">
+            <div class="mt-5 lg:mt-0">
                 <img src="<?= base_url('img/klinik.jpeg') ?>" alt="Klinik Brayan Sehat" class="hero-img">
-            </div> </div> </div> </section>
+            </div>
+        </div>
+    </div>
+</section>
 
-<section id="services" class="services-section text-center">
-    <div class="container">
+<section class="max-w-7xl mx-auto px-4">
         <h2 class="section-title">Our Services</h2>
         
-        <div class="row g-4 justify-content-center mt-5">
-            <div class="col-md-4">
-                <div class="service-card d-flex flex-column h-100">
-                    <div class="icon-wrapper">
-                        <i class="fa-solid fa-hand-holding-medical fa-2x"></i>
-                    </div>
-                    <h4>Layanan</h4>
-                    <p>Medical Check Up Berbasis Okupasi, Instalasi Farmasi, Laboratorium, Wound Care Dressing Modern (Rawat Luka Modern), Konsultasi Kesehatan Dan Keselamatan Kerja (K3) Kedokteran Kerja, Serta Khitan Center.</p>
-                    <div class="mt-auto">
-                        <a href="<?= base_url('layanan') ?>" class="btn-more">More Info <i class="fa-solid fa-arrow-right ms-1"></i></a>
-                    </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 justify-center mt-5">
+            <div class="service-card flex flex-col h-full">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-hand-holding-medical fa-2x"></i>
+                </div>
+                <h4>Layanan</h4>
+                <p>Medical Check Up Berbasis Okupasi, Instalasi Farmasi, Laboratorium, Wound Care Dressing Modern (Rawat Luka Modern), Konsultasi Kesehatan Dan Keselamatan Kerja (K3) Kedokteran Kerja, Serta Khitan Center.</p>
+                <div class="mt-auto">
+                    <a href="<?= base_url('layanan') ?>" class="btn-more">More Info <i class="fa-solid fa-arrow-right ml-1"></i></a>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="service-card d-flex flex-column h-100">
-                    <div class="icon-wrapper">
-                        <i class="fa-solid fa-clipboard-check fa-2x"></i>
-                    </div>
-                    <h4>Penunjangan Diagnostik</h4>
-                    <p>Treadmill Test, Spirometri, Audiometri, EKG/ Rekam Jantung, Echocardiography, USG (Abdomen, Tiroid, Mamae), Serta Tes MMPI.</p>
-                    <div class="mt-auto">
-                        <a href="#" class="btn-more">More Info <i class="fa-solid fa-arrow-right ms-1"></i></a>
-                    </div>
+            <div class="service-card flex flex-col h-full">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-clipboard-check fa-2x"></i>
+                </div>
+                <h4>Penunjangan Diagnostik</h4>
+                <p>Treadmill Test, Spirometri, Audiometri, EKG/ Rekam Jantung, Echocardiography, USG (Abdomen, Tiroid, Mamae), Serta Tes MMPI.</p>
+                <div class="mt-auto">
+                    <a href="#" class="btn-more">More Info <i class="fa-solid fa-arrow-right ml-1"></i></a>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="service-card d-flex flex-column h-100">
-                    <div class="icon-wrapper">
-                        <i class="fa-solid fa-house-user fa-2x"></i>
-                    </div>
-                    <h4>Poliklinik</h4>
-                    <p>Poli Umum, Poli Gigi, Poli Saraf, Poli Jantung Dan Pembuluh Darah, THT, Bedah, Penyakit Dalam, Kedokteran Jiwa, Radiologi, Paru, Serta Anestesi.</p>
-                    <div class="mt-auto">
-                        <a href="#" class="btn-more">More Info <i class="fa-solid fa-arrow-right ms-1"></i></a>
-                    </div>
+            <div class="service-card flex flex-col h-full">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-house-user fa-2x"></i>
+                </div>
+                <h4>Poliklinik</h4>
+                <p>Poli Umum, Poli Gigi, Poli Saraf, Poli Jantung Dan Pembuluh Darah, THT, Bedah, Penyakit Dalam, Kedokteran Jiwa, Radiologi, Paru, Serta Anestesi.</p>
+                <div class="mt-auto">
+                    <a href="#" class="btn-more">More Info <i class="fa-solid fa-arrow-right ms-1"></i></a>
                 </div>
             </div>
         </div>

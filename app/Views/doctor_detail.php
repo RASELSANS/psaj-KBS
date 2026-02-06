@@ -161,24 +161,24 @@
 </style>
 
 <div class="detail-container">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-5 mb-5 mb-lg-0">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="mb-5 lg:mb-0">
                 <div class="sticky-box">
                     <div class="doc-img-wrapper">
                         <div class="doc-img-bg">
-                            <img src="<?= base_url('img/Dokter1.png') ?>" class="img-fluid" alt="Dokter">
+                            <img src="<?= base_url('img/Dokter1.png') ?>" class="w-full h-full object-cover" alt="Dokter">
                         </div>
                     </div>
                     <div class="text-center mt-3">
-                        <span class="badge rounded-pill bg-light text-success border px-3 py-2">
-                            <i class="fas fa-circle me-1 small"></i> Tersedia Hari Ini
+                        <span class="inline-block px-3 py-2 border border-green-500 rounded-full bg-green-50 text-green-600">
+                            <i class="fas fa-circle mr-1 text-xs"></i> Tersedia Hari Ini
                         </span>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-7 ps-lg-5">
+            <div class="pl-0 lg:pl-5">
                 <span class="doc-spec-label">Spesialis Gigi & Mulut</span>
                 <h1 class="doc-detail-name">drg. Savira Aska Nourmalita</h1>
                 
@@ -190,10 +190,10 @@
                     <i class="fas fa-hand-holding-medical"></i> Layanan Medis
                 </h5>
                 <ul class="list-pelayanan">
-                    <li><i class="fas fa-check-circle me-2 text-warning"></i> Konsultasi Gigi</li>
-                    <li><i class="fas fa-check-circle me-2 text-warning"></i> Scaling Gigi</li>
-                    <li><i class="fas fa-check-circle me-2 text-warning"></i> Penambalan Estetik</li>
-                    <li><i class="fas fa-check-circle me-2 text-warning"></i> Pencabutan Gigi</li>
+                    <li><i class="fas fa-check-circle mr-2 text-yellow-500"></i> Konsultasi Gigi</li>
+                    <li><i class="fas fa-check-circle mr-2 text-yellow-500"></i> Scaling Gigi</li>
+                    <li><i class="fas fa-check-circle mr-2 text-yellow-500"></i> Penambalan Estetik</li>
+                    <li><i class="fas fa-check-circle mr-2 text-yellow-500"></i> Pencabutan Gigi</li>
                 </ul>
 
                 <div class="schedule-card">
@@ -210,9 +210,9 @@
                     </div>
                     
                     <a href="https://wa.me/628112519001" class="btn-booking" target="_blank">
-                        <i class="fab fa-whatsapp me-2"></i> Reservasi Sekarang
+                        <i class="fab fa-whatsapp mr-2"></i> Reservasi Sekarang
                     </a>
-                    <p class="text-center small text-muted mt-3 mb-0 italic">
+                    <p class="text-center text-xs text-gray-500 mt-3 mb-0 italic">
                         *Jadwal dapat berubah sewaktu-waktu.
                     </p>
                 </div>

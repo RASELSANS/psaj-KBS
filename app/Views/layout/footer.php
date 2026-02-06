@@ -53,16 +53,16 @@
 </style>
 
 <footer class="main-footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4 mb-4">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="mb-4">
                 <h5 class="footer-title">Klinik Brayan Sehat</h5>
-                <p class="small" style="line-height: 1.8; opacity: 0.9;">
+                <p class="text-sm leading-relaxed opacity-90">
                     Memberikan pelayanan kesehatan terbaik dengan tenaga medis profesional dan fasilitas modern.
                 </p>
             </div>
 
-            <div class="col-lg-4 mb-4">
+            <div class="mb-4">
                 <h5 class="footer-title">Hubungi Kami</h5>
                 <div class="footer-contact-item">
                     <div class="footer-icon"><i class="fas fa-phone-alt"></i></div>
@@ -87,7 +87,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 mb-4">
+            <div class="mb-4">
                 <h5 class="footer-title">Lokasi Utama</h5>
                 <div class="footer-contact-item">
                     <div class="footer-icon"><i class="fas fa-map-marker-alt"></i></div>

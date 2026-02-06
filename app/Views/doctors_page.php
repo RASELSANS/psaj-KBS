@@ -1,4 +1,4 @@
-<?= $this->extend('layout/main'); ?>
+    <?= $this->extend('layout/main'); ?>
 
 <?= $this->section('content'); ?>
 <style>
@@ -104,40 +104,40 @@
 </style>
 
 <div class="doctors-page">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3 mb-4">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="mb-4">
                 <div class="filter-sidebar">
-                    <h5 class="fw-bold mb-3 border-bottom pb-2">Cari Dokter</h5>
+                    <h5 class="font-bold mb-3 pb-2 border-b">Cari Dokter</h5>
                     <div class="mb-3">
-                        <input type="text" id="searchDoctor" class="form-control" placeholder="Ketik nama dokter...">
+                        <input type="text" id="searchDoctor" class="w-full px-3 py-2 border border-gray-300 rounded" placeholder="Ketik nama dokter...">
                     </div>
 
                     <div class="filter-group">
                         <div class="filter-group-title">Pilih Spesialis</div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input spec-filter" type="checkbox" value="GIGI" id="checkGigi">
-                            <label class="form-check-label small" for="checkGigi">Poli Gigi</label>
+                        <div class="mb-2">
+                            <input class="spec-filter" type="checkbox" value="GIGI" id="checkGigi">
+                            <label class="ml-2 text-sm" for="checkGigi">Poli Gigi</label>
                         </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input spec-filter" type="checkbox" value="SARAF" id="checkSaraf">
-                            <label class="form-check-label small" for="checkSaraf">Poli Saraf</label>
+                        <div class="mb-2">
+                            <input class="spec-filter" type="checkbox" value="SARAF" id="checkSaraf">
+                            <label class="ml-2 text-sm" for="checkSaraf">Poli Saraf</label>
                         </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input spec-filter" type="checkbox" value="UMUM" id="checkumum">
-                            <label class="form-check-label small" for="checkumum">Poli Umum</label>
+                        <div class="mb-2">
+                            <input class="spec-filter" type="checkbox" value="UMUM" id="checkumum">
+                            <label class="ml-2 text-sm" for="checkumum">Poli Umum</label>
                         </div>
                     </div>
                     
-                    <button class="btn btn-outline-secondary btn-sm w-100 mt-3" onclick="resetFilter()">Reset Filter</button>
+                    <button class="w-full px-4 py-2 mt-3 border border-gray-400 text-gray-700 rounded hover:bg-gray-100" onclick="resetFilter()">Reset Filter</button>
                 </div>
             </div>
 
-            <div class="col-lg-9">
-                <div class="row row-cols-1 row-cols-md-3 g-4" id="doctorContainer">
+            <div class="lg:col-span-2">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="doctorContainer">
                     
-                    <div class="col d-flex doctor-item" data-specialist="UMUM">
-                        <div class="doctor-card w-100">
+                    <div class="doctor-item" data-specialist="UMUM">
+                        <div class="doctor-card w-full">
                             <div class="doc-img-box">
                                 <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
                             </div>
@@ -151,8 +151,8 @@
                         </div>
                     </div>
 
-                    <div class="col d-flex doctor-item" data-specialist="UMUM">
-                        <div class="doctor-card w-100">
+                    <div class="doctor-item" data-specialist="UMUM">
+                        <div class="doctor-card w-full">
                             <div class="doc-img-box">
                                 <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
                             </div>
@@ -166,8 +166,8 @@
                         </div>
                     </div>
 
-                    <div class="col d-flex doctor-item" data-specialist="UMUM">
-                        <div class="doctor-card w-100">
+                    <div class="doctor-item" data-specialist="UMUM">
+                        <div class="doctor-card w-full">
                             <div class="doc-img-box">
                                 <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
                             </div>
@@ -180,8 +180,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col d-flex doctor-item" data-specialist="UMUM">
-                        <div class="doctor-card w-100">
+                    <div class="doctor-item" data-specialist="UMUM">
+                        <div class="doctor-card w-full">
                             <div class="doc-img-box">
                                 <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
                             </div>
@@ -195,8 +195,8 @@
                         </div>
                     </div>
                     
-                    <div class="col d-flex doctor-item" data-specialist="GIGI">
-                        <div class="doctor-card w-100">
+                    <div class="doctor-item" data-specialist="GIGI">
+                        <div class="doctor-card w-full">
                             <div class="doc-img-box">
                                 <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
                             </div>
@@ -210,8 +210,8 @@
                         </div>
                     </div>
                     
-                    <div class="col d-flex doctor-item" data-specialist="GIGI">
-                        <div class="doctor-card w-100">
+                    <div class="doctor-item" data-specialist="GIGI">
+                        <div class="doctor-card w-full">
                             <div class="doc-img-box">
                                 <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
                             </div>
@@ -225,8 +225,8 @@
                         </div>
                     </div>
                     
-                    <div class="col d-flex doctor-item" data-specialist="GIGI">
-                        <div class="doctor-card w-100">
+                    <div class="doctor-item" data-specialist="GIGI">
+                        <div class="doctor-card w-full">
                             <div class="doc-img-box">
                                 <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
                             </div>
@@ -240,8 +240,8 @@
                         </div>
                     </div>
 
-                    <div class="col d-flex doctor-item" data-specialist="BEDAH">
-                        <div class="doctor-card w-100">
+                    <div class="doctor-item" data-specialist="BEDAH">
+                        <div class="doctor-card w-full">
                             <div class="doc-img-box">
                                 <img src="<?= base_url('img/Dokter2.png') ?>" alt="Dokter">
                             </div>
@@ -255,8 +255,8 @@
                         </div>
                     </div>
 
-                    <div class="col d-flex doctor-item" data-specialist="SARAF">
-                        <div class="doctor-card w-100">
+                    <div class="doctor-item" data-specialist="SARAF">
+                        <div class="doctor-card w-full">
                             <div class="doc-img-box">
                                 <img src="<?= base_url('img/Dokter3.png') ?>" alt="Dokter">
                             </div>
@@ -271,9 +271,9 @@
                     </div>
 
                 </div>
-                <div id="noMatch" class="text-center py-5 d-none">
-                    <i class="fa-solid fa-user-slash fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">Maaf, dokter tidak ditemukan.</p>
+                <div id="noMatch" class="text-center py-5 hidden">
+                    <i class="fa-solid fa-user-slash fa-3x text-gray-400 mb-3"></i>
+                    <p class="text-gray-400">Maaf, dokter tidak ditemukan.</p>
                 </div>
             </div>
         </div>
@@ -302,16 +302,16 @@
             const matchSpec = activeSpecs.length === 0 || activeSpecs.includes(spec);
 
             if (matchName && matchSpec) {
-                item.classList.remove('d-none');
-                item.classList.add('d-flex');
+                item.classList.remove('hidden');
+                item.classList.add('block');
                 countVisible++;
             } else {
-                item.classList.remove('d-flex');
-                item.classList.add('d-none');
+                item.classList.remove('block');
+                item.classList.add('hidden');
             }
         });
 
-        noMatchMsg.classList.toggle('d-none', countVisible > 0);
+        noMatchMsg.classList.toggle('hidden', countVisible > 0);
     }
 
     function resetFilter() {
