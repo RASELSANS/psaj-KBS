@@ -1,5 +1,5 @@
 <style>
-    /* CSS khusus untuk Dropdown Hover */
+    /* CSS Dropdown Hover & Clickable */
     @media (min-width: 992px) {
         .nav-item.dropdown:hover .dropdown-menu {
             display: block;
@@ -8,8 +8,13 @@
             visibility: visible;
             transform: translateY(0);
         }
+        
+        .nav-item.dropdown:hover > .nav-link {
+            color: #ff8a3d !important;
+        }
     }
 
+    /* Styling Dropdown Menu */
     .dropdown-menu {
         transition: all 0.3s ease;
         opacity: 0;
@@ -33,6 +38,12 @@
         color: #ff8a3d;
         transform: translateX(5px);
     }
+
+    /* Navbar Link Active State */
+    .nav-link.active {
+        color: #ff8a3d !important;
+        font-weight: 600;
+    }
 </style>
 
 <nav class="navbar navbar-expand-lg py-2 fixed-top bg-white shadow-sm">
@@ -51,7 +62,9 @@
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle <?= (uri_string() == 'layanan') ? 'active' : '' ?>" href="#" id="layananDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle <?= (uri_string() == 'layanan') ? 'active' : '' ?>" 
+                       href="<?= base_url('layanan') ?>" 
+                       id="layananDropdown">
                         Layanan
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="layananDropdown">
@@ -66,20 +79,37 @@
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="infoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle <?= (uri_string() == 'informasi' || uri_string() == 'about' || uri_string() == 'artikel' || uri_string() == 'faq') ? 'active' : '' ?>" 
+                       href="<?= base_url('informasi') ?>" 
+                       id="infoDropdown">
                         Informasi Penting
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="infoDropdown">
+                        <li><a class="dropdown-item" href="<?= base_url('about') ?>">Tentang Kami</a></li>
                         <li><a class="dropdown-item" href="<?= base_url('artikel') ?>">Artikel</a></li>
                         <li><a class="dropdown-item" href="<?= base_url('faq') ?>">FAQ</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('kontak') ?>">Hubungi Kami</a>
+                    <a class="nav-link <?= (uri_string() == 'kontak') ? 'active' : '' ?>" href="<?= base_url('kontak') ?>">Hubungi Kami</a>
                 </li>
             </ul>
             <a href="https://wa.me/6285540441147" class="btn btn-orange">Reservasi</a>
         </div>
     </div>
 </nav>
+
+<script>
+    // Script agar link utama (Parent) bisa diklik di Desktop
+    document.querySelectorAll('.nav-item.dropdown').forEach(function(everydropdown) {
+        everydropdown.addEventListener('click', function(e) {
+            if (window.innerWidth >= 992) {
+                let link = this.querySelector('.dropdown-toggle').getAttribute('href');
+                if(link && link !== '#') {
+                    window.location.href = link;
+                }
+            }
+        });
+    });
+</script>

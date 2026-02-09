@@ -2,104 +2,110 @@
 
 <?= $this->section('content'); ?>
 <style>
-    .doctors-page { padding: 40px 0; background-color: #f8f9fa; }
+    .doctors-page { padding: 60px 0; background-color: #f8f9fa; }
     
-    /* Filter Sidebar */
+    /* Sidebar Filter */
     .filter-sidebar { 
         background: white; 
         padding: 25px; 
-        border-radius: 15px; 
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        border-radius: 20px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         position: sticky;
         top: 100px;
-        z-index: 10;
+        border: 1px solid #eee;
     }
     .filter-group-title { font-weight: 700; margin: 20px 0 10px; font-size: 1rem; color: #333; }
-    
-    /* Doctor Card - Ditambahkan position relative untuk overlay */
+
+    /* Doctor Card Clean Version */
     .doctor-card {
         background: white;
-        border-radius: 15px;
+        border-radius: 20px;
         overflow: hidden;
-        border: none;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        border: 1px solid #eee;
         transition: all 0.3s ease;
         height: 100%;
         display: flex;
         flex-direction: column;
-        position: relative; 
-    }
-    .doctor-card:hover { transform: translateY(-8px); box-shadow: 0 12px 20px rgba(0,0,0,0.1); }
-
-    /* Overlay More Info (Muncul saat Hover) */
-    .more-info-overlay {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 0; /* Sembunyi secara default */
-        background: rgba(255, 138, 61, 0.95); /* Warna oranye klinik */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        transition: height 0.3s ease-in-out;
-        z-index: 5;
     }
 
-    /* Saat card di-hover, overlay muncul setinggi area info */
-    .doctor-card:hover .more-info-overlay {
-        height: 115px; 
+    .doctor-card:hover { 
+        transform: translateY(-5px); 
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1); 
+        border-color: #ff8a3d; /* Highlight warna klinik saat hover */
     }
 
-    .btn-more-info {
-        border: 2px solid white;
-        color: white;
-        padding: 6px 20px;
-        border-radius: 25px;
-        text-decoration: none;
-        font-weight: 700;
-        font-size: 0.85rem;
-        transition: 0.3s;
-    }
-    .btn-more-info:hover { background: white; color: #ff8a3d; }
-
+    /* Box Gambar - Rasio Tetap */
     .doc-img-box {
-        background-color: #ff8a3d; 
-        height: 280px; 
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
+        background-color: #f1f1f1;
+        position: relative;
+        width: 100%;
+        padding-top: 110%; 
         overflow: hidden;
     }
-    .doc-img-box img { width: 100%; height: 100%; object-fit: cover; }
 
+    .doc-img-box img { 
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
+    }
+
+    /* Area Info Dokter */
     .doc-info { 
-        padding: 20px 15px; 
+        padding: 20px; 
         text-align: center; 
-        height: 115px; 
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: space-between; /* Menjaga konten atas & tombol tetap rapi */
+        min-height: 160px; 
     }
 
     .doc-name { 
         font-weight: 700; 
-        font-size: 1.05rem; 
+        font-size: 1rem; 
         color: #222; 
-        margin-bottom: 5px;
+        margin-bottom: 8px;
+        line-height: 1.4;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        line-height: 1.3;
+        height: 2.8em;
     }
 
     .doc-spec { 
         color: #ff8a3d; 
-        font-size: 0.85rem; 
-        font-weight: 600; 
+        font-size: 0.75rem; 
+        font-weight: 700; 
         text-transform: uppercase;
+        background: #fff5ee;
+        padding: 4px 12px;
+        border-radius: 50px;
+        display: inline-block;
+        margin-bottom: 12px;
+    }
+
+    /* Tombol More Info - Selalu Muncul */
+    .btn-more-info {
+        background: #ff8a3d;
+        color: white;
+        padding: 10px 0;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: 0.3s;
+        display: block;
+        width: 100%;
+        border: 1px solid #ff8a3d;
+    }
+
+    .btn-more-info:hover { 
+        background: white; 
+        color: #ff8a3d; 
     }
 </style>
 
@@ -110,7 +116,7 @@
                 <div class="filter-sidebar">
                     <h5 class="fw-bold mb-3 border-bottom pb-2">Cari Dokter</h5>
                     <div class="mb-3">
-                        <input type="text" id="searchDoctor" class="form-control" placeholder="Ketik nama dokter...">
+                        <input type="text" id="searchDoctor" class="form-control" placeholder="Nama dokter...">
                     </div>
 
                     <div class="filter-group">
@@ -142,26 +148,11 @@
                                 <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
                             </div>
                             <div class="doc-info">
-                                <div class="doc-name">dr. Anton Sunaryo,ST.,M.K.K., AIFO-K</div>
-                                <div class="doc-spec">Poli Umum</div>
-                            </div>
-                            <div class="more-info-overlay">
-                                <a href="<?= base_url('doctors/detail/savira') ?>" class="btn-more-info">MORE INFO</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col d-flex doctor-item" data-specialist="UMUM">
-                        <div class="doctor-card w-100">
-                            <div class="doc-img-box">
-                                <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
-                            </div>
-                            <div class="doc-info">
-                                <div class="doc-name">dr. Adelia Budhie Puspita Sari</div>
-                                <div class="doc-spec">Poli Umum</div>
-                            </div>
-                            <div class="more-info-overlay">
-                                <a href="<?= base_url('doctors/detail/savira') ?>" class="btn-more-info">MORE INFO</a>
+                                <div>
+                                    <span class="doc-spec">Poli Umum</span>
+                                    <div class="doc-name">dr. Anton Sunaryo, ST., M.K.K., AIFO-K</div>
+                                </div>
+                                <a href="<?= base_url('doctors/detail/anton') ?>" class="btn-more-info">LIHAT PROFIL</a>
                             </div>
                         </div>
                     </div>
@@ -172,105 +163,32 @@
                                 <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
                             </div>
                             <div class="doc-info">
-                                <div class="doc-name">dr. Tri Setyaningrum</div>
-                                <div class="doc-spec">Poli Umum</div>
-                            </div>
-                            <div class="more-info-overlay">
-                                <a href="<?= base_url('doctors/detail/savira') ?>" class="btn-more-info">MORE INFO</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col d-flex doctor-item" data-specialist="UMUM">
-                        <div class="doctor-card w-100">
-                            <div class="doc-img-box">
-                                <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
-                            </div>
-                            <div class="doc-info">
-                                <div class="doc-name">dr. Nurkholis Majid</div>
-                                <div class="doc-spec">Poli Umum</div>
-                            </div>
-                            <div class="more-info-overlay">
-                                <a href="<?= base_url('doctors/detail/savira') ?>" class="btn-more-info">MORE INFO</a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col d-flex doctor-item" data-specialist="GIGI">
-                        <div class="doctor-card w-100">
-                            <div class="doc-img-box">
-                                <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
-                            </div>
-                            <div class="doc-info">
-                                <div class="doc-name">drg. Savira Aska Nourmalita</div>
-                                <div class="doc-spec">Spesialis Gigi</div>
-                            </div>
-                            <div class="more-info-overlay">
-                                <a href="<?= base_url('doctors/detail/savira') ?>" class="btn-more-info">MORE INFO</a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col d-flex doctor-item" data-specialist="GIGI">
-                        <div class="doctor-card w-100">
-                            <div class="doc-img-box">
-                                <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
-                            </div>
-                            <div class="doc-info">
-                                <div class="doc-name">drg. Savira Aska Nourmalita</div>
-                                <div class="doc-spec">Spesialis Gigi</div>
-                            </div>
-                            <div class="more-info-overlay">
-                                <a href="<?= base_url('doctors/detail/savira') ?>" class="btn-more-info">MORE INFO</a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col d-flex doctor-item" data-specialist="GIGI">
-                        <div class="doctor-card w-100">
-                            <div class="doc-img-box">
-                                <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
-                            </div>
-                            <div class="doc-info">
-                                <div class="doc-name">drg. Savira Aska Nourmalita</div>
-                                <div class="doc-spec">Spesialis Gigi</div>
-                            </div>
-                            <div class="more-info-overlay">
-                                <a href="<?= base_url('doctors/detail/savira') ?>" class="btn-more-info">MORE INFO</a>
+                                <div>
+                                    <span class="doc-spec">Poli Umum</span>
+                                    <div class="doc-name">dr. Adelia Budhie Puspita Sari</div>
+                                </div>
+                                <a href="<?= base_url('doctors/detail/adelia') ?>" class="btn-more-info">LIHAT PROFIL</a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col d-flex doctor-item" data-specialist="BEDAH">
+                    <div class="col d-flex doctor-item" data-specialist="GIGI">
                         <div class="doctor-card w-100">
                             <div class="doc-img-box">
-                                <img src="<?= base_url('img/Dokter2.png') ?>" alt="Dokter">
+                                <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
                             </div>
                             <div class="doc-info">
-                                <div class="doc-name">drg. Nur Farida Marbun</div>
-                                <div class="doc-spec">Spesialis Bedah</div>
-                            </div>
-                            <div class="more-info-overlay">
-                                <a href="<?= base_url('doctors/detail/farida') ?>" class="btn-more-info">MORE INFO</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col d-flex doctor-item" data-specialist="SARAF">
-                        <div class="doctor-card w-100">
-                            <div class="doc-img-box">
-                                <img src="<?= base_url('img/Dokter3.png') ?>" alt="Dokter">
-                            </div>
-                            <div class="doc-info">
-                                <div class="doc-name">drg. Theresa Irina Sukma</div>
-                                <div class="doc-spec">Spesialis Saraf</div>
-                            </div>
-                            <div class="more-info-overlay">
-                                <a href="<?= base_url('doctors/detail/theresa') ?>" class="btn-more-info">MORE INFO</a>
+                                <div>
+                                    <span class="doc-spec">Spesialis Gigi</span>
+                                    <div class="doc-name">drg. Savira Aska Nourmalita</div>
+                                </div>
+                                <a href="<?= base_url('doctors/detail/savira') ?>" class="btn-more-info">LIHAT PROFIL</a>
                             </div>
                         </div>
                     </div>
 
                 </div>
+
                 <div id="noMatch" class="text-center py-5 d-none">
                     <i class="fa-solid fa-user-slash fa-3x text-muted mb-3"></i>
                     <p class="text-muted">Maaf, dokter tidak ditemukan.</p>

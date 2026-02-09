@@ -4,7 +4,7 @@
 <style>
     .detail-header { padding: 80px 0 40px; background: #fff2e7; text-align: center; }
     .detail-content { padding: 60px 0; }
-    .list-service { list-style: none; padding-left: 0; }
+    .list-se    rvice { list-style: none; padding-left: 0; }
     .list-service li { margin-bottom: 15px; display: flex; align-items: center; }
     .list-service li i { color: #ff8a3d; margin-right: 15px; }
     .img-detail { border-radius: 20px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
