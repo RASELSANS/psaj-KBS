@@ -189,18 +189,41 @@
         <h2 class="fw-bold mb-0">Artikel Kesehatan</h2>
         <a href="<?= base_url('artikel') ?>" class="text-orange fw-bold text-decoration-none">Lihat Semua →</a>
     </div>
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="blog-card card h-100">
-                <img src="https://images.unsplash.com/photo-1505751172107-5739a00723a5?auto=format&fit=crop&w=500" class="card-img-top" alt="Artikel" height="200" style="object-fit: cover;">
-                <div class="card-body p-4">
-                    <h5 class="fw-bold">Manfaat Cek Kesehatan</h5>
-                    <p class="text-muted small">Deteksi dini adalah kunci hidup sehat jangka panjang...</p>
-                    <a href="#" class="text-orange fw-bold text-decoration-none small">Baca Selengkapnya</a>
-                </div>
+
+<div class="row g-4"> <div class="col-md-4">
+        <div class="blog-card card h-100">
+            <img src="<?= base_url('img/artikel1.png') ?>" class="card-img-top" alt="Manfaat Cek Kesehatan" height="200" style="object-fit: cover;">
+            <div class="card-body p-4">
+                <h5 class="fw-bold">Proses Vaksinasi</h5>
+                <p class="text-muted small">Vaksin influenza & Vaksin Varicela.....</p>
+                <a href="#" class="text-orange fw-bold text-decoration-none small">Baca Selengkapnya</a>
             </div>
         </div>
     </div>
+
+    <div class="col-md-4">
+        <div class="blog-card card h-100">
+            <img src="<?= base_url('img/artikel1.png') ?>" class="card-img-top" alt="Manfaat Cek Kesehatan" height="200" style="object-fit: cover;">
+            <div class="card-body p-4">
+                <h5 class="fw-bold">Layanan Khitan</h5>
+                <p class="text-muted small">Metode modern tanpa rasa sakit dan proses cepat.....</p>
+                <a href="#" class="text-orange fw-bold text-decoration-none small">Baca Selengkapnya</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="blog-card card h-100">
+            <img src="<?= base_url('img/artikel1.png') ?>" class="card-img-top" alt="Manfaat Cek Kesehatan" height="200" style="object-fit: cover;">
+            <div class="card-body p-4">
+                <h5 class="fw-bold">Medical Check Up</h5>
+                <p class="text-muted small">Cek kesehatan rutin untuk deteksi dini penyakit.....</p>
+                <a href="#" class="text-orange fw-bold text-decoration-none small">Baca Selengkapnya</a>
+            </div>
+        </div>
+    </div>
+
+</div>
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>

@@ -31,6 +31,7 @@
         border-radius: 8px;
         font-weight: 500;
         color: #333;
+        transition: 0.2s;
     }
 
     .dropdown-item:hover {
@@ -44,13 +45,27 @@
         color: #ff8a3d !important;
         font-weight: 600;
     }
+    
+    .btn-orange {
+        background-color: #ff8a3d;
+        color: white;
+        border-radius: 50px;
+        padding: 8px 25px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+    .btn-orange:hover {
+        background-color: #e66e1f;
+        color: white;
+        box-shadow: 0 4px 15px rgba(255, 138, 61, 0.4);
+    }
 </style>
 
 <nav class="navbar navbar-expand-lg py-2 fixed-top bg-white shadow-sm">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="<?= base_url() ?>">
-            <img src="<?= base_url('img/logo.png') ?>" alt="Logo" class="me-1" style="height: 50px;"> 
-            <span class="fw-bold">Klinik brayan sehat</span>
+            <img src="<?= base_url('img/logo.png') ?>" alt="Logo" class="me-2" style="height: 45px;"> 
+            <span class="fw-bold">Klinik Brayan Sehat</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -62,7 +77,7 @@
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle <?= (uri_string() == 'layanan') ? 'active' : '' ?>" 
+                    <a class="nav-link dropdown-toggle <?= (url_is('layanan*')) ? 'active' : '' ?>" 
                        href="<?= base_url('layanan') ?>" 
                        id="layananDropdown">
                         Layanan
@@ -71,6 +86,7 @@
                         <li><a class="dropdown-item" href="<?= base_url('layanan/penunjang-diagnostik') ?>">Penunjang Diagnostik</a></li>
                         <li><a class="dropdown-item" href="<?= base_url('layanan/poliklinik') ?>">Poliklinik</a></li>
                         <li><a class="dropdown-item" href="<?= base_url('layanan/khitan-center') ?>">Khitan Center</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('layanan/vaksin') ?>">Vaksinasi</a></li>
                     </ul>
                 </li>
 
@@ -79,8 +95,8 @@
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle <?= (uri_string() == 'informasi' || uri_string() == 'about' || uri_string() == 'artikel' || uri_string() == 'faq') ? 'active' : '' ?>" 
-                       href="<?= base_url('informasi') ?>" 
+                    <a class="nav-link dropdown-toggle <?= (url_is('about') || url_is('artikel') || url_is('faq')) ? 'active' : '' ?>" 
+                       href="#" 
                        id="infoDropdown">
                         Informasi Penting
                     </a>
@@ -101,12 +117,12 @@
 </nav>
 
 <script>
-    // Script agar link utama (Parent) bisa diklik di Desktop
+    // Agar Parent Menu bisa diklik langsung di Desktop
     document.querySelectorAll('.nav-item.dropdown').forEach(function(everydropdown) {
         everydropdown.addEventListener('click', function(e) {
             if (window.innerWidth >= 992) {
                 let link = this.querySelector('.dropdown-toggle').getAttribute('href');
-                if(link && link !== '#') {
+                if(link && link !== '#' && link !== '') {
                     window.location.href = link;
                 }
             }
