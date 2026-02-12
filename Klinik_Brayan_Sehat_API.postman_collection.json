@@ -1,0 +1,957 @@
+{
+  "info": {
+    "_postman_id": "klinik-brayan-sehat-api",
+    "name": "Klinik Brayan Sehat API",
+    "description": "API Collection untuk Klinik Brayan Sehat\n\n## Setup & Requirements\n\n1. **Base URL**: http://localhost:8080 (sesuaikan dengan domain Laragon Anda)\n2. **Default Admin Credentials**:\n   - Username: `admin`\n   - Password: `admin123`\n\n## Alur Penggunaan\n\n### Untuk Public API (Tidak perlu login):\n- Akses langsung endpoint `/api/doctors`, `/api/artikel`, dll\n\n### Untuk Admin API (Perlu login):\n1. Jalankan endpoint `POST /api/admin/login` dengan credentials\n2. Response akan menyimpan session otomatis di Postman\n3. Kemudian akses protected endpoints `/api/admin/*`\n\n## Environment Variables\n\nGunakan variable `{{base_url}}` dan `{{admin_id}}` untuk kemudahan testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "PUBLIC ENDPOINTS - Dokter",
+      "item": [
+        {
+          "name": "Get List Dokter (dengan pagination)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/doctors?page=1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "doctors"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman (default: 1)"
+                }
+              ]
+            },
+            "description": "Ambil daftar semua dokter dengan pagination (10 per halaman)\n\n**Response:**\n- `status`: true/false\n- `data`: Array dokter dengan spesialis dan poli\n- `pagination`: Info page, limit, total, total_pages"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Dokter (dengan jadwal)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/doctors/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "doctors", "1"]
+            },
+            "description": "Ambil detail dokter spesifik beserta:\n- Spesialis yang dimiliki\n- Poli tempat bekerja\n- Jadwal kerja"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PUBLIC ENDPOINTS - Spesialis",
+      "item": [
+        {
+          "name": "Get List Spesialis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/spesialis",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "spesialis"]
+            },
+            "description": "Ambil daftar semua spesialis"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PUBLIC ENDPOINTS - Poli",
+      "item": [
+        {
+          "name": "Get List Poli",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/poli",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "poli"]
+            },
+            "description": "Ambil daftar semua poli"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PUBLIC ENDPOINTS - Jadwal",
+      "item": [
+        {
+          "name": "Get Jadwal Dokter",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/jadwal?id_doctor=1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "jadwal"],
+              "query": [
+                {
+                  "key": "id_doctor",
+                  "value": "1",
+                  "description": "ID dokter (wajib)"
+                }
+              ]
+            },
+            "description": "Ambil jadwal kerja dokter spesifik\n\n**Query Parameter (wajib):**\n- `id_doctor`: ID dokter"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PUBLIC ENDPOINTS - Artikel",
+      "item": [
+        {
+          "name": "Get List Artikel (dengan pagination)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/artikel?page=1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "artikel"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman (default: 1)"
+                }
+              ]
+            },
+            "description": "Ambil daftar artikel dengan pagination (10 per halaman)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Artikel",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/artikel/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "artikel", "1"]
+            },
+            "description": "Ambil detail artikel spesifik"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ADMIN AUTHENTICATION",
+      "item": [
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "username",
+                  "value": "admin"
+                },
+                {
+                  "key": "password",
+                  "value": "admin123"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/admin/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "login"]
+            },
+            "description": "Login sebagai admin. Session akan tersimpan otomatis.\n\n**Default Credentials:**\n- Username: `admin`\n- Password: `admin123`\n\n**Response Success:**\n```json\n{\n  \"status\": true,\n  \"data\": {\n    \"id_admin\": 1,\n    \"username\": \"admin\"\n  }\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/logout",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "logout"]
+            },
+            "description": "Logout admin (destroy session)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Admin Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/profile",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "profile"]
+            },
+            "description": "Ambil profile admin yang sedang login (protected endpoint)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ADMIN - Dokter Management",
+      "item": [
+        {
+          "name": "Get List Dokter (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/doctors?page=1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "doctors"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Ambil daftar dokter dengan pagination (admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Dokter",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "nama_doctor",
+                  "value": "Dr. Ahmad Wijaya",
+                  "type": "text"
+                },
+                {
+                  "key": "profil",
+                  "value": "Dokter spesialis anak berpengalaman 10 tahun",
+                  "type": "text"
+                },
+                {
+                  "key": "foto",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "id_spesialis[]",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "id_spesialis[]",
+                  "value": "2",
+                  "type": "text"
+                },
+                {
+                  "key": "id_poli[]",
+                  "value": "1",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/admin/doctors",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "doctors"]
+            },
+            "description": "Buat dokter baru\n\n**Required Fields:**\n- `nama_doctor` (string)\n- `profil` (string)\n- `foto` (file, optional, max 2MB)\n- `id_spesialis[]` (array of int)\n- `id_poli[]` (array of int)\n\n**Note:** Gunakan array format untuk multiple spesialis/poli"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Dokter",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "nama_doctor",
+                  "value": "Dr. Ahmad Wijaya (Updated)",
+                  "type": "text"
+                },
+                {
+                  "key": "profil",
+                  "value": "Dokter spesialis anak berpengalaman 12 tahun",
+                  "type": "text"
+                },
+                {
+                  "key": "foto",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "id_spesialis[]",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "id_poli[]",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "id_poli[]",
+                  "value": "2",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/admin/doctors/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "doctors", "1"]
+            },
+            "description": "Update data dokter\n\n**Required Fields:**\n- `nama_doctor`\n- `profil`\n- `id_spesialis[]`\n- `id_poli[]`\n- `foto` (optional)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Dokter",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/doctors/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "doctors", "1"]
+            },
+            "description": "Delete dokter (fotanya juga akan didelete)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ADMIN - Spesialis Management",
+      "item": [
+        {
+          "name": "Get List Spesialis (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/spesialis",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "spesialis"]
+            },
+            "description": "Ambil daftar spesialis (admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Spesialis",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "nama_spesialis",
+                  "value": "Dokter Gigi"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/admin/spesialis",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "spesialis"]
+            },
+            "description": "Buat spesialis baru\n\n**Required:** `nama_spesialis` (string)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Spesialis",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "nama_spesialis",
+                  "value": "Spesialis Gigi dan Mulut"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/admin/spesialis/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "spesialis", "1"]
+            },
+            "description": "Update spesialis"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Spesialis",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/spesialis/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "spesialis", "1"]
+            },
+            "description": "Delete spesialis"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ADMIN - Poli Management",
+      "item": [
+        {
+          "name": "Get List Poli (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/poli",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "poli"]
+            },
+            "description": "Ambil daftar poli (admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Poli",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "nama_poli",
+                  "value": "Poli Umum"
+                },
+                {
+                  "key": "deskripsi",
+                  "value": "Pelayanan kesehatan umum untuk pemeriksaan awal"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/admin/poli",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "poli"]
+            },
+            "description": "Buat poli baru\n\n**Required:**\n- `nama_poli` (string)\n- `deskripsi` (string)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Poli",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "nama_poli",
+                  "value": "Poli Umum Premium"
+                },
+                {
+                  "key": "deskripsi",
+                  "value": "Pelayanan kesehatan umum dengan fasilitas premium"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/admin/poli/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "poli", "1"]
+            },
+            "description": "Update poli"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Poli",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/poli/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "poli", "1"]
+            },
+            "description": "Delete poli"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ADMIN - Jadwal Management",
+      "item": [
+        {
+          "name": "Get Jadwal Dokter (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/jadwal?id_doctor=1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "jadwal"],
+              "query": [
+                {
+                  "key": "id_doctor",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Ambil jadwal dokter spesifik (admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Jadwal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "id_doctor",
+                  "value": "1"
+                },
+                {
+                  "key": "hari",
+                  "value": "Senin-Jumat"
+                },
+                {
+                  "key": "jam_mulai",
+                  "value": "09:00:00"
+                },
+                {
+                  "key": "jam_selesai",
+                  "value": "17:00:00"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/admin/jadwal",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "jadwal"]
+            },
+            "description": "Buat jadwal kerja dokter\n\n**Required:**\n- `id_doctor` (int)\n- `hari` (string, contoh: \"Senin-Jumat\")\n- `jam_mulai` (time, format: HH:mm:ss)\n- `jam_selesai` (time, format: HH:mm:ss)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Jadwal",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "id_doctor",
+                  "value": "1"
+                },
+                {
+                  "key": "hari",
+                  "value": "Senin-Kamis"
+                },
+                {
+                  "key": "jam_mulai",
+                  "value": "08:00:00"
+                },
+                {
+                  "key": "jam_selesai",
+                  "value": "16:00:00"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/admin/jadwal/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "jadwal", "1"]
+            },
+            "description": "Update jadwal kerja dokter"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Jadwal",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/jadwal/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "jadwal", "1"]
+            },
+            "description": "Delete jadwal"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ADMIN - Artikel Management",
+      "item": [
+        {
+          "name": "Get List Artikel (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/artikel?page=1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "artikel"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Ambil daftar artikel dengan pagination (admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Artikel",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "judul",
+                  "value": "Tips Menjaga Kesehatan Jantung",
+                  "type": "text"
+                },
+                {
+                  "key": "isi",
+                  "value": "Jantung adalah organ vital yang sangat penting untuk kesehatan tubuh kita. Berikut adalah beberapa tips untuk menjaga kesehatan jantung Anda...",
+                  "type": "text"
+                },
+                {
+                  "key": "tanggal_publish",
+                  "value": "2026-02-12",
+                  "type": "text"
+                },
+                {
+                  "key": "thumbnail",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/admin/artikel",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "artikel"]
+            },
+            "description": "Buat artikel baru\n\n**Required:**\n- `judul` (string)\n- `isi` (text)\n- `tanggal_publish` (date, format: YYYY-MM-DD)\n- `thumbnail` (file, optional, max 2MB)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Artikel",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "judul",
+                  "value": "Tips Menjaga Kesehatan Jantung (Updated)",
+                  "type": "text"
+                },
+                {
+                  "key": "isi",
+                  "value": "Jantung adalah organ vital yang sangat penting untuk kesehatan tubuh kita. Berikut adalah beberapa tips terbaru untuk menjaga kesehatan jantung Anda...",
+                  "type": "text"
+                },
+                {
+                  "key": "tanggal_publish",
+                  "value": "2026-02-13",
+                  "type": "text"
+                },
+                {
+                  "key": "thumbnail",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/admin/artikel/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "artikel", "1"]
+            },
+            "description": "Update artikel"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Artikel",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/admin/artikel/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "admin", "artikel", "1"]
+            },
+            "description": "Delete artikel (thumbnail juga akan didelete)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

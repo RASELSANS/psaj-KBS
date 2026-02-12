@@ -3,18 +3,74 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\Doctor as DoctorModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class Doctors extends BaseController
 {
-    public function index()
+    protected $doctorModel;
+
+    public function __construct()
     {
-        return view('docters_page');
+        $this->doctorModel = new DoctorModel();
     }
 
-    public function detail($slug)
+    /**
+     * Get list of all doctors with pagination
+     */
+    public function index()
     {
-        // Sementara kita return view dulu, nanti datanya bisa diambil dari database
-        return view('doctor_detail'); 
+        $page = $this->request->getGet('page') ?? 1;
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+
+        $total = $this->doctorModel->countAll();
+        $doctors = $this->doctorModel->limit($limit, $offset)->findAll();
+
+        // Append spesialis and poli for each doctor
+        foreach ($doctors as &$doctor) {
+            $doctor['spesialis'] = $this->doctorModel->getSpesialis($doctor['id_doctor']);
+            $doctor['poli'] = $this->doctorModel->getPoli($doctor['id_doctor']);
+        }
+
+        return $this->response->setJSON([
+            'status' => true,
+            'data' => $doctors,
+            'pagination' => [
+                'page' => $page,
+                'limit' => $limit,
+                'total' => $total,
+                'total_pages' => ceil($total / $limit),
+            ],
+        ]);
+    }
+
+    /**
+     * Get detail of a specific doctor
+     */
+    public function detail($id_doctor)
+    {
+        $doctor = $this->doctorModel->find($id_doctor);
+
+        if (!$doctor) {
+            return $this->response->setJSON([
+                'status' => false,
+                'errors' => ['doctor' => 'Dokter tidak ditemukan'],
+            ])->setStatusCode(404);
+        }
+
+        $doctor['spesialis'] = $this->doctorModel->getSpesialis($id_doctor);
+        $doctor['poli'] = $this->doctorModel->getPoli($id_doctor);
+        $doctor['jadwal'] = $this->doctorModel->getJadwal($id_doctor);
+
+        return $this->response->setJSON([
+            'status' => true,
+            'data' => $doctor,
+        ]);
+    }
+
+    public function dummy()
+    {
+        return view('doctor_detail');
     }
 }
