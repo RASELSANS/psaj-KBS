@@ -145,7 +145,7 @@
                     <div class="col d-flex doctor-item" data-specialist="UMUM">
                         <div class="doctor-card w-100">
                             <div class="doc-img-box">
-                                <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
+                                <img src="<?= base_url('img/Dokter11.png') ?>" alt="Dokter">
                             </div>
                             <div class="doc-info">
                                 <div>
@@ -175,7 +175,7 @@
                     <div class="col d-flex doctor-item" data-specialist="GIGI">
                         <div class="doctor-card w-100">
                             <div class="doc-img-box">
-                                <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
+                                <img src="<?= base_url('img/Dokter11.png') ?>" alt="Dokter">
                             </div>
                             <div class="doc-info">
                                 <div>
