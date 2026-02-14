@@ -7,21 +7,11 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // ==================== FRONTEND PAGE ROUTES ====================
-// Halaman Utama
 $routes->get('/', 'Home::index');
-
-// Halaman Layanan
 $routes->get('layanan', 'Home::layanan'); 
-
-// Halaman Dokter
 $routes->get('doctors', 'Home::doctors');
-// $routes->get('doctors/detail/(:any)', 'Doctors::detail/$1');
 $routes->get('doctors/detail/(:any)', 'Doctors::dummy');
-
-// Halaman Tentang Kami
 $routes->get('about', 'Home::about');
-
-// Menu lain (Artikel & FAQ)
 $routes->get('artikel', 'Home::artikel');
 $routes->get('faq', 'Home::faq');
 $routes->get('kontak', 'Home::kontak');
@@ -29,6 +19,17 @@ $routes->get('layanan/penunjang-diagnostik', 'Home::penunjang_diagnostik');
 $routes->get('layanan/poliklinik', 'Home::poliklinik');
 $routes->get('layanan/khitan-center', 'Home::khitan_center');
 $routes->get('layanan/vaksin', 'Home::vaksin');
+
+// ==================== ADMIN VIEW ROUTES (DASHBOARD & CMS) ====================
+// Jalur navigasi utama buat Dashboard Admin lo
+$routes->group('admin', static function($routes) {
+    $routes->get('/', 'Admin::index');            // Dashboard utama
+    $routes->get('doctors', 'Admin::doctors');    // Kelola Dokter
+    
+    // Fitur Artikel (Pindahin ke sini biar tombolnya JALAN)
+    $routes->get('artikel/add', 'Admin::add_artikel');
+    $routes->post('artikel/store', 'Admin::store_artikel');
+});
 
 // ==================== API PUBLIC ROUTES ====================
 $routes->get('api/doctors', 'Doctors::index');
@@ -44,7 +45,8 @@ $routes->post('api/admin/login', 'Admin\AuthController::login');
 $routes->post('api/admin/logout', 'Admin\AuthController::logout');
 $routes->get('api/admin/profile', 'Admin\AuthController::profile');
 
-// ==================== API ADMIN ROUTES (Protected) ====================
+// ==================== API ADMIN ROUTES (Protected Data) ====================
+// Ini buat manipulasi data mentah via AJAX/API
 $routes->group('api/admin', ['filter' => 'auth'], static function($routes) {
     // Dokter Management
     $routes->get('doctors', 'Admin\DoctorController::index');

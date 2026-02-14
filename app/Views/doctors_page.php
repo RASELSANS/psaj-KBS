@@ -145,27 +145,27 @@
                     <div class="col d-flex doctor-item" data-specialist="UMUM">
                         <div class="doctor-card w-100">
                             <div class="doc-img-box">
-                                <img src="<?= base_url('img/Dokter11.png') ?>" alt="Dokter">
+                                <img src="<?= base_url('img/Dokter3.png') ?>" alt="Dokter">
                             </div>
                             <div class="doc-info">
                                 <div>
                                     <span class="doc-spec">Poli Umum</span>
-                                    <div class="doc-name">dr. Anton Sunaryo, ST., M.K.K., AIFO-K</div>
+                                    <div class="doc-name">drg. Theresa Irina Sukma</div>
                                 </div>
                                 <a href="<?= base_url('doctors/detail/anton') ?>" class="btn-more-info">LIHAT PROFIL</a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col d-flex doctor-item" data-specialist="UMUM">
+                    <div class="col d-flex doctor-item" data-pspecialist="UMUM">
                         <div class="doctor-card w-100">
                             <div class="doc-img-box">
-                                <img src="<?= base_url('img/Dokter1.png') ?>" alt="Dokter">
+                                <img src="<?= base_url('img/Dokter2.png') ?>" alt="Dokter">
                             </div>
                             <div class="doc-info">
                                 <div>
                                     <span class="doc-spec">Poli Umum</span>
-                                    <div class="doc-name">dr. Adelia Budhie Puspita Sari</div>
+                                    <div class="doc-name">drg. Nur Farida Marbun</div>
                                 </div>
                                 <a href="<?= base_url('doctors/detail/adelia') ?>" class="btn-more-info">LIHAT PROFIL</a>
                             </div>
@@ -175,7 +175,7 @@
                     <div class="col d-flex doctor-item" data-specialist="GIGI">
                         <div class="doctor-card w-100">
                             <div class="doc-img-box">
-                                <img src="<?= base_url('img/Dokter11.png') ?>" alt="Dokter">
+                                <img src="<?= base_url('img/Dokter111.png') ?>" alt="Dokter">
                             </div>
                             <div class="doc-info">
                                 <div>
@@ -186,9 +186,80 @@
                             </div>
                         </div>
                     </div>
-
+                    <div class="col d-flex doctor-item" data-specialist="GIGI">
+                        <div class="doctor-card w-100">
+                            <div class="doc-img-box">
+                                <img src="<?= base_url('img/Dokter4.png') ?>" alt="Dokter">
+                            </div>
+                            <div class="doc-info">
+                                <div>
+                                    <span class="doc-spec">Spesialis Gigi</span>
+                                    <div class="doc-name">drg. Savira Aska Nourmalita</div>
+                                </div>
+                                <a href="<?= base_url('doctors/detail/savira') ?>" class="btn-more-info">LIHAT PROFIL</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col d-flex doctor-item" data-specialist="GIGI">
+                        <div class="doctor-card w-100">
+                            <div class="doc-img-box">
+                                <img src="<?= base_url('img/Dokter5.png') ?>" alt="Dokter">
+                            </div>
+                            <div class="doc-info">
+                                <div>
+                                    <span class="doc-spec">Spesialis Gigi</span>
+                                    <div class="doc-name">drg. Savira Aska Nourmalita</div>
+                                </div>
+                                <a href="<?= base_url('doctors/detail/savira') ?>" class="btn-more-info">LIHAT PROFIL</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col d-flex doctor-item" data-specialist="GIGI">
+                        <div class="doctor-card w-100">
+                            <div class="doc-img-box">
+                                <img src="<?= base_url('img/Dokter6.png') ?>" alt="Dokter">
+                            </div>
+                            <div class="doc-info">
+                                <div>
+                                    <span class="doc-spec">Spesialis Gigi</span>
+                                    <div class="doc-name">drg. Savira Aska Nourmalita</div>
+                                </div>
+                                <a href="<?= base_url('doctors/detail/savira') ?>" class="btn-more-info">LIHAT PROFIL</a>
+                            </div>
+                        </div>
+                    </div>
+                      <div class="col d-flex doctor-item" data-specialist="GIGI">
+                        <div class="doctor-card w-100">
+                            <div class="doc-img-box">
+                                <img src="<?= base_url('img/Dokter111.png') ?>" alt="Dokter">
+                            </div>
+                            <div class="doc-info">
+                                <div>
+                                    <span class="doc-spec">Spesialis Gigi</span>
+                                    <div class="doc-name">drg. Savira Aska Nourmalita</div>
+                                </div>
+                                <a href="<?= base_url('doctors/detail/savira') ?>" class="btn-more-info">LIHAT PROFIL</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col d-flex doctor-item" data-specialist="GIGI">
+                        <div class="doctor-card w-100">
+                            <div class="doc-img-box">
+                                <img src="<?= base_url('img/Dokter4.png') ?>" alt="Dokter">
+                            </div>
+                            <div class="doc-info">
+                                <div>
+                                    <span class="doc-spec">Spesialis Gigi</span>
+                                    <div class="doc-name">drg. Savira Aska Nourmalita</div>
+                                </div>
+                                <a href="<?= base_url('doctors/detail/savira') ?>" class="btn-more-info">LIHAT PROFIL</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
+                
                 <div id="noMatch" class="text-center py-5 d-none">
                     <i class="fa-solid fa-user-slash fa-3x text-muted mb-3"></i>
                     <p class="text-muted">Maaf, dokter tidak ditemukan.</p>
