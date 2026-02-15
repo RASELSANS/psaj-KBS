@@ -14,11 +14,16 @@ class AdminController extends BaseController
     }
 
     /**
-     * Check if admin is logged in
+     * Check if admin is logged in and show appropriate view
      */
-    protected function isLoggedIn()
+    public function isLoggedIn()
     {
-        return $this->session->has('admin_id');
+        if($this->session->has('admin_id')){
+            return view('admin/dashboard');
+        }
+        else{
+            return view('admin/login');
+        };
     }
 
     /**
@@ -34,13 +39,13 @@ class AdminController extends BaseController
      */
     protected function requireLogin()
     {
-        if (!$this->isLoggedIn()) {
+        if (!$this->session->has('admin_id')) {
             return $this->response->setJSON([
                 'status' => false,
                 'errors' => ['auth' => 'Anda harus login terlebih dahulu'],
             ])->setStatusCode(401);
         }
-        return null;
+        return view('admin/login');
     }
 
     /**
@@ -74,5 +79,53 @@ class AdminController extends BaseController
             'status' => false,
             'errors' => is_array($errors) ? $errors : ['error' => $errors],
         ])->setStatusCode($statusCode);
+    }
+
+    /**
+     * Admin Dashboard
+     */
+    public function dashboard()
+    {
+        return view('admin/dashboard');
+    }
+
+    /**
+     * Dokter Management View
+     */
+    public function dokter()
+    {
+        return view('admin/dokter');
+    }
+
+    /**
+     * Spesialis Management View
+     */
+    public function spesialis()
+    {
+        return view('admin/spesialis');
+    }
+
+    /**
+     * Poli Management View
+     */
+    public function poli()
+    {
+        return view('admin/poli');
+    }
+
+    /**
+     * Jadwal Management View
+     */
+    public function jadwal()
+    {
+        return view('admin/jadwal');
+    }
+
+    /**
+     * Artikel Management View
+     */
+    public function artikel()
+    {
+        return view('admin/artikel');
     }
 }

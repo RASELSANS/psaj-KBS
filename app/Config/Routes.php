@@ -1,6 +1,6 @@
 <?php
 
-use CodeIgniter\Router\RouteCollection;
+use CodeIgniter\Router\RouteCollection;;
 
 /**
  * @var RouteCollection $routes
@@ -18,6 +18,8 @@ $routes->get('doctors', 'Home::doctors');
 // $routes->get('doctors/detail/(:any)', 'Doctors::detail/$1');
 $routes->get('doctors/detail/(:any)', 'Doctors::dummy');
 
+$routes->get('admin', 'Admin\AdminController::isLoggedIn');
+
 // Halaman Tentang Kami
 $routes->get('about', 'Home::about');
 
@@ -29,6 +31,17 @@ $routes->get('layanan/penunjang-diagnostik', 'Home::penunjang_diagnostik');
 $routes->get('layanan/poliklinik', 'Home::poliklinik');
 $routes->get('layanan/khitan-center', 'Home::khitan_center');
 $routes->get('layanan/vaksin', 'Home::vaksin');
+
+// ==================== ADMIN WEB ROUTES (Protected) ====================
+$routes->group('admin', ['filter' => 'auth'], static function($routes) {
+    $routes->get('/', 'Admin\AdminController::dashboard');
+    $routes->get('dashboard', 'Admin\AdminController::dashboard');
+    $routes->get('dokter', 'Admin\AdminController::dokter');
+    $routes->get('spesialis', 'Admin\AdminController::spesialis');
+    $routes->get('poli', 'Admin\AdminController::poli');
+    $routes->get('jadwal', 'Admin\AdminController::jadwal');
+    $routes->get('artikel', 'Admin\AdminController::artikel');
+});
 
 // ==================== API PUBLIC ROUTES ====================
 $routes->get('api/doctors', 'Doctors::index');
@@ -46,6 +59,9 @@ $routes->get('api/admin/profile', 'Admin\AuthController::profile');
 
 // ==================== API ADMIN ROUTES (Protected) ====================
 $routes->group('api/admin', ['filter' => 'auth'], static function($routes) {
+    $routes->get('dashboard', 'Admin\AdminController::isLoggedIn');
+    $routes->get('logout', 'Admin\AuthController::logout');
+
     // Dokter Management
     $routes->get('doctors', 'Admin\DoctorController::index');
     $routes->post('doctors', 'Admin\DoctorController::create');

@@ -1,0 +1,266 @@
+<?= $this->extend('admin/layout'); ?>
+
+<?= $this->section('admin_content'); ?>
+
+<div class="subtitle-admin">Manage</div>
+<h1 class="section-title-admin">
+    <i class="fas fa-calendar" style="color: #ff8a3d;"></i> Data Jadwal
+</h1>
+
+<div class="data-card">
+    <div class="data-card-header">
+        <h3 class="data-card-title">Daftar Jadwal</h3>
+        <button type="button" class="btn-add" onclick="openAddModal()">
+            <i class="fas fa-plus"></i> Tambah Jadwal
+        </button>
+    </div>
+
+    <div id="alertContainer"></div>
+
+    <div id="loadingState" class="loading">
+        <div class="loading-spinner"></div>
+        <p>Memuat data jadwal...</p>
+    </div>
+
+    <div id="tableContainer" style="display: none;">
+        <div class="table-wrapper">
+            <table class="table" id="jadwalTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Dokter</th>
+                        <th>Hari</th>
+                        <th>Jam Mulai</th>
+                        <th>Jam Selesai</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="jadwalBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="emptyState" style="display: none;" class="empty-state">
+        <i class="fas fa-database"></i>
+        <p>Tidak ada data jadwal</p>
+    </div>
+</div>
+
+<!-- Modal Tambah/Edit Jadwal -->
+<div class="modal fade" id="jadwalModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Tambah Jadwal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="jadwalForm" onsubmit="saveJadwal(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="jadwalID">
+
+                    <div class="form-group">
+                        <label class="form-label">Dokter *</label>
+                        <select class="form-select" id="idDokter" required>
+                            <option value="">-- Pilih Dokter --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Hari *</label>
+                        <input type="text" class="form-control" id="hari" placeholder="Contoh: Senin-Jumat, Rabu" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Jam Mulai *</label>
+                        <input type="time" class="form-control" id="jamMulai" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Jam Selesai *</label>
+                        <input type="time" class="form-control" id="jamSelesai" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn-modal-save">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<?= $this->endSection(); ?>
+
+<?= $this->section('admin_scripts'); ?>
+<script>
+let jadwalData = [];
+let doctoArray = [];
+
+// Load jadwal data
+function loadJadwal() {
+    document.getElementById('loadingState').style.display = 'block';
+    document.getElementById('tableContainer').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'none';
+
+    fetch(`${API_URL}/doctors`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status) {
+                doctoArray = data.data;
+                
+                let html = '';
+                doctoArray.forEach((doctor, index) => {
+                    doctor.jadwal.forEach((j, jIndex) => {
+                        const rowNum = jadwalData.length + jIndex + 1;
+                        html += `
+                            <tr>
+                                <td>${rowNum}</td>
+                                <td><strong>${doctor.nama_doctor}</strong></td>
+                                <td>${j.hari}</td>
+                                <td>${j.jam_mulai}</td>
+                                <td>${j.jam_selesai}</td>
+                                <td>
+                                    <button class="btn-action btn-edit" onclick="editJadwal(${j.id_jadwal})">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn-action btn-delete" onclick="deleteJadwal(${j.id_jadwal})">
+                                        <i class="fas fa-trash"></i> Hapus
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                });
+
+                if (html) {
+                    document.getElementById('jadwalBody').innerHTML = html;
+                    document.getElementById('tableContainer').style.display = 'block';
+                } else {
+                    document.getElementById('emptyState').style.display = 'block';
+                }
+
+                document.getElementById('loadingState').style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('Gagal memuat data jadwal', 'danger');
+            document.getElementById('loadingState').style.display = 'none';
+        });
+}
+
+// Load dokter options
+async function loadDokterOptions() {
+    try {
+        const response = await fetch(`${API_URL}/doctors`);
+        const data = await response.json();
+        if (data.status) {
+            let html = '<option value="">-- Pilih Dokter --</option>';
+            data.data.forEach(doctor => {
+                html += `<option value="${doctor.id_doctor}">${doctor.nama_doctor}</option>`;
+            });
+            document.getElementById('idDokter').innerHTML = html;
+        }
+    } catch (error) {
+        console.error('Error loading dokter options:', error);
+    }
+}
+
+// Open add modal dengan menunggu dokter options siap
+async function openAddModal() {
+    await loadDokterOptions();
+    resetForm();
+    new bootstrap.Modal(document.getElementById('jadwalModal')).show();
+}
+
+// Reset form
+function resetForm() {
+    document.getElementById('jadwalForm').reset();
+    document.getElementById('jadwalID').value = '';
+    document.getElementById('modalTitle').textContent = 'Tambah Jadwal';
+}
+
+// Edit jadwal
+function editJadwal(id) {
+    let jadwal = null;
+    for (let doctor of doctoArray) {
+        const found = doctor.jadwal.find(j => j.id_jadwal === id);
+        if (found) {
+            jadwal = found;
+            document.getElementById('idDokter').value = doctor.id_doctor;
+            break;
+        }
+    }
+
+    if (jadwal) {
+        document.getElementById('jadwalID').value = jadwal.id_jadwal;
+        document.getElementById('hari').value = jadwal.hari;
+        document.getElementById('jamMulai').value = jadwal.jam_mulai;
+        document.getElementById('jamSelesai').value = jadwal.jam_selesai;
+        document.getElementById('modalTitle').textContent = 'Edit Jadwal';
+
+        new bootstrap.Modal(document.getElementById('jadwalModal')).show();
+    }
+}
+
+// Save jadwal
+function saveJadwal(e) {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('id_doctor', document.getElementById('idDokter').value);
+    formData.append('hari', document.getElementById('hari').value);
+    formData.append('jam_mulai', document.getElementById('jamMulai').value);
+    formData.append('jam_selesai', document.getElementById('jamSelesai').value);
+
+    const id = document.getElementById('jadwalID').value;
+    const method = id ? 'PUT' : 'POST';
+    const url = id ? `${API_URL}/jadwal/${id}` : `${API_URL}/jadwal`;
+
+    fetch(url, {
+        method: method,
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status) {
+            showAlert(id ? 'Jadwal berhasil diupdate' : 'Jadwal berhasil ditambahkan', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('jadwalModal')).hide();
+            loadJadwal();
+        } else {
+            const errors = Object.values(data.errors).join(', ');
+            showAlert(errors, 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('Terjadi kesalahan', 'danger');
+    });
+}
+
+// Delete jadwal
+function deleteJadwal(id) {
+    if (confirmDelete(id, 'jadwal')) {
+        fetch(`${API_URL}/jadwal/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status) {
+                showAlert('Jadwal berhasil dihapus', 'success');
+                loadJadwal();
+            } else {
+                showAlert('Gagal menghapus jadwal', 'danger');
+            }
+        });
+    }
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', async function() {
+    await loadDokterOptions();
+    loadJadwal();
+});
+</script>
+<?= $this->endSection(); ?>
