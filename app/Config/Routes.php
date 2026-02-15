@@ -41,6 +41,8 @@ $routes->group('admin', ['filter' => 'auth'], static function($routes) {
     $routes->get('poli', 'Admin\AdminController::poli');
     $routes->get('jadwal', 'Admin\AdminController::jadwal');
     $routes->get('artikel', 'Admin\AdminController::artikel');
+    $routes->get('artikel_form', 'Admin\AdminController::artikelForm');
+    $routes->get('gallery', 'GalleryController::index');
 });
 
 // ==================== API PUBLIC ROUTES ====================
@@ -91,4 +93,9 @@ $routes->group('api/admin', ['filter' => 'auth'], static function($routes) {
     $routes->post('artikel', 'Admin\ArtikelController::create');
     $routes->put('artikel/(:num)', 'Admin\ArtikelController::update/$1');
     $routes->delete('artikel/(:num)', 'Admin\ArtikelController::delete/$1');
+
+    // Gallery Management
+    $routes->get('gallery/list', 'GalleryController::listImages');
+    $routes->post('gallery/upload', 'GalleryController::upload');
+    $routes->post('gallery/delete/(:any)', 'GalleryController::delete/$1');
 });

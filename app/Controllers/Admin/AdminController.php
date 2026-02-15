@@ -128,4 +128,13 @@ class AdminController extends BaseController
     {
         return view('admin/artikel');
     }
+
+    /**
+     * Artikel Form (Create/Edit) View
+     */
+    public function artikelForm()
+    {
+        return view('admin/artikel_form');
+    }
 }
+
