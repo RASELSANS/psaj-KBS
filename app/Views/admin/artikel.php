@@ -1,17 +1,34 @@
-<?= $this->extend('admin/layout'); ?>
+<?= $this->extend('admin/new_layout'); ?>
 
 <?= $this->section('admin_content'); ?>
 
-<div class="subtitle-admin">Manage</div>
-<h1 class="section-title-admin">
-    <i class="fas fa-newspaper" style="color: #ff8a3d;"></i> Data Artikel
-</h1>
+<!-- Page Header -->
+<div class="page-header" style="margin-bottom: 2rem;">
+    <h1 class="page-title">
+        <i class="fas fa-newspaper"></i> Data Artikel
+    </h1>
+    <p style="color: #999; margin: 0.5rem 0 0 0;">Kelola artikel dan konten portal informasi</p>
+</div>
 
 <div class="data-card">
-    <div class="data-card-header">
-        <h3 class="data-card-title">Daftar Artikel</h3>
-        <button type="button" class="btn-add" data-bs-toggle="modal" data-bs-target="#artikelModal" onclick="resetForm()">
-            <i class="fas fa-plus"></i> Tambah Artikel
+    <div class="data-card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <h3 class="data-card-title" style="margin: 0;">Daftar Artikel</h3>
+        <a href="/admin/artikel_form" class="btn-add" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-plus"></i> Artikel Baru
+        </a>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; padding: 0 1.5rem 0 1.5rem;">
+        <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Cari judul artikel..." 
+            class="form-control" 
+            style="flex: 1; min-width: 200px;"
+        >
+        <button onclick="applyFilters()" class="btn-action" style="padding: 0.5rem 1.5rem;">
+            <i class="fas fa-search"></i> Cari
         </button>
     </div>
 
@@ -53,62 +70,27 @@
     </div>
 </div>
 
-<!-- Modal Tambah/Edit Artikel -->
-<div class="modal fade" id="artikelModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">Tambah Artikel</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form id="artikelForm" enctype="multipart/form-data" onsubmit="saveArtikel(event)">
-                <div class="modal-body">
-                    <input type="hidden" id="artikelID">
-
-                    <div class="form-group">
-                        <label class="form-label">Judul *</label>
-                        <input type="text" class="form-control" id="judul" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Isi *</label>
-                        <textarea class="form-control" id="isi" rows="6" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Thumbnail</label>
-                        <input type="file" class="form-control" id="thumbnail" accept="image/*">
-                        <small class="text-muted">Max 2MB (JPG, PNG, GIF)</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Tanggal Publish *</label>
-                        <input type="date" class="form-control" id="tanggalPublish" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn-modal-save">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 <?= $this->endSection(); ?>
 
 <?= $this->section('admin_scripts'); ?>
 <script>
 let currentPage = 1;
 let totalPages = 1;
+let currentSearchQuery = '';
 
-// Load artikel data
+// Load artikel data with search
 function loadArtikel(page = 1) {
     document.getElementById('loadingState').style.display = 'block';
     document.getElementById('tableContainer').style.display = 'none';
     document.getElementById('emptyState').style.display = 'none';
 
-    fetch(`${API_URL}/artikel?page=${page}`)
+    let url = `${API_URL}/artikel?page=${page}`;
+    
+    if (currentSearchQuery) {
+        url += `&search=${encodeURIComponent(currentSearchQuery)}`;
+    }
+
+    fetch(url)
         .then(response => response.json())
         .then(data => {
             if (data.status) {
@@ -129,10 +111,10 @@ function loadArtikel(page = 1) {
                                 <td>${thumbnailHtml}</td>
                                 <td>${new Date(item.tanggal_publish).toLocaleDateString('id-ID')}</td>
                                 <td>
-                                    <button class="btn-action btn-edit" onclick="editArtikel(${item.id_artikel})">
+                                    <a href="/admin/artikel_form?id=${item.id_artikel}" class="btn-action btn-edit" style="text-decoration: none; display: inline-block;">
                                         <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    <button class="btn-action btn-delete" onclick="deleteArtikel(${item.id_artikel})">
+                                    </a>
+                                    <button class="btn-action btn-delete" onclick="deleteArtikel(${item.id_artikel})" style="border: none; background: none; cursor: pointer; padding: 0.5rem 1rem; display: inline-block;">
                                         <i class="fas fa-trash"></i> Hapus
                                     </button>
                                 </td>
@@ -152,6 +134,13 @@ function loadArtikel(page = 1) {
                     document.getElementById('tableContainer').style.display = 'block';
                 } else {
                     document.getElementById('emptyState').style.display = 'block';
+                    document.getElementById('emptyState').innerHTML = `
+                        <div class="empty-state" style="padding: 2rem; text-align: center;">
+                            <i class="fas fa-inbox" style="font-size: 50px; color: #ccc; margin-bottom: 1rem;"></i>
+                            <p style="color: #999;">Tidak ada artikel yang ditemukan</p>
+                            <button onclick="resetFilters()" class="btn-add" style="margin-top: 1rem;">Reset Pencarian</button>
+                        </div>
+                    `;
                 }
 
                 document.getElementById('loadingState').style.display = 'none';
@@ -164,71 +153,17 @@ function loadArtikel(page = 1) {
         });
 }
 
-// Reset form
-function resetForm() {
-    document.getElementById('artikelForm').reset();
-    document.getElementById('artikelID').value = '';
-    document.getElementById('modalTitle').textContent = 'Tambah Artikel';
-    document.getElementById('tanggalPublish').valueAsDate = new Date();
+// Apply search filter
+function applyFilters() {
+    currentSearchQuery = document.getElementById('searchInput').value.trim();
+    loadArtikel(1);
 }
 
-// Edit artikel
-function editArtikel(id) {
-    fetch(`${API_URL}/artikel/${id}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.status) {
-                const item = data.data;
-                document.getElementById('artikelID').value = item.id_artikel;
-                document.getElementById('judul').value = item.judul;
-                document.getElementById('isi').value = item.isi;
-                
-                const date = new Date(item.tanggal_publish);
-                document.getElementById('tanggalPublish').valueAsDate = date;
-                
-                document.getElementById('modalTitle').textContent = 'Edit Artikel';
-
-                new bootstrap.Modal(document.getElementById('artikelModal')).show();
-            }
-        });
-}
-
-// Save artikel
-function saveArtikel(e) {
-    e.preventDefault();
-
-    const formData = new FormData();
-    formData.append('judul', document.getElementById('judul').value);
-    formData.append('isi', document.getElementById('isi').value);
-    formData.append('tanggal_publish', document.getElementById('tanggalPublish').value);
-    
-    if (document.getElementById('thumbnail').files.length > 0) {
-        formData.append('thumbnail', document.getElementById('thumbnail').files[0]);
-    }
-
-    const id = document.getElementById('artikelID').value;
-    const method = id ? 'PUT' : 'POST';
-    const url = id ? `${API_URL}/artikel/${id}` : `${API_URL}/artikel`;
-
-    fetch(url, {
-        method: method,
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status) {
-            showAlert(id ? 'Artikel berhasil diupdate' : 'Artikel berhasil ditambahkan', 'success');
-            bootstrap.Modal.getInstance(document.getElementById('artikelModal')).hide();
-            loadArtikel(1);
-        } else {
-            const errors = Object.values(data.errors).join(', ');
-            showAlert(errors, 'danger');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showAlert('Terjadi kesalahan', 'danger');
-    });
+// Reset search filter
+function resetFilters() {
+    document.getElementById('searchInput').value = '';
+    currentSearchQuery = '';
+    loadArtikel(1);
 }
 
 // Delete artikel
@@ -262,10 +197,15 @@ function previousPage() {
     }
 }
 
-// Init
+// Enter key untuk search
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('tanggalPublish').valueAsDate = new Date();
     loadArtikel(1);
+    
+    document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            applyFilters();
+        }
+    });
 });
 </script>
 <?= $this->endSection(); ?>
