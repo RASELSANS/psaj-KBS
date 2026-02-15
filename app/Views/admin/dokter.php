@@ -1,17 +1,40 @@
-<?= $this->extend('admin/layout'); ?>
+<?= $this->extend('admin/new_layout'); ?>
 
 <?= $this->section('admin_content'); ?>
 
-<div class="subtitle-admin">Manage</div>
-<h1 class="section-title-admin">
-    <i class="fas fa-user-doctor" style="color: #ff8a3d;"></i> Data Dokter
-</h1>
+<!-- Page Header -->
+<div class="page-header" style="margin-bottom: 2rem;">
+    <h1 class="page-title">
+        <i class="fas fa-user-doctor"></i> Data Dokter
+    </h1>
+    <p style="color: #999; margin: 0.5rem 0 0 0;">Kelola informasi dokter dan jadwal pratik</p>
+</div>
 
 <div class="data-card">
-    <div class="data-card-header">
-        <h3 class="data-card-title">Daftar Dokter</h3>
+    <div class="data-card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <h3 class="data-card-title" style="margin: 0;">Daftar Dokter</h3>
         <button type="button" class="btn-add" onclick="openAddModal()">
             <i class="fas fa-plus"></i> Tambah Dokter
+        </button>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; padding: 0 1.5rem 0 1.5rem;">
+        <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Cari nama dokter..." 
+            class="form-control" 
+            style="flex: 1; min-width: 200px;"
+        >
+        <select id="filterSpesialis" class="form-select" style="width: auto; min-width: 150px;">
+            <option value="">-- Semua Spesialis --</option>
+        </select>
+        <select id="filterPoli" class="form-select" style="width: auto; min-width: 120px;">
+            <option value="">-- Semua Poli --</option>
+        </select>
+        <button onclick="applyFilters()" class="btn-action" style="padding: 0.5rem 1.5rem;">
+            <i class="fas fa-search"></i> Cari
         </button>
     </div>
 
@@ -113,14 +136,29 @@ let currentPage = 1;
 let totalPages = 1;
 let selectedSpesialis = [];
 let selectedPoli = [];
+let currentSearchQuery = '';
+let currentFilterSpesialis = '';
+let currentFilterPoli = '';
 
-// Load dokter data
+// Load dokter data with search/filter
 function loadDokter(page = 1) {
     document.getElementById('loadingState').style.display = 'block';
     document.getElementById('tableContainer').style.display = 'none';
     document.getElementById('emptyState').style.display = 'none';
 
-    fetch(`${API_URL}/doctors?page=${page}`)
+    let url = `${API_URL}/doctors?page=${page}`;
+    
+    if (currentSearchQuery) {
+        url += `&search=${encodeURIComponent(currentSearchQuery)}`;
+    }
+    if (currentFilterSpesialis) {
+        url += `&id_spesialis=${currentFilterSpesialis}`;
+    }
+    if (currentFilterPoli) {
+        url += `&id_poli=${currentFilterPoli}`;
+    }
+
+    fetch(url)
         .then(response => response.json())
         .then(data => {
             if (data.status) {
@@ -167,6 +205,13 @@ function loadDokter(page = 1) {
                     document.getElementById('tableContainer').style.display = 'block';
                 } else {
                     document.getElementById('emptyState').style.display = 'block';
+                    document.getElementById('emptyState').innerHTML = `
+                        <div class="empty-state" style="padding: 2rem; text-align: center;">
+                            <i class="fas fa-inbox" style="font-size: 50px; color: #ccc; margin-bottom: 1rem;"></i>
+                            <p style="color: #999;">Tidak ada dokter yang ditemukan</p>
+                            <button onclick="resetFilters()" class="btn-add" style="margin-top: 1rem;">Reset Filter</button>
+                        </div>
+                    `;
                 }
 
                 document.getElementById('loadingState').style.display = 'none';
@@ -177,6 +222,25 @@ function loadDokter(page = 1) {
             showAlert('Gagal memuat data dokter', 'danger');
             document.getElementById('loadingState').style.display = 'none';
         });
+}
+
+// Apply search & filter
+function applyFilters() {
+    currentSearchQuery = document.getElementById('searchInput').value.trim();
+    currentFilterSpesialis = document.getElementById('filterSpesialis').value;
+    currentFilterPoli = document.getElementById('filterPoli').value;
+    loadDokter(1);
+}
+
+// Reset filters
+function resetFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('filterSpesialis').value = '';
+    document.getElementById('filterPoli').value = '';
+    currentSearchQuery = '';
+    currentFilterSpesialis = '';
+    currentFilterPoli = '';
+    loadDokter(1);
 }
 
 // Load spesialis dan poli options
@@ -199,6 +263,13 @@ async function loadOptions() {
                 `;
             });
             document.getElementById('spesialisContainer').innerHTML = html;
+            
+            // Also populate filter dropdown
+            let filterHtml = '<option value="">-- Semua Spesialis --</option>';
+            spesialisData.data.spesialis.forEach(s => {
+                filterHtml += `<option value="${s.id_spesialis}">${s.nama_spesialis}</option>`;
+            });
+            document.getElementById('filterSpesialis').innerHTML = filterHtml;
         }
 
         const poliResponse = await fetch(`${API_URL}/poli`);
@@ -218,6 +289,13 @@ async function loadOptions() {
                 `;
             });
             document.getElementById('poliContainer').innerHTML = html;
+            
+            // Also populate filter dropdown
+            let filterHtml = '<option value="">-- Semua Poli --</option>';
+            poliData.data.poli.forEach(p => {
+                filterHtml += `<option value="${p.id_poli}">${p.nama_poli}</option>`;
+            });
+            document.getElementById('filterPoli').innerHTML = filterHtml;
         }
     } catch (error) {
         console.error('Error loading options:', error);
@@ -345,10 +423,16 @@ function previousPage() {
     }
 }
 
-// Init
+// Enter key untuk search
 document.addEventListener('DOMContentLoaded', async function() {
     await loadOptions();
     loadDokter(1);
+    
+    document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            applyFilters();
+        }
+    });
 });
 </script>
 <?= $this->endSection(); ?>

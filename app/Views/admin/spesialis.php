@@ -1,15 +1,18 @@
-<?= $this->extend('admin/layout'); ?>
+<?= $this->extend('admin/new_layout'); ?>
 
 <?= $this->section('admin_content'); ?>
 
-<div class="subtitle-admin">Manage</div>
-<h1 class="section-title-admin">
-    <i class="fas fa-star" style="color: #ff8a3d;"></i> Data Spesialis
-</h1>
+<!-- Page Header -->
+<div class="page-header" style="margin-bottom: 2rem;">
+    <h1 class="page-title">
+        <i class="fas fa-star"></i> Data Spesialis
+    </h1>
+    <p style="color: #999; margin: 0.5rem 0 0 0;">Kelola daftar spesialisasi medis</p>
+</div>
 
 <div class="data-card">
-    <div class="data-card-header">
-        <h3 class="data-card-title">Daftar Spesialis</h3>
+    <div class="data-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 class="data-card-title" style="margin: 0;">Daftar Spesialis</h3>
         <button type="button" class="btn-add" data-bs-toggle="modal" data-bs-target="#spesialisModal" onclick="resetForm()">
             <i class="fas fa-plus"></i> Tambah Spesialis
         </button>

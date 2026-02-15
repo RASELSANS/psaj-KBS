@@ -1,17 +1,40 @@
-<?= $this->extend('admin/layout'); ?>
+<?= $this->extend('admin/new_layout'); ?>
 
 <?= $this->section('admin_content'); ?>
 
-<div class="subtitle-admin">Manage</div>
-<h1 class="section-title-admin">
-    <i class="fas fa-calendar" style="color: #ff8a3d;"></i> Data Jadwal
-</h1>
+<!-- Page Header -->
+<div class="page-header" style="margin-bottom: 2rem;">
+    <h1 class="page-title">
+        <i class="fas fa-calendar"></i> Data Jadwal
+    </h1>
+    <p style="color: #999; margin: 0.5rem 0 0 0;">Kelola jadwal praktik dokter</p>
+</div>
 
 <div class="data-card">
-    <div class="data-card-header">
-        <h3 class="data-card-title">Daftar Jadwal</h3>
+    <div class="data-card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <h3 class="data-card-title" style="margin: 0;">Daftar Jadwal</h3>
         <button type="button" class="btn-add" onclick="openAddModal()">
             <i class="fas fa-plus"></i> Tambah Jadwal
+        </button>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; padding: 0 1.5rem 0 1.5rem;">
+        <select id="filterDokter" class="form-select" style="width: auto; min-width: 180px;">
+            <option value="">-- Pilih Dokter --</option>
+        </select>
+        <select id="filterHari" class="form-select" style="width: auto; min-width: 140px;">
+            <option value="">-- Semua Hari --</option>
+            <option value="Senin">Senin</option>
+            <option value="Selasa">Selasa</option>
+            <option value="Rabu">Rabu</option>
+            <option value="Kamis">Kamis</option>
+            <option value="Jumat">Jumat</option>
+            <option value="Sabtu">Sabtu</option>
+            <option value="Minggu">Minggu</option>
+        </select>
+        <button onclick="applyFilters()" class="btn-action" style="padding: 0.5rem 1.5rem;">
+            <i class="fas fa-search"></i> Filter
         </button>
     </div>
 
@@ -96,8 +119,10 @@
 <script>
 let jadwalData = [];
 let doctoArray = [];
+let currentFilterDokter = '';
+let currentFilterHari = '';
 
-// Load jadwal data
+// Load jadwal data with filter
 function loadJadwal() {
     document.getElementById('loadingState').style.display = 'block';
     document.getElementById('tableContainer').style.display = 'none';
@@ -110,9 +135,19 @@ function loadJadwal() {
                 doctoArray = data.data;
                 
                 let html = '';
+                let rowNum = 1;
                 doctoArray.forEach((doctor, index) => {
+                    // Apply filters
+                    if (currentFilterDokter && doctor.id_doctor !== parseInt(currentFilterDokter)) {
+                        return;
+                    }
+
                     doctor.jadwal.forEach((j, jIndex) => {
-                        const rowNum = jadwalData.length + jIndex + 1;
+                        // Apply hari filter
+                        if (currentFilterHari && j.hari !== currentFilterHari) {
+                            return;
+                        }
+
                         html += `
                             <tr>
                                 <td>${rowNum}</td>
@@ -130,6 +165,7 @@ function loadJadwal() {
                                 </td>
                             </tr>
                         `;
+                        rowNum++;
                     });
                 });
 
@@ -138,6 +174,13 @@ function loadJadwal() {
                     document.getElementById('tableContainer').style.display = 'block';
                 } else {
                     document.getElementById('emptyState').style.display = 'block';
+                    document.getElementById('emptyState').innerHTML = `
+                        <div class="empty-state" style="padding: 2rem; text-align: center;">
+                            <i class="fas fa-inbox" style="font-size: 50px; color: #ccc; margin-bottom: 1rem;"></i>
+                            <p style="color: #999;">Tidak ada jadwal yang sesuai filter</p>
+                            <button onclick="resetFilters()" class="btn-add" style="margin-top: 1rem;">Reset Filter</button>
+                        </div>
+                    `;
                 }
 
                 document.getElementById('loadingState').style.display = 'none';
@@ -150,17 +193,36 @@ function loadJadwal() {
         });
 }
 
-// Load dokter options
+// Apply filters
+function applyFilters() {
+    currentFilterDokter = document.getElementById('filterDokter').value;
+    currentFilterHari = document.getElementById('filterHari').value;
+    loadJadwal();
+}
+
+// Reset filters
+function resetFilters() {
+    document.getElementById('filterDokter').value = '';
+    document.getElementById('filterHari').value = '';
+    currentFilterDokter = '';
+    currentFilterHari = '';
+    loadJadwal();
+}
+
+// Load dokter options for modal AND filter dropdown
 async function loadDokterOptions() {
     try {
         const response = await fetch(`${API_URL}/doctors`);
         const data = await response.json();
         if (data.status) {
-            let html = '<option value="">-- Pilih Dokter --</option>';
+            let modalHtml = '<option value="">-- Pilih Dokter --</option>';
+            let filterHtml = '<option value="">-- Pilih Dokter --</option>';
             data.data.forEach(doctor => {
-                html += `<option value="${doctor.id_doctor}">${doctor.nama_doctor}</option>`;
+                modalHtml += `<option value="${doctor.id_doctor}">${doctor.nama_doctor}</option>`;
+                filterHtml += `<option value="${doctor.id_doctor}">${doctor.nama_doctor}</option>`;
             });
-            document.getElementById('idDokter').innerHTML = html;
+            document.getElementById('idDokter').innerHTML = modalHtml;
+            document.getElementById('filterDokter').innerHTML = filterHtml;
         }
     } catch (error) {
         console.error('Error loading dokter options:', error);
