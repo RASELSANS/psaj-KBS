@@ -17,58 +17,137 @@ class Home extends BaseController
 
     public function doctors()
     {
-        $data = ['title' => 'Cari Dokter - Klinik Brayan Sehat'];
+        // KUMPULIN SEMUA DATA DOKTER DI SINI
+        $data = [
+            'title'   => 'Cari Dokter - Klinik Brayan Sehat',
+            'doctors' => [
+                [
+                    'slug' => 'theresa', 
+                    'name' => 'drg. Theresa Irina Sukma', 
+                    'spec' => 'Poli Umum', 
+                    'spec_key' => 'UMUM', 
+                    'img' => 'D1.png'
+                ],
+                [
+                    'slug' => 'farida', 
+                    'name' => 'drg. Nur Farida Marbun', 
+                    'spec' => 'Poli Umum', 
+                    'spec_key' => 'UMUM', 
+                    'img' => 'D2.png'
+                ],
+                [
+                    'slug' => 'savira', 
+                    'name' => 'drg. Savira Aska Nourmalita', 
+                    'spec' => 'Spesialis Gigi', 
+                    'spec_key' => 'GIGI', 
+                    'img' => 'D3.png'
+                ],
+                [
+                    'slug' => 'anton', 
+                    'name' => 'dr. Anton Sunaryo, ST.,M.K.K.', 
+                    'spec' => 'Spesialis Gigi', 
+                    'spec_key' => 'GIGI', 
+                    'img' => 'D4.png'
+                ],
+                [
+                    'slug' => 'joko', 
+                    'name' => 'dr. Joko Rilo Pambudi, Sp.PD', 
+                    'spec' => 'Spesialis Gigi', 
+                    'spec_key' => 'GIGI', 
+                    'img' => 'D5.png'
+                ],
+                [
+                    'slug' => 'abraham', 
+                    'name' => 'dr. Abraham Avicenna, Sp. JP', 
+                    'spec' => 'Spesialis Jantung', 
+                    'spec_key' => 'JANTUNG', 
+                    'img' => 'D6.png'
+                ],
+                [
+                    'slug' => 'tutie', 
+                    'name' => 'dr. Tutie Ferika Utami, Sp. THT', 
+                    'spec' => 'Spesialis THT-KL', 
+                    'spec_key' => 'THT', 
+                    'img' => 'D7.png'
+                ],
+                [
+                    'slug' => 'yoan', 
+                    'name' => 'dr. Yoan Budiman, Sp.Rad', 
+                    'spec' => 'Poli Radiologi', 
+                    'spec_key' => 'RADIOLOGI', 
+                    'img' => 'D8.png'
+                ],
+                [
+                    'slug' => 'yoan', 
+                    'name' => 'dr. Yoan Budiman, Sp.Rad', 
+                    'spec' => 'Poli Radiologi', 
+                    'spec_key' => 'RADIOLOGI', 
+                    'img' => 'D9.png'
+                ],
+                [
+                    'slug' => 'yoan', 
+                    'name' => 'dr. Yoan Budiman, Sp.Rad', 
+                    'spec' => 'Poli Radiologi', 
+                    'spec_key' => 'RADIOLOGI', 
+                    'img' => 'D10.png'
+                ],
+                [
+                    'slug' => 'yoan', 
+                    'name' => 'dr. Yoan Budiman, Sp.Rad', 
+                    'spec' => 'Poli Radiologi', 
+                    'spec_key' => 'RADIOLOGI', 
+                    'img' => 'D11.png'
+                ],
+                [
+                    'slug' => 'yoan', 
+                    'name' => 'dr. Yoan Budiman, Sp.Rad', 
+                    'spec' => 'Poli Radiologi', 
+                    'spec_key' => 'RADIOLOGI', 
+                    'img' => 'D12.png'
+                ],
+            ]
+        ];
+
         return view('doctors_page', $data);
     }
 
-    // WAJIB SAMA DENGAN ROUTES (Home::about)
     public function about()
     {
-        return view('about'); 
+        return view('about', ['title' => 'Tentang Kami - Klinik Brayan Sehat']); 
     }
 
     public function artikel()
-{
-    return view('artikel');
-}
+    {
+        return view('artikel', ['title' => 'Artikel Kesehatan']);
+    }
 
-public function faq()
-{
-    return view('faq');
-}
+    public function faq()
+    {
+        return view('faq', ['title' => 'FAQ - Tanya Jawab']);
+    }
 
-public function kontak()
-{
-    return view('kontak');
-}
+    public function kontak()
+    {
+        return view('kontak', ['title' => 'Hubungi Kami']);
+    }
 
-public function penunjang_diagnostik()
-{
-    $data = [
-        'title' => 'Penunjang Diagnostik - Klinik Brayan Sehat'
-    ];
-    return view('penunjang_diagnostik', $data);
-}
-public function poliklinik()
-{
-    $data = [
-        'title' => 'Layanan Poliklinik - Klinik Brayan Sehat'
-    ];
-    return view('poliklinik', $data);
-}
+    public function penunjang_diagnostik()
+    {
+        return view('penunjang_diagnostik', ['title' => 'Penunjang Diagnostik']);
+    }
 
-public function khitan_center()
-{
-    $data = ['title' => 'Khitan Center - Klinik Brayan Sehat'];
-    return view('khitan_center', $data);
-}
+    public function poliklinik()
+    {
+        return view('poliklinik', ['title' => 'Layanan Poliklinik']);
+    }
 
-public function vaksin()
-{
-    $data = [
-        'title' => 'Layanan Vaksinasi - Klinik Brayan Sehat'
-    ];
-    return view('vaksin', $data);
-}
+    public function khitan_center()
+    {
+        return view('khitan_center', ['title' => 'Khitan Center']);
+    }
 
+    public function vaksin()
+    {
+        return view('vaksin', ['title' => 'Layanan Vaksinasi']);
+    }
 }

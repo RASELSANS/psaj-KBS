@@ -1,6 +1,13 @@
 <?php
 
 use CodeIgniter\Router\RouteCollection;
+use App\Controllers\Home;
+use App\Controllers\Doctors;
+use App\Controllers\Spesialis;
+use App\Controllers\Poli;
+use App\Controllers\Jadwal;
+use App\Controllers\Artikel;
+use App\Controllers\Admin;
 
 /**
  * @var RouteCollection $routes
