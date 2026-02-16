@@ -167,7 +167,7 @@
                 <div class="sticky-box">
                     <div class="doc-img-wrapper">
                         <div class="doc-img-bg">
-                            <img src="<?= base_url('img/Dokter1.png') ?>" class="img-fluid" alt="Dokter">
+                            <img src="<?= base_url('img/card1.png') ?>" class="img-fluid" alt="Dokter">
                         </div>
                     </div>
                     <div class="text-center mt-3">
