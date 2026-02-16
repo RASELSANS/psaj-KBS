@@ -23,11 +23,22 @@ class ArtikelController extends AdminController
         if ($authCheck) return $authCheck;
 
         $page = $this->request->getGet('page') ?? 1;
+        $search = $this->request->getGet('search') ?? '';
         $limit = 10;
         $offset = ($page - 1) * $limit;
 
-        $total = $this->artikelModel->countAll();
-        $artikel = $this->artikelModel->orderBy('tanggal_publish', 'DESC')
+        // Build query with search
+        $query = $this->artikelModel;
+        if ($search) {
+            $query = $query->like('judul', $search)->orLike('isi', $search);
+        }
+
+        $total = $query->countAllResults(false); // false = don't reset query
+        $query = $this->artikelModel; // Reset for main query
+        if ($search) {
+            $query = $query->like('judul', $search)->orLike('isi', $search);
+        }
+        $artikel = $query->orderBy('tanggal_publish', 'DESC')
             ->limit($limit, $offset)
             ->findAll();
 
@@ -40,6 +51,22 @@ class ArtikelController extends AdminController
                 'total_pages' => ceil($total / $limit),
             ],
         ]);
+    }
+
+    /**
+     * Get single artikel by ID
+     */
+    public function show($id_artikel)
+    {
+        $authCheck = $this->requireLogin();
+        if ($authCheck) return $authCheck;
+
+        $artikel = $this->artikelModel->find($id_artikel);
+        if (!$artikel) {
+            return $this->errorResponse(['artikel' => 'Artikel tidak ditemukan'], 404);
+        }
+
+        return $this->successResponse($artikel);
     }
 
     /**

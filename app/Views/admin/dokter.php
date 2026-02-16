@@ -158,9 +158,26 @@ function loadDokter(page = 1) {
         url += `&id_poli=${currentFilterPoli}`;
     }
 
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
+    fetch(url, {credentials: 'include'})
+        .then(response => {
+            console.log('loadDokter response status:', response.status);
+            return response.text().then(text => ({
+                text: text,
+                ok: response.ok,
+                status: response.status,
+                contentType: response.headers.get('content-type')
+            }));
+        })
+        .then(({ text, ok, status, contentType }) => {
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error('Failed to parse JSON:', e);
+                console.error('Response text:', text.substring(0, 200));
+                throw new Error(`Invalid JSON response (${status}): ${text.substring(0, 100)}`);
+            }
+            
             if (data.status) {
                 const doctors = data.data.doctors;
                 const pagination = data.data.pagination;
@@ -215,11 +232,14 @@ function loadDokter(page = 1) {
                 }
 
                 document.getElementById('loadingState').style.display = 'none';
+            } else {
+                throw new Error('API returned status=false: ' + JSON.stringify(data.errors));
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            showAlert('Gagal memuat data dokter', 'danger');
+            console.error('loadDokter Error:', error);
+            console.error('Error message:', error.message);
+            showAlert('Gagal memuat data dokter: ' + error.message, 'danger');
             document.getElementById('loadingState').style.display = 'none';
         });
 }
@@ -246,7 +266,7 @@ function resetFilters() {
 // Load spesialis dan poli options
 async function loadOptions() {
     try {
-        const spesialisResponse = await fetch(`${API_URL}/spesialis`);
+        const spesialisResponse = await fetch(`${API_URL}/spesialis`, {credentials: 'include'});
         const spesialisData = await spesialisResponse.json();
         
         if (spesialisData.status) {
@@ -272,7 +292,7 @@ async function loadOptions() {
             document.getElementById('filterSpesialis').innerHTML = filterHtml;
         }
 
-        const poliResponse = await fetch(`${API_URL}/poli`);
+        const poliResponse = await fetch(`${API_URL}/poli`, {credentials: 'include'});
         const poliData = await poliResponse.json();
         
         if (poliData.status) {
@@ -320,94 +340,213 @@ function resetForm() {
 
 // Edit dokter
 function editDokter(id) {
-    fetch(`${API_URL}/doctors/${id}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.status) {
-                const doctor = data.data;
-                document.getElementById('dokterID').value = doctor.id_doctor;
-                document.getElementById('namaDokter').value = doctor.nama_doctor;
-                document.getElementById('profil').value = doctor.profil;
-                document.getElementById('modalTitle').textContent = 'Edit Dokter';
+    // Load options (spesialis & poli) dulu sebelum fetch dokter detail
+    loadOptions().then(() => {
+        fetch(`${API_URL}/doctors/${id}`, {credentials: 'include'})
+            .then(response => response.text().then(text => ({
+                text: text,
+                status: response.status,
+                contentType: response.headers.get('content-type')
+            })))
+            .then(({ text, status, contentType }) => {
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    throw new Error(`Invalid JSON (${status}): ${text.substring(0, 200)}`);
+                }
+                return data;
+            })
+            .then(data => {
+                if (data.status) {
+                    const doctor = data.data;
+                    document.getElementById('dokterID').value = doctor.id_doctor;
+                    document.getElementById('namaDokter').value = doctor.nama_doctor;
+                    document.getElementById('profil').value = doctor.profil;
+                    document.getElementById('modalTitle').textContent = 'Edit Dokter';
 
-                // Check spesialis
-                const spesialisIds = doctor.spesialis.map(s => s.id_spesialis);
-                document.querySelectorAll('.spesialis-checkbox').forEach(cb => {
-                    cb.checked = spesialisIds.includes(parseInt(cb.value));
-                });
+                    // Check spesialis
+                    const spesialisIds = doctor.spesialis.map(s => s.id_spesialis);
+                    document.querySelectorAll('.spesialis-checkbox').forEach(cb => {
+                        cb.checked = spesialisIds.includes(parseInt(cb.value));
+                    });
 
-                // Check poli
-                const poliIds = doctor.poli.map(p => p.id_poli);
-                document.querySelectorAll('.poli-checkbox').forEach(cb => {
-                    cb.checked = poliIds.includes(parseInt(cb.value));
-                });
+                    // Check poli
+                    const poliIds = doctor.poli.map(p => p.id_poli);
+                    document.querySelectorAll('.poli-checkbox').forEach(cb => {
+                        cb.checked = poliIds.includes(parseInt(cb.value));
+                    });
 
-                new bootstrap.Modal(document.getElementById('dokterModal')).show();
-            }
-        });
+                    new bootstrap.Modal(document.getElementById('dokterModal')).show();
+                } else {
+                    showAlert('Error: ' + (data.errors?.doctor || JSON.stringify(data.errors)), 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('editDokter Error:', error);
+                showAlert('Gagal memuat dokter: ' + error.message, 'danger');
+            });
+    });
 }
 
 // Save dokter
 function saveDokter(e) {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('nama_doctor', document.getElementById('namaDokter').value);
-    formData.append('profil', document.getElementById('profil').value);
-    
-    if (document.getElementById('fotoDokter').files.length > 0) {
-        formData.append('foto', document.getElementById('fotoDokter').files[0]);
-    }
-
-    document.querySelectorAll('.spesialis-checkbox:checked').forEach(cb => {
-        formData.append('id_spesialis[]', cb.value);
-    });
-
-    document.querySelectorAll('.poli-checkbox:checked').forEach(cb => {
-        formData.append('id_poli[]', cb.value);
-    });
-
+    const nama_doctor = document.getElementById('namaDokter').value;
+    const profil = document.getElementById('profil').value;
+    const fotoFile = document.getElementById('fotoDokter').files.length > 0 ? document.getElementById('fotoDokter').files[0] : null;
     const id = document.getElementById('dokterID').value;
-    const method = id ? 'PUT' : 'POST';
     const url = id ? `${API_URL}/doctors/${id}` : `${API_URL}/doctors`;
+
+    // Collect spesialis & poli
+    const spesialisIds = [];
+    const poliIds = [];
+    document.querySelectorAll('.spesialis-checkbox:checked').forEach(cb => {
+        spesialisIds.push(cb.value);
+    });
+    document.querySelectorAll('.poli-checkbox:checked').forEach(cb => {
+        poliIds.push(cb.value);
+    });
+
+    console.log('saveDokter:', {
+        nama_doctor: nama_doctor,
+        profil: profil,
+        id_spesialis_count: spesialisIds.length,
+        id_poli_count: poliIds.length,
+        hasFoto: !!fotoFile,
+        dokterID: id,
+        url: url
+    });
+
+    let body, headers, method;
+
+    // For CREATE (POST): use FormData to support file upload
+    if (!id && fotoFile) {
+        const formData = new FormData();
+        formData.append('nama_doctor', nama_doctor);
+        formData.append('profil', profil);
+        formData.append('foto', fotoFile);
+        spesialisIds.forEach(sid => formData.append('id_spesialis[]', sid));
+        poliIds.forEach(pid => formData.append('id_poli[]', pid));
+        body = formData;
+        headers = {};
+        method = 'POST';
+    } else if (!id) {
+        // CREATE without file
+        const params = new URLSearchParams();
+        params.append('nama_doctor', nama_doctor);
+        params.append('profil', profil);
+        spesialisIds.forEach(sid => params.append('id_spesialis[]', sid));
+        poliIds.forEach(pid => params.append('id_poli[]', pid));
+        body = params;
+        headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+        method = 'POST';
+    } else {
+        // UPDATE: use FormData if ada file, otherwise URLSearchParams
+        if (fotoFile) {
+            // UPDATE with file - use FormData + _method=PUT
+            const formData = new FormData();
+            formData.append('_method', 'PUT');
+            formData.append('nama_doctor', nama_doctor);
+            formData.append('profil', profil);
+            formData.append('foto', fotoFile);
+            spesialisIds.forEach(sid => formData.append('id_spesialis[]', sid));
+            poliIds.forEach(pid => formData.append('id_poli[]', pid));
+            body = formData;
+            headers = {}; // FormData auto-set content-type
+            method = 'POST';
+        } else {
+            // UPDATE without file - use URLSearchParams + _method=PUT
+            const params = new URLSearchParams();
+            params.append('_method', 'PUT');
+            params.append('nama_doctor', nama_doctor);
+            params.append('profil', profil);
+            spesialisIds.forEach(sid => params.append('id_spesialis[]', sid));
+            poliIds.forEach(pid => params.append('id_poli[]', pid));
+            body = params;
+            headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+            method = 'POST';
+        }
+    }
 
     fetch(url, {
         method: method,
-        body: formData
+        headers: headers,
+        body: body,
+        credentials: 'include'
     })
-    .then(response => response.json())
+    .then(response => response.text().then(text => ({
+        text: text,
+        status: response.status,
+        contentType: response.headers.get('content-type')
+    })))
+    .then(({ text, status, contentType }) => {
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            throw new Error(`Invalid JSON (${status}): ${text.substring(0, 200)}`);
+        }
+        return data;
+    })
     .then(data => {
         if (data.status) {
             showAlert(id ? 'Dokter berhasil diupdate' : 'Dokter berhasil ditambahkan', 'success');
             bootstrap.Modal.getInstance(document.getElementById('dokterModal')).hide();
             loadDokter(1);
         } else {
-            const errors = Object.values(data.errors).join(', ');
+            const errors = data.errors ? Object.values(data.errors).join(', ') : data.message || 'Terjadi kesalahan';
             showAlert(errors, 'danger');
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        showAlert('Terjadi kesalahan', 'danger');
+        console.error('saveDokter Error:', error);
+        console.error('Error message:', error.message);
+        showAlert('Terjadi kesalahan: ' + error.message, 'danger');
     });
 }
 
 // Delete dokter
 function deleteDokter(id) {
-    if (confirmDelete(id, 'dokter')) {
+    confirmDelete('dokter', () => {
+        const params = new URLSearchParams();
+        params.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
+
         fetch(`${API_URL}/doctors/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            credentials: 'include',
+            body: params
         })
-        .then(response => response.json())
+        .then(response => response.text().then(text => ({
+            text: text,
+            status: response.status,
+            contentType: response.headers.get('content-type')
+        })))
+        .then(({ text, status, contentType }) => {
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                throw new Error(`Invalid JSON (${status}): ${text.substring(0, 200)}`);
+            }
+            return data;
+        })
         .then(data => {
             if (data.status) {
                 showAlert('Dokter berhasil dihapus', 'success');
-                loadDokter(currentPage);
+                loadDokter(1);
             } else {
                 showAlert('Gagal menghapus dokter', 'danger');
             }
+        })
+        .catch(error => {
+            console.error('deleteDokter Error:', error);
+            console.error('Error message:', error.message);
+            showAlert('Error menghapus dokter: ' + error.message, 'danger');
         });
-    }
+    });
 }
 
 // Pagination

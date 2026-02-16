@@ -1,10 +1,13 @@
 <?php
 
-use CodeIgniter\Router\RouteCollection;;
+use CodeIgniter\Router\RouteCollection;
 
 /**
  * @var RouteCollection $routes
  */
+
+// phpstan-ignore-next-line - Routes use string-based controller references
+// @phpstan-ignore-file
 
 // ==================== FRONTEND PAGE ROUTES ====================
 // Halaman Utama
@@ -18,8 +21,6 @@ $routes->get('doctors', 'Home::doctors');
 // $routes->get('doctors/detail/(:any)', 'Doctors::detail/$1');
 $routes->get('doctors/detail/(:any)', 'Doctors::dummy');
 
-$routes->get('admin', 'Admin\AdminController::isLoggedIn');
-
 // Halaman Tentang Kami
 $routes->get('about', 'Home::about');
 
@@ -32,9 +33,11 @@ $routes->get('layanan/poliklinik', 'Home::poliklinik');
 $routes->get('layanan/khitan-center', 'Home::khitan_center');
 $routes->get('layanan/vaksin', 'Home::vaksin');
 
+// ==================== ADMIN LOGIN ROUTE (No Auth Required) ====================
+$routes->get('admin', 'Admin\AdminController::isLoggedIn');  // Shows login or redirects if already logged in
+
 // ==================== ADMIN WEB ROUTES (Protected) ====================
 $routes->group('admin', ['filter' => 'auth'], static function($routes) {
-    $routes->get('/', 'Admin\AdminController::dashboard');
     $routes->get('dashboard', 'Admin\AdminController::dashboard');
     $routes->get('dokter', 'Admin\AdminController::dokter');
     $routes->get('spesialis', 'Admin\AdminController::spesialis');
@@ -61,25 +64,31 @@ $routes->get('api/admin/profile', 'Admin\AuthController::profile');
 
 // ==================== API ADMIN ROUTES (Protected) ====================
 $routes->group('api/admin', ['filter' => 'auth'], static function($routes) {
-    $routes->get('dashboard', 'Admin\AdminController::isLoggedIn');
+    $routes->get('dashboard', 'Admin\AdminController::dashboard');
     $routes->get('logout', 'Admin\AuthController::logout');
 
     // Dokter Management
     $routes->get('doctors', 'Admin\DoctorController::index');
+    $routes->get('doctors/(:num)', 'Admin\DoctorController::show/$1');
     $routes->post('doctors', 'Admin\DoctorController::create');
     $routes->put('doctors/(:num)', 'Admin\DoctorController::update/$1');
+    $routes->post('doctors/(:num)', 'Admin\DoctorController::update/$1'); // Method spoofing: POST with _method=PUT
     $routes->delete('doctors/(:num)', 'Admin\DoctorController::delete/$1');
 
     // Spesialis Management
     $routes->get('spesialis', 'Admin\SpesialisController::index');
+    $routes->get('spesialis/(:num)', 'Admin\SpesialisController::show/$1');
     $routes->post('spesialis', 'Admin\SpesialisController::create');
     $routes->put('spesialis/(:num)', 'Admin\SpesialisController::update/$1');
+    $routes->post('spesialis/(:num)', 'Admin\SpesialisController::update/$1'); // Method spoofing
     $routes->delete('spesialis/(:num)', 'Admin\SpesialisController::delete/$1');
 
     // Poli Management
     $routes->get('poli', 'Admin\PoliController::index');
+    $routes->get('poli/(:num)', 'Admin\PoliController::show/$1');
     $routes->post('poli', 'Admin\PoliController::create');
     $routes->put('poli/(:num)', 'Admin\PoliController::update/$1');
+    $routes->post('poli/(:num)', 'Admin\PoliController::update/$1'); // Method spoofing
     $routes->delete('poli/(:num)', 'Admin\PoliController::delete/$1');
 
     // Jadwal Management
@@ -90,6 +99,7 @@ $routes->group('api/admin', ['filter' => 'auth'], static function($routes) {
 
     // Artikel Management
     $routes->get('artikel', 'Admin\ArtikelController::index');
+    $routes->get('artikel/(:num)', 'Admin\ArtikelController::show/$1');
     $routes->post('artikel', 'Admin\ArtikelController::create');
     $routes->put('artikel/(:num)', 'Admin\ArtikelController::update/$1');
     $routes->delete('artikel/(:num)', 'Admin\ArtikelController::delete/$1');
@@ -99,3 +109,8 @@ $routes->group('api/admin', ['filter' => 'auth'], static function($routes) {
     $routes->post('gallery/upload', 'GalleryController::upload');
     $routes->post('gallery/delete/(:any)', 'GalleryController::delete/$1');
 });
+
+// ==================== DEBUG ROUTES (For troubleshooting) ====================
+$routes->get('api/admin/debug/session-status', 'Admin\DebugController::sessionStatus');
+$routes->post('api/admin/debug/test-session', 'Admin\DebugController::testSessionCreate');
+$routes->get('api/admin/debug/verify-session', 'Admin\DebugController::verifySession');

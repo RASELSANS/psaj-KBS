@@ -275,6 +275,135 @@
             transform: translateY(-2px);
         }
 
+        .btn-modal-save {
+            background: #ff8a3d;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-modal-save:hover {
+            background: #e66e1f;
+            transform: translateY(-2px);
+        }
+
+        /* Custom Modal Confirmation */
+        .confirm-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .confirm-modal-overlay.show {
+            display: flex;
+        }
+
+        .confirm-modal-content {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            animation: slideUp 0.3s ease;
+        }
+
+        .confirm-modal-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 28px;
+        }
+
+        .confirm-modal-icon.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .confirm-modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 1rem 0 0.5rem;
+            text-align: center;
+        }
+
+        .confirm-modal-message {
+            color: #666;
+            text-align: center;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .confirm-modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .confirm-modal-buttons button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-confirm-cancel {
+            background: #e9ecef;
+            color: #666;
+        }
+
+        .btn-confirm-cancel:hover {
+            background: #dee2e6;
+        }
+
+        .btn-confirm-yes {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-confirm-yes:hover {
+            background: #c0392b;
+        }
+
+        .btn-logout-yes {
+            background: #ff8a3d;
+            color: white;
+        }
+
+        .btn-logout-yes:hover {
+            background: #e66e1f;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         /* Table Styles */
         .table-wrapper {
             overflow-x: auto;
@@ -533,6 +662,25 @@
         </div>
     </div>
 
+    <!-- Confirm Modal -->
+    <div id="confirmModalOverlay" class="confirm-modal-overlay">
+        <div class="confirm-modal-content">
+            <div class="confirm-modal-icon warning">
+                <i class="fas fa-exclamation"></i>
+            </div>
+            <h2 class="confirm-modal-title" id="confirmTitle">Konfirmasi</h2>
+            <p class="confirm-modal-message" id="confirmMessage">Anda yakin dengan aksi ini?</p>
+            <div class="confirm-modal-buttons">
+                <button type="button" class="btn-confirm-cancel" onclick="closeConfirmModal()">
+                    Batal
+                </button>
+                <button type="button" class="btn-confirm-yes" id="confirmYesBtn" onclick="executeConfirmAction()">
+                    Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -574,34 +722,86 @@
             }
         }
 
-        // Confirm Delete
-        function confirmDelete(id, entityName) {
-            return confirm(`Yakin ingin menghapus ${entityName} ini? Aksi ini tidak bisa dibatalkan.`);
+        // Confirm Modal Management
+        let confirmModalAction = null;
+
+        function showConfirmModal(title, message, yesButtonText = 'Ya, Hapus', onConfirm = null) {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            document.getElementById('confirmYesBtn').textContent = yesButtonText;
+            confirmModalAction = onConfirm;
+            document.getElementById('confirmModalOverlay').classList.add('show');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModalOverlay').classList.remove('show');
+            confirmModalAction = null;
+        }
+
+        function executeConfirmAction() {
+            if (confirmModalAction) {
+                confirmModalAction();
+            }
+            closeConfirmModal();
+        }
+
+        // Confirm Delete - Pass callback function
+        function confirmDelete(entityName, onConfirm) {
+            showConfirmModal(
+                'Hapus ' + entityName,
+                `Yakin ingin menghapus ${entityName} ini? Aksi ini tidak bisa dibatalkan.`,
+                'Ya, Hapus',
+                onConfirm
+            );
         }
 
         // Logout
         async function logoutAdmin() {
-            if (confirm('Yakin ingin logout?')) {
-                try {
-                    const response = await fetch(`${API_URL}/logout`, {
-                        method: 'POST'
-                    });
-                    const data = await response.json();
-                    
-                    if (data.status) {
-                        window.location.href = '/';
+            const overlay = document.getElementById('confirmModalOverlay');
+            showConfirmModal(
+                'Logout',
+                'Yakin ingin logout dari sistem admin?',
+                'Ya, Logout',
+                async () => {
+                    try {
+                        const response = await fetch(`${API_URL}/logout`, {
+                            method: 'POST'
+                        });
+                        const data = await response.json();
+                        
+                        if (data.status) {
+                            window.location.href = '/';
+                        } else {
+                            showAlert('Gagal logout', 'danger');
+                        }
+                    } catch (error) {
+                        console.error('Logout error:', error);
+                        showAlert('Gagal logout', 'danger');
                     }
-                } catch (error) {
-                    console.error('Logout error:', error);
-                    showAlert('Gagal logout', 'danger');
                 }
-            }
+            );
+            
+            // Style the button for logout action
+            const yesBtn = document.getElementById('confirmYesBtn');
+            yesBtn.className = 'btn-logout-yes';
         }
+
+        // Close modal when clicking overlay
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('confirmModalOverlay');
+            if (overlay) {
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) {
+                        closeConfirmModal();
+                    }
+                });
+            }
+        });
 
         // Load admin name on page load
         document.addEventListener('DOMContentLoaded', async function() {
             try {
-                const response = await fetch(`${API_URL}/profile`);
+                const response = await fetch(`${API_URL}/profile`, {credentials: 'include'});
                 const data = await response.json();
                 
                 if (data.status) {

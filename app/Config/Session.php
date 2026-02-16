@@ -124,4 +124,14 @@ class Session extends BaseConfig
      * seconds.
      */
     public int $lockMaxRetries = 300;
+
+    /**
+     * --------------------------------------------------------------------------
+     * Session Cookie SameSite Attribute
+     * --------------------------------------------------------------------------
+     *
+     * Allow cookies to be sent with cross-origin requests.
+     * Set to 'None' to allow fetch requests with credentials.
+     */
+    public string $cookieSameSite = 'Lax';
 }

@@ -83,9 +83,22 @@ function loadSpesialis() {
     document.getElementById('tableContainer').style.display = 'none';
     document.getElementById('emptyState').style.display = 'none';
 
-    fetch(`${API_URL}/spesialis`)
-        .then(response => response.json())
-        .then(data => {
+    fetch(`${API_URL}/spesialis`, {credentials: 'include'})
+        .then(response => response.text().then(text => ({
+            text: text,
+            status: response.status,
+            contentType: response.headers.get('content-type')
+        })))
+        .then(({ text, status, contentType }) => {
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                throw new Error(`Invalid JSON (${status}): ${text.substring(0, 200)}`);
+            }
+            return { data, status, contentType };
+        })
+        .then(({ data }) => {
             if (data.status) {
                 const spesialis = data.data.spesialis;
 
@@ -118,8 +131,9 @@ function loadSpesialis() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            showAlert('Gagal memuat data spesialis', 'danger');
+            console.error('loadSpesialis Error:', error);
+            console.error('Error message:', error.message);
+            showAlert('Gagal memuat data spesialis: ' + error.message, 'danger');
             document.getElementById('loadingState').style.display = 'none';
         });
 }
@@ -133,19 +147,23 @@ function resetForm() {
 
 // Edit spesialis
 function editSpesialis(id) {
-    fetch(`${API_URL}/spesialis`)
+    fetch(`${API_URL}/spesialis/${id}`, {credentials: 'include'})
         .then(response => response.json())
         .then(data => {
             if (data.status) {
-                const spesialis = data.data.spesialis.find(s => s.id_spesialis === id);
-                if (spesialis) {
-                    document.getElementById('spesialisID').value = spesialis.id_spesialis;
-                    document.getElementById('namaSpesialis').value = spesialis.nama_spesialis;
-                    document.getElementById('modalTitle').textContent = 'Edit Spesialis';
+                const spesialis = data.data;
+                document.getElementById('spesialisID').value = spesialis.id_spesialis;
+                document.getElementById('namaSpesialis').value = spesialis.nama_spesialis;
+                document.getElementById('modalTitle').textContent = 'Edit Spesialis';
 
-                    new bootstrap.Modal(document.getElementById('spesialisModal')).show();
-                }
+                new bootstrap.Modal(document.getElementById('spesialisModal')).show();
+            } else {
+                showAlert('Spesialis tidak ditemukan', 'danger');
             }
+        })
+        .catch(error => {
+            console.error('editSpesialis Error:', error);
+            showAlert('Error memuat spesialis: ' + error.message, 'danger');
         });
 }
 
@@ -153,39 +171,64 @@ function editSpesialis(id) {
 function saveSpesialis(e) {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('nama_spesialis', document.getElementById('namaSpesialis').value);
-
+    const nama_spesialis = document.getElementById('namaSpesialis').value;
     const id = document.getElementById('spesialisID').value;
-    const method = id ? 'PUT' : 'POST';
     const url = id ? `${API_URL}/spesialis/${id}` : `${API_URL}/spesialis`;
 
+    const params = new URLSearchParams();
+    if (id) {
+        params.append('_method', 'PUT'); // Method spoofing for UPDATE
+    }
+    params.append('nama_spesialis', nama_spesialis);
+
     fetch(url, {
-        method: method,
-        body: formData
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        credentials: 'include',
+        body: params
     })
-    .then(response => response.json())
+    .then(response => response.text().then(text => ({
+        text: text,
+        status: response.status,
+        contentType: response.headers.get('content-type')
+    })))
+    .then(({ text, status, contentType }) => {
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            throw new Error(`Invalid JSON (${status}): ${text.substring(0, 200)}`);
+        }
+        return data;
+    })
     .then(data => {
         if (data.status) {
             showAlert(id ? 'Spesialis berhasil diupdate' : 'Spesialis berhasil ditambahkan', 'success');
             bootstrap.Modal.getInstance(document.getElementById('spesialisModal')).hide();
             loadSpesialis();
         } else {
-            const errors = Object.values(data.errors).join(', ');
+            const errors = data.errors ? Object.values(data.errors).join(', ') : data.message || 'Terjadi kesalahan';
             showAlert(errors, 'danger');
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        showAlert('Terjadi kesalahan', 'danger');
+        console.error('saveSpesialis Error:', error);
+        console.error('Error message:', error.message);
+        showAlert('Terjadi kesalahan: ' + error.message, 'danger');
     });
 }
 
 // Delete spesialis
 function deleteSpesialis(id) {
-    if (confirmDelete(id, 'spesialis')) {
+    confirmDelete('spesialis', () => {
+        const params = new URLSearchParams();
+        params.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
+
         fetch(`${API_URL}/spesialis/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            credentials: 'include',
+            body: params
         })
         .then(response => response.json())
         .then(data => {
@@ -196,7 +239,7 @@ function deleteSpesialis(id) {
                 showAlert('Gagal menghapus spesialis', 'danger');
             }
         });
-    }
+    });
 }
 
 // Init

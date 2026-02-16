@@ -192,19 +192,43 @@ function saveArtikel(e) {
         return;
     }
 
-    const formData = new FormData();
-    formData.append('judul', judul);
-    formData.append('isi', isi);
-    formData.append('tanggal_publish', document.getElementById('tanggalPublish').value);
-    formData.append('status', 'published'); // Mark as published
-
-    if (document.getElementById('thumbnail').files.length > 0) {
-        formData.append('thumbnail', document.getElementById('thumbnail').files[0]);
-    }
-
     const id = document.getElementById('artikelID').value;
-    const method = id ? 'PUT' : 'POST';
     const url = id ? `${API_URL}/artikel/${id}` : `${API_URL}/artikel`;
+    const thumbnailFile = document.getElementById('thumbnail').files.length > 0 ? document.getElementById('thumbnail').files[0] : null;
+
+    let body, method = 'POST';
+
+    // For CREATE or UPDATE with thumbnail: use FormData
+    if (!id && thumbnailFile) {
+        const formData = new FormData();
+        formData.append('judul', judul);
+        formData.append('isi', isi);
+        formData.append('tanggal_publish', document.getElementById('tanggalPublish').value);
+        formData.append('status', 'published');
+        formData.append('thumbnail', thumbnailFile);
+        body = formData;
+    } else if (id && thumbnailFile) {
+        // UPDATE with new thumbnail: use FormData + _method=PUT
+        const formData = new FormData();
+        formData.append('_method', 'PUT');
+        formData.append('judul', judul);
+        formData.append('isi', isi);
+        formData.append('tanggal_publish', document.getElementById('tanggalPublish').value);
+        formData.append('status', 'published');
+        formData.append('thumbnail', thumbnailFile);
+        body = formData;
+    } else {
+        // Without thumbnail: use URLSearchParams
+        const params = new URLSearchParams();
+        if (id) {
+            params.append('_method', 'PUT'); // Method spoofing for UPDATE
+        }
+        params.append('judul', judul);
+        params.append('isi', isi);
+        params.append('tanggal_publish', document.getElementById('tanggalPublish').value);
+        params.append('status', 'published');
+        body = params;
+    }
 
     // Show loading state
     const submitBtn = document.querySelector('button[type="submit"]');
@@ -214,7 +238,8 @@ function saveArtikel(e) {
 
     fetch(url, {
         method: method,
-        body: formData
+        body: body,
+        credentials: 'include'
     })
     .then(response => response.json())
     .then(data => {

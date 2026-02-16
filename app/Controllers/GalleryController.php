@@ -2,15 +2,16 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
+use App\Controllers\Admin\AdminController;
 
-class GalleryController extends BaseController
+class GalleryController extends AdminController
 {
     protected $helpers = ['form'];
     private $uploadPath = 'public/uploads/gallery/';
 
     public function __construct()
     {
+        parent::__construct();
         // Ensure upload directory exists
         if (!is_dir($this->uploadPath)) {
             mkdir($this->uploadPath, 0755, true);
@@ -28,6 +29,9 @@ class GalleryController extends BaseController
      */
     public function listImages()
     {
+        $authCheck = $this->requireLogin();
+        if ($authCheck) return $authCheck;
+
         try {
             $images = [];
             $dir = FCPATH . 'uploads/gallery/';
@@ -74,6 +78,9 @@ class GalleryController extends BaseController
      */
     public function upload()
     {
+        $authCheck = $this->requireLogin();
+        if ($authCheck) return $authCheck;
+
         try {
             // Check if file exists in request
             if (!$this->request->getFile('image')) {
@@ -111,7 +118,7 @@ class GalleryController extends BaseController
             }
 
             // Generate unique filename
-            $originalName = $file->getOriginalName();
+            $originalName = $file->getClientName();
             $newName = time() . '_' . $this->sanitizeFilename($originalName);
 
             // Move file to uploads directory
@@ -145,6 +152,9 @@ class GalleryController extends BaseController
      */
     public function delete($filename = null)
     {
+        $authCheck = $this->requireLogin();
+        if ($authCheck) return $authCheck;
+
         try {
             if (!$filename) {
                 return $this->response->setJSON([

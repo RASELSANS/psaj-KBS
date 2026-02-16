@@ -89,9 +89,36 @@ function loadPoli() {
     document.getElementById('tableContainer').style.display = 'none';
     document.getElementById('emptyState').style.display = 'none';
 
-    fetch(`${API_URL}/poli`)
-        .then(response => response.json())
-        .then(data => {
+    fetch(`${API_URL}/poli`, {credentials: 'include'})
+        .then(response => {
+            // Log response details
+            console.log('loadPoli response status:', response.status);
+            console.log('loadPoli response headers:', {
+                'content-type': response.headers.get('content-type')
+            });
+            
+            if (!response.ok) {
+                console.error('Response not OK:', response.status);
+            }
+            
+            return response.text().then(text => ({
+                text: text,
+                ok: response.ok,
+                status: response.status,
+                contentType: response.headers.get('content-type')
+            }));
+        })
+        .then(({ text, ok, status, contentType }) => {
+            // Try to parse as JSON
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error('Failed to parse JSON:', e);
+                console.error('Response text:', text.substring(0, 200));
+                throw new Error(`Invalid JSON response (${status}): ${text.substring(0, 100)}`);
+            }
+            
             if (data.status) {
                 const poli = data.data.poli;
 
@@ -122,11 +149,14 @@ function loadPoli() {
                 }
 
                 document.getElementById('loadingState').style.display = 'none';
+            } else {
+                throw new Error('API returned status=false: ' + JSON.stringify(data.errors));
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            showAlert('Gagal memuat data poli', 'danger');
+            console.error('loadPoli Error:', error);
+            console.error('Error message:', error.message);
+            showAlert('Gagal memuat data poli: ' + error.message, 'danger');
             document.getElementById('loadingState').style.display = 'none';
         });
 }
@@ -140,12 +170,16 @@ function resetForm() {
 
 // Edit poli
 function editPoli(id) {
-    fetch(`${API_URL}/poli`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.status) {
-                const poli = data.data.poli.find(p => p.id_poli === id);
-                if (poli) {
+    fetch(`${API_URL}/poli/${id}`, {credentials: 'include'})
+        .then(response => response.text().then(text => ({
+            text: text,
+            status: response.status
+        })))
+        .then(({ text, status }) => {
+            try {
+                const data = JSON.parse(text);
+                if (data.status) {
+                    const poli = data.data;
                     document.getElementById('poliID').value = poli.id_poli;
                     document.getElementById('namaPoli').value = poli.nama_poli;
                     document.getElementById('deskripsi').value = poli.deskripsi;
@@ -153,7 +187,13 @@ function editPoli(id) {
 
                     new bootstrap.Modal(document.getElementById('poliModal')).show();
                 }
+            } catch (e) {
+                console.error('Failed to parse editPoli response:', e);
+                console.error('Response:', text.substring(0, 200));
             }
+        })
+        .catch(error => {
+            console.error('editPoli Error:', error);
         });
 }
 
@@ -161,51 +201,115 @@ function editPoli(id) {
 function savePoli(e) {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('nama_poli', document.getElementById('namaPoli').value);
-    formData.append('deskripsi', document.getElementById('deskripsi').value);
+    const namaPoli = document.getElementById('namaPoli').value.trim();
+    const deskripsi = document.getElementById('deskripsi').value.trim();
+
+    // Client-side validation
+    if (!namaPoli) {
+        showAlert('Nama Poli tidak boleh kosong', 'warning');
+        return;
+    }
+    if (!deskripsi) {
+        showAlert('Deskripsi tidak boleh kosong', 'warning');
+        return;
+    }
 
     const id = document.getElementById('poliID').value;
-    const method = id ? 'PUT' : 'POST';
     const url = id ? `${API_URL}/poli/${id}` : `${API_URL}/poli`;
 
+    const params = new URLSearchParams();
+    if (id) {
+        params.append('_method', 'PUT'); // Method spoofing for UPDATE
+    }
+    params.append('nama_poli', namaPoli);
+    params.append('deskripsi', deskripsi);
+
     fetch(url, {
-        method: method,
-        body: formData
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        credentials: 'include',
+        body: params
     })
-    .then(response => response.json())
-    .then(data => {
+    .then(response => {
+        // Log response details for debugging
+        console.log('savePoli response status:', response.status);
+        console.log('savePoli response headers:', {
+            'content-type': response.headers.get('content-type')
+        });
+        
+        return response.text().then(text => ({
+            text: text,
+            status: response.status,
+            contentType: response.headers.get('content-type')
+        }));
+    })
+    .then(({ text, status, contentType }) => {
+        console.log('savePoli response text (first 200 chars):', text.substring(0, 200));
+        
+        // Try to parse as JSON
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            console.error('Failed to parse JSON:', e);
+            console.error('Full response text:', text);
+            throw new Error(`Invalid JSON response (status ${status}). Response: ${text.substring(0, 150)}`);
+        }
+        
         if (data.status) {
             showAlert(id ? 'Poli berhasil diupdate' : 'Poli berhasil ditambahkan', 'success');
-            bootstrap.Modal.getInstance(document.getElementById('poliModal')).hide();
-            loadPoli();
+            setTimeout(() => {
+                bootstrap.Modal.getInstance(document.getElementById('poliModal')).hide();
+                loadPoli();
+            }, 500);
         } else {
-            const errors = Object.values(data.errors).join(', ');
+            const errors = data.errors ? Object.values(data.errors).join(', ') : data.message || 'Terjadi kesalahan';
             showAlert(errors, 'danger');
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        showAlert('Terjadi kesalahan', 'danger');
+        console.error('savePoli Error:', error);
+        console.error('Error message:', error.message);
+        showAlert('Terjadi kesalahan: ' + error.message, 'danger');
     });
 }
 
 // Delete poli
 function deletePoli(id) {
-    if (confirmDelete(id, 'poli')) {
+    confirmDelete('poli', () => {
+        const params = new URLSearchParams();
+        params.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
+
         fetch(`${API_URL}/poli/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            credentials: 'include',
+            body: params
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status) {
-                showAlert('Poli berhasil dihapus', 'success');
-                loadPoli();
-            } else {
-                showAlert('Gagal menghapus poli', 'danger');
+        .then(response => response.text().then(text => ({
+            text: text,
+            status: response.status
+        })))
+        .then(({ text, status }) => {
+            try {
+                const data = JSON.parse(text);
+                if (data.status) {
+                    showAlert('Poli berhasil dihapus', 'success');
+                    loadPoli();
+                } else {
+                    showAlert('Gagal menghapus poli: ' + JSON.stringify(data.errors), 'danger');
+                }
+            } catch (e) {
+                console.error('Failed to parse deletePoli response:', e);
+                console.error('Response:', text.substring(0, 200));
+                showAlert('Error parsing delete response', 'danger');
             }
+        })
+        .catch(error => {
+            console.error('deletePoli Error:', error);
+            showAlert('Error: ' + error.message, 'danger');
         });
-    }
+    });
 }
 
 // Init

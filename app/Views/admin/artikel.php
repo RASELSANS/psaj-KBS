@@ -90,9 +90,22 @@ function loadArtikel(page = 1) {
         url += `&search=${encodeURIComponent(currentSearchQuery)}`;
     }
 
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
+    fetch(url, {credentials: 'include'})
+        .then(response => response.text().then(text => ({
+            text: text,
+            status: response.status,
+            contentType: response.headers.get('content-type')
+        })))
+        .then(({ text, status, contentType }) => {
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                throw new Error(`Invalid JSON (${status}): ${text.substring(0, 200)}`);
+            }
+            return { data, status, contentType };
+        })
+        .then(({ data }) => {
             if (data.status) {
                 const artikel = data.data.artikel;
                 const pagination = data.data.pagination;
@@ -147,8 +160,9 @@ function loadArtikel(page = 1) {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            showAlert('Gagal memuat data artikel', 'danger');
+            console.error('loadArtikel Error:', error);
+            console.error('Error message:', error.message);
+            showAlert('Gagal memuat data artikel: ' + error.message, 'danger');
             document.getElementById('loadingState').style.display = 'none';
         });
 }
@@ -168,9 +182,15 @@ function resetFilters() {
 
 // Delete artikel
 function deleteArtikel(id) {
-    if (confirmDelete(id, 'artikel')) {
+    confirmDelete('artikel', () => {
+        const params = new URLSearchParams();
+        params.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
+
         fetch(`${API_URL}/artikel/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            credentials: 'include',
+            body: params
         })
         .then(response => response.json())
         .then(data => {
@@ -181,7 +201,7 @@ function deleteArtikel(id) {
                 showAlert('Gagal menghapus artikel', 'danger');
             }
         });
-    }
+    });
 }
 
 // Pagination

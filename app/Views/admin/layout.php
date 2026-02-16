@@ -408,7 +408,8 @@
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
-                    }
+                    },
+                    credentials: 'include'
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -434,8 +435,27 @@
         }
 
         // Delete with confirmation
-        function confirmDelete(id, type) {
-            if (confirm(`Anda yakin ingin menghapus ${type} ini?`)) {
+        function confirmDelete(typeOrId, callbackOrType) {
+            // Support two calling patterns:
+            // 1. confirmDelete('dokter', callback) - where callbackOrType is a function
+            // 2. confirmDelete(id, type) - where callbackOrType is a string (legacy)
+            
+            let message, callback;
+            
+            if (typeof callbackOrType === 'function') {
+                // New pattern: confirmDelete(type, callback)
+                message = `Anda yakin ingin menghapus ${typeOrId} ini?`;
+                callback = callbackOrType;
+            } else {
+                // Legacy pattern: confirmDelete(id, type)
+                message = `Anda yakin ingin menghapus ${callbackOrType} ini?`;
+                callback = null;
+            }
+            
+            if (confirm(message)) {
+                if (callback && typeof callback === 'function') {
+                    callback();
+                }
                 return true;
             }
             return false;

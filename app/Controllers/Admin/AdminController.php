@@ -19,7 +19,7 @@ class AdminController extends BaseController
     public function isLoggedIn()
     {
         if($this->session->has('admin_id')){
-            return view('admin/dashboard');
+            return redirect("/admin/dashboard");
         }
         else{
             return view('admin/login');
@@ -45,7 +45,7 @@ class AdminController extends BaseController
                 'errors' => ['auth' => 'Anda harus login terlebih dahulu'],
             ])->setStatusCode(401);
         }
-        return view('admin/login');
+        return null; // Return null if authenticated (let controller continue)
     }
 
     /**

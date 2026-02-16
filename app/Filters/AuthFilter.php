@@ -22,10 +22,15 @@ class AuthFilter implements FilterInterface
         $session = session();
 
         if (!$session->has('admin_id')) {
-            return response()->setJSON([
-                'status' => false,
-                'errors' => ['auth' => 'Anda harus login terlebih dahulu'],
-            ])->setStatusCode(401);
+            // For API requests, return JSON
+            if (strpos($request->getPath(), '/api/') === 0) {
+                return response()->setJSON([
+                    'status' => false,
+                    'errors' => ['auth' => 'Anda harus login terlebih dahulu'],
+                ])->setStatusCode(401);
+            }
+            // For web requests, redirect to login
+            return redirect('/admin');
         }
     }
 

@@ -23,7 +23,9 @@ class Spesialis extends BaseController
 
         return $this->response->setJSON([
             'status' => true,
-            'data' => $spesialis,
-        ]);
+            'data' => [
+                'spesialis' => $spesialis
+            ],
+        ])
     }
 }

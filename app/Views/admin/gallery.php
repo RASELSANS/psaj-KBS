@@ -176,8 +176,15 @@
      */
     async function loadGalleryImages() {
         try {
-            const response = await fetch(`${API_URL}/gallery/list`);
-            const result = await response.json();
+            const response = await fetch(`${API_URL}/gallery/list`, {credentials: 'include'});
+            const text = await response.text();
+            
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch (e) {
+                throw new Error(`Invalid JSON (${response.status}): ${text.substring(0, 200)}`);
+            }
 
             if (result.success) {
                 renderGallery(result.data);
@@ -185,7 +192,8 @@
                 showAlert(result.message || 'Error loading images', 'danger');
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('loadGalleryImages Error:', error);
+            console.error('Error message:', error.message);
             showAlert('Error loading images: ' + error.message, 'danger');
         }
     }
@@ -304,6 +312,7 @@
         isUploading = true;
         const uploadBtn = document.querySelector('[name="image"]').parentElement;
         const formData = new FormData();
+        formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
         formData.append('image', file);
 
         showAlert('Mengunggah foto...', 'info');
@@ -311,10 +320,17 @@
         try {
             const response = await fetch(`${API_URL}/gallery/upload`, {
                 method: 'POST',
-                body: formData
+                body: formData,
+                credentials: 'include'
             });
-
-            const result = await response.json();
+            const text = await response.text();
+            
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch (e) {
+                throw new Error(`Invalid JSON (${response.status}): ${text.substring(0, 200)}`);
+            }
 
             if (result.success) {
                 showAlert('Foto berhasil diunggah', 'success');
@@ -324,7 +340,8 @@
                 showAlert(result.message || 'Upload gagal', 'danger');
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('uploadImage Error:', error);
+            console.error('Error message:', error.message);
             showAlert('Error upload: ' + error.message, 'danger');
         } finally {
             isUploading = false;
@@ -335,30 +352,44 @@
      * Delete image
      */
     async function deleteImage(filename) {
-        if (!confirm('Hapus foto ini? Tindakan tidak bisa dibatalkan.')) return;
+        confirmDelete('foto', async () => {
+            isDeletingFile = filename;
+            showAlert('Menghapus foto...', 'info');
 
-        isDeletingFile = filename;
-        showAlert('Menghapus foto...', 'info');
+            try {
+                const params = new URLSearchParams();
+                params.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
 
-        try {
-            const response = await fetch(`${API_URL}/gallery/delete/${filename}`, {
-                method: 'POST'
-            });
+                const response = await fetch(`${API_URL}/gallery/delete/${filename}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: params,
+                    credentials: 'include'
+                });
 
-            const result = await response.json();
+                const text = await response.text();
+                
+                let result;
+                try {
+                    result = JSON.parse(text);
+                } catch (e) {
+                    throw new Error(`Invalid JSON (${response.status}): ${text.substring(0, 200)}`);
+                }
 
-            if (result.success) {
-                showAlert('Foto berhasil dihapus', 'success');
-                loadGalleryImages();
-            } else {
-                showAlert(result.message || 'Hapus gagal', 'danger');
+                if (result.success) {
+                    showAlert('Foto berhasil dihapus', 'success');
+                    loadGalleryImages();
+                } else {
+                    showAlert(result.message || 'Hapus gagal', 'danger');
+                }
+            } catch (error) {
+                console.error('deleteImage Error:', error);
+                console.error('Error message:', error.message);
+                showAlert('Error menghapus foto: ' + error.message, 'danger');
+            } finally {
+                isDeletingFile = null;
             }
-        } catch (error) {
-            console.error('Error:', error);
-            showAlert('Error: ' + error.message, 'danger');
-        } finally {
-            isDeletingFile = null;
-        }
+        });
     }
 
     /**

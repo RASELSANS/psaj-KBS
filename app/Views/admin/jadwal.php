@@ -128,17 +128,35 @@ function loadJadwal() {
     document.getElementById('tableContainer').style.display = 'none';
     document.getElementById('emptyState').style.display = 'none';
 
-    fetch(`${API_URL}/doctors`)
-        .then(response => response.json())
-        .then(data => {
+    fetch(`${API_URL}/doctors`, {credentials: 'include'})
+        .then(response => response.text().then(text => ({
+            text: text,
+            status: response.status,
+            contentType: response.headers.get('content-type')
+        })))
+        .then(({ text, status, contentType }) => {
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                throw new Error(`Invalid JSON (${status}): ${text.substring(0, 200)}`);
+            }
+            return { data, status, contentType };
+        })
+        .then(({ data }) => {
             if (data.status) {
-                doctoArray = data.data;
+                doctoArray = data.data.doctors;
                 
                 let html = '';
                 let rowNum = 1;
                 doctoArray.forEach((doctor, index) => {
                     // Apply filters
-                    if (currentFilterDokter && doctor.id_doctor !== parseInt(currentFilterDokter)) {
+                    if (currentFilterDokter && String(doctor.id_doctor) !== currentFilterDokter) {
+                        return;
+                    }
+                    
+                    // Ensure jadwal array exists
+                    if (!doctor.jadwal || !Array.isArray(doctor.jadwal)) {
                         return;
                     }
 
@@ -187,8 +205,9 @@ function loadJadwal() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            showAlert('Gagal memuat data jadwal', 'danger');
+            console.error('loadJadwal Error:', error);
+            console.error('Error message:', error.message);
+            showAlert('Gagal memuat data jadwal: ' + error.message, 'danger');
             document.getElementById('loadingState').style.display = 'none';
         });
 }
@@ -212,12 +231,12 @@ function resetFilters() {
 // Load dokter options for modal AND filter dropdown
 async function loadDokterOptions() {
     try {
-        const response = await fetch(`${API_URL}/doctors`);
+        const response = await fetch(`${API_URL}/doctors`, {credentials: 'include'});
         const data = await response.json();
         if (data.status) {
             let modalHtml = '<option value="">-- Pilih Dokter --</option>';
             let filterHtml = '<option value="">-- Pilih Dokter --</option>';
-            data.data.forEach(doctor => {
+            data.data.doctors.forEach(doctor => {
                 modalHtml += `<option value="${doctor.id_doctor}">${doctor.nama_doctor}</option>`;
                 filterHtml += `<option value="${doctor.id_doctor}">${doctor.nama_doctor}</option>`;
             });
@@ -244,25 +263,42 @@ function resetForm() {
 }
 
 // Edit jadwal
-function editJadwal(id) {
+async function editJadwal(id) {
+    await loadDokterOptions();
+    
+    // Ensure doctoArray is populated
+    if (!doctoArray || doctoArray.length === 0) {
+        showAlert('Data dokter masih dimuat, silakan coba lagi', 'warning');
+        return;
+    }
+    
     let jadwal = null;
+    let doctorId = null;
+    
+    // Find jadwal by comparing as numbers
     for (let doctor of doctoArray) {
-        const found = doctor.jadwal.find(j => j.id_jadwal === id);
+        if (!doctor.jadwal || !Array.isArray(doctor.jadwal)) continue;
+        
+        const found = doctor.jadwal.find(j => parseInt(j.id_jadwal) === parseInt(id));
         if (found) {
             jadwal = found;
-            document.getElementById('idDokter').value = doctor.id_doctor;
+            doctorId = doctor.id_doctor;
             break;
         }
     }
 
     if (jadwal) {
         document.getElementById('jadwalID').value = jadwal.id_jadwal;
+        document.getElementById('idDokter').value = doctorId;
         document.getElementById('hari').value = jadwal.hari;
         document.getElementById('jamMulai').value = jadwal.jam_mulai;
         document.getElementById('jamSelesai').value = jadwal.jam_selesai;
         document.getElementById('modalTitle').textContent = 'Edit Jadwal';
 
         new bootstrap.Modal(document.getElementById('jadwalModal')).show();
+    } else {
+        console.warn('Jadwal tidak ditemukan. ID:', id, 'DoctoArray:', doctoArray);
+        showAlert('Jadwal tidak ditemukan', 'danger');
     }
 }
 
@@ -270,44 +306,80 @@ function editJadwal(id) {
 function saveJadwal(e) {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('id_doctor', document.getElementById('idDokter').value);
-    formData.append('hari', document.getElementById('hari').value);
-    formData.append('jam_mulai', document.getElementById('jamMulai').value);
-    formData.append('jam_selesai', document.getElementById('jamSelesai').value);
-
     const id = document.getElementById('jadwalID').value;
-    const method = id ? 'PUT' : 'POST';
     const url = id ? `${API_URL}/jadwal/${id}` : `${API_URL}/jadwal`;
 
+    const params = new URLSearchParams();
+    if (id) {
+        params.append('_method', 'PUT'); // Method spoofing for UPDATE
+    }
+    params.append('id_doctor', document.getElementById('idDokter').value);
+    params.append('hari', document.getElementById('hari').value);
+    params.append('jam_mulai', document.getElementById('jamMulai').value);
+    params.append('jam_selesai', document.getElementById('jamSelesai').value);
+
     fetch(url, {
-        method: method,
-        body: formData
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: params,
+        credentials: 'include'
     })
-    .then(response => response.json())
+    .then(response => response.text().then(text => ({
+        text: text,
+        status: response.status,
+        contentType: response.headers.get('content-type')
+    })))
+    .then(({ text, status, contentType }) => {
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            throw new Error(`Invalid JSON (${status}): ${text.substring(0, 200)}`);
+        }
+        return data;
+    })
     .then(data => {
         if (data.status) {
             showAlert(id ? 'Jadwal berhasil diupdate' : 'Jadwal berhasil ditambahkan', 'success');
             bootstrap.Modal.getInstance(document.getElementById('jadwalModal')).hide();
             loadJadwal();
         } else {
-            const errors = Object.values(data.errors).join(', ');
+            const errors = data.errors ? Object.values(data.errors).join(', ') : data.message || 'Terjadi kesalahan';
             showAlert(errors, 'danger');
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        showAlert('Terjadi kesalahan', 'danger');
+        console.error('saveJadwal Error:', error);
+        console.error('Error message:', error.message);
+        showAlert('Terjadi kesalahan: ' + error.message, 'danger');
     });
 }
 
 // Delete jadwal
 function deleteJadwal(id) {
-    if (confirmDelete(id, 'jadwal')) {
+    confirmDelete('jadwal', () => {
+        const params = new URLSearchParams();
+        params.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
+
         fetch(`${API_URL}/jadwal/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: params
         })
-        .then(response => response.json())
+        .then(response => response.text().then(text => ({
+            text: text,
+            status: response.status,
+            contentType: response.headers.get('content-type')
+        })))
+        .then(({ text, status, contentType }) => {
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                throw new Error(`Invalid JSON (${status}): ${text.substring(0, 200)}`);
+            }
+            return data;
+        })
         .then(data => {
             if (data.status) {
                 showAlert('Jadwal berhasil dihapus', 'success');
@@ -315,8 +387,13 @@ function deleteJadwal(id) {
             } else {
                 showAlert('Gagal menghapus jadwal', 'danger');
             }
+        })
+        .catch(error => {
+            console.error('deleteJadwal Error:', error);
+            console.error('Error message:', error.message);
+            showAlert('Error menghapus jadwal: ' + error.message, 'danger');
         });
-    }
+    });
 }
 
 // Init
