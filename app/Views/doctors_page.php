@@ -128,7 +128,7 @@
                                             <span class="doc-spec"><?= $d['spec'] ?></span>
                                             <div class="doc-name" title="<?= $d['name'] ?>"><?= $d['name'] ?></div>
                                         </div>
-                                        <a href="<?= base_url('doctors/detail/'.$d['slug']) ?>" class="btn-more-info">LIHAT PROFIL</a>
+                                      <a href="<?= base_url('doctors/' . $d['slug']) ?>" class="btn-more-info">LIHAT PROFIL</a>
                                     </div>
                                 </div>
                             </div>

@@ -99,7 +99,7 @@
         color: var(--dark-navy);
         font-weight: 700;
         font-style: italic;
-        font-size: 2rem; /* Ukuran pas, nggak lebay */
+        font-size: 2rem; 
         margin: 0 20px;
         display: inline-block;
         vertical-align: middle;
