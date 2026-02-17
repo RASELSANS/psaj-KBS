@@ -27,21 +27,21 @@ class Home extends BaseController
                     'name' => 'dr. Adelia Budhie Puspita Sari', 
                     'spec' => 'Poli Umum', 
                     'spec_key' => 'UMUM', 
-                    'img' => 'dokter_adelia.png'
+                    'img' => 'DEFAULT.JPG'
                 ],
                 [
                     'slug' => 'tri-setyaningrum', 
                     'name' => 'dr. Tri Setyaningrum', 
                     'spec' => 'Poli Umum', 
                     'spec_key' => 'UMUM', 
-                    'img' => 'D2.png'
+                    'img' => 'DEFAULT.JPG'
                 ],
                 [
                     'slug' => 'nurkholis-majid', 
                     'name' => 'dr. Nurkholis Majid', 
                     'spec' => 'Poli Umum', 
                     'spec_key' => 'UMUM', 
-                    'img' => 'dokter_nurkholis.png'
+                    'img' => 'DEFAULT.JPG'
                 ],
 
                 // --- POLI PENYAKIT DALAM ---
@@ -95,7 +95,7 @@ class Home extends BaseController
                     'name' => 'dr. Tri Rini Budi Setyaningsih, Sp.KJ', 
                     'spec' => 'Psikiater (Kesehatan Jiwa)', 
                     'spec_key' => 'SARAF', 
-                    'img' => 'dokter_tririni.png'
+                    'img' => 'D2.png'
                 ],
                 [
                     'slug' => 'nisaul-maghfiroh', 
