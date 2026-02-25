@@ -134,7 +134,7 @@
                     <div class="info-icon"><i class="fa-solid fa-location-dot"></i></div>
                     <div>
                         <h5 class="fw-bold mb-1">Alamat Klinik</h5>
-                        <p class="text-muted mb-0">Jl. S. Parman No.74A, Karangbawang, Purwokerto Selatan, Kab. Banyumas, Jawa Tengah 53141.</p>
+                        <p class="text-muted mb-0">Jl. S. Parman No.74A , Purwokerto Selatan, Kab. Banyumas, Jawa Tengah 53141.</p>
                     </div>
                 </div>
 

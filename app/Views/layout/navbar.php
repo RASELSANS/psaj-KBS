@@ -231,7 +231,7 @@
             </ul>
 
             <div class="d-lg-block d-none ms-3">
-                <a href="https://wa.me/628112519001" target="_blank" class="btn-reservasi">
+                <a href="https://wa.me/6285540441147" target="_blank" class="btn-reservasi">
                     <i class="fab fa-whatsapp me-2"></i>Reservasi
                 </a>
             </div>

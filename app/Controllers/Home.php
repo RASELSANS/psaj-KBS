@@ -6,7 +6,7 @@ class Home extends BaseController
 {
     public function index(): string { return view('landing_page'); }
 
-    // DATA MASTER - Gue tambahin 'jadwal' & 'spec_key' biar GAK ERROR
+   
   private function _allDoctors() {
         return [
             [
