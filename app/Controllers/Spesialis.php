@@ -26,6 +26,6 @@ class Spesialis extends BaseController
             'data' => [
                 'spesialis' => $spesialis
             ],
-        ])
+        ]);
     }
 }

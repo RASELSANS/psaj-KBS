@@ -1,6 +1,6 @@
-<?php echo $this->extend('admin/new_layout'); ?>
+<?php echo $this->extend('admin/layout'); ?>
 
-<?php echo $this->section('content'); ?>
+<?php echo $this->section('admin_content'); ?>
 
 <div class="page-header">
     <h1>Galeri Foto</h1>

@@ -1,4 +1,4 @@
-<?= $this->extend('admin/new_layout'); ?>
+<?= $this->extend('admin/layout'); ?>
 
 <?= $this->section('admin_content'); ?>
 

@@ -20,379 +20,664 @@
             font-family: 'Poppins', sans-serif;
             background-color: #f8f9fa;
             color: #333;
+            overflow-x: hidden;
         }
 
-        /* Admin Navbar */
-        .admin-navbar {
+        /* Main Layout */
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-left: 250px;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Topbar */
+        .admin-topbar {
             background: white;
-            border-bottom: 1px solid #eee;
-            padding: 1rem 0;
+            border-bottom: 1px solid #e9ecef;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             position: sticky;
             top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
-        .admin-navbar .navbar-brand {
-            font-weight: 700;
-            font-size: 1.3rem;
-            color: #ff8a3d;
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
-        .admin-navbar .nav-link {
-            color: #666 !important;
-            font-weight: 500;
-            margin: 0 10px;
-            transition: 0.3s;
-        }
-
-        .admin-navbar .nav-link:hover,
-        .admin-navbar .nav-link.active {
-            color: #ff8a3d !important;
-        }
-
-        .admin-navbar .btn-logout {
-            background-color: #ff8a3d;
-            color: white;
+        .sidebar-toggle {
+            background: none;
             border: none;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: 600;
+            font-size: 1.5rem;
+            color: #ff8a3d;
+            cursor: pointer;
+            display: none;
             transition: 0.3s;
         }
 
-        .admin-navbar .btn-logout:hover {
-            background-color: #e66e1f;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(255, 138, 61, 0.4);
+        .sidebar-toggle:hover {
+            color: #1a1a1a;
         }
 
-        /* Main Container */
-        .admin-container {
-            padding: 40px 0;
-            min-height: calc(100vh - 80px);
-        }
-
-        /* Section Title */
-        .section-title-admin {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 30px;
-            color: #333;
-        }
-
-        .subtitle-admin {
-            color: #ff8a3d;
+        .topbar-title {
+            font-size: 1.3rem;
             font-weight: 600;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #1a1a1a;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .topbar-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .topbar-user:hover {
+            background: #ff8a3d;
+            color: white;
+        }
+
+        .topbar-user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #ff8a3d;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
             font-size: 0.9rem;
         }
 
-        /* Data Table Card */
+        /* Main Content */
+        .admin-main {
+            flex: 1;
+            padding: 2rem 1.5rem;
+            overflow-y: auto;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-subtitle {
+            color: #999;
+            font-size: 0.95rem;
+        }
+
+        /* Alert Container */
+        .alert-container {
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .alert {
+            border-radius: 12px;
+            border: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .alert-success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .alert-danger {
+            background: rgba(231, 76, 60, 0.1);
+            color: #c62828;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .alert-warning {
+            background: rgba(255, 152, 0, 0.1);
+            color: #e65100;
+            border-left: 4px solid #ff9800;
+        }
+
+        .alert-info {
+            background: rgba(33, 150, 243, 0.1);
+            color: #1565c0;
+            border-left: 4px solid #2196F3;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Data Card */
         .data-card {
             background: white;
             border-radius: 20px;
-            border: 1px solid #eee;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            padding: 30px;
-            margin-bottom: 30px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e9ecef;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .data-card:hover {
+            box-shadow: 0 8px 24px rgba(255, 138, 61, 0.1);
+            border-color: #ff8a3d;
         }
 
         .data-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            gap: 15px;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
         }
 
         .data-card-title {
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin: 0;
         }
 
+        /* Buttons */
         .btn-add {
-            background-color: #ff8a3d;
+            background: #ff8a3d;
             color: white;
             border: none;
-            padding: 10px 25px;
-            border-radius: 20px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
             font-weight: 600;
-            transition: 0.3s;
             cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-add:hover {
-            background-color: #e66e1f;
+            background: #e66e1f;
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(255, 138, 61, 0.4);
+            box-shadow: 0 8px 16px rgba(255, 138, 61, 0.3);
+            color: white;
         }
 
-        /* Table Styling */
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        .table {
-            margin: 0;
-            font-size: 0.95rem;
-        }
-
-        .table thead {
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #eee;
-        }
-
-        .table thead th {
-            color: #333;
-            font-weight: 700;
-            border: none;
-            padding: 15px;
-        }
-
-        .table tbody td {
-            border: none;
-            padding: 15px;
-            vertical-align: middle;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .table tbody tr:hover {
-            background-color: #fffaf7;
-        }
-
-        /* Action Buttons */
         .btn-action {
-            padding: 6px 12px;
-            font-size: 0.85rem;
-            border-radius: 8px;
-            margin-right: 5px;
-            font-weight: 600;
+            padding: 0.5rem 1rem;
             border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
         }
 
         .btn-edit {
-            background-color: #4CAF50;
+            background: #4CAF50;
             color: white;
         }
 
         .btn-edit:hover {
-            background-color: #45a049;
+            background: #45a049;
             transform: translateY(-2px);
         }
 
         .btn-delete {
-            background-color: #e74c3c;
+            background: #e74c3c;
             color: white;
         }
 
         .btn-delete:hover {
-            background-color: #c0392b;
+            background: #c0392b;
             transform: translateY(-2px);
         }
 
-        /* Modal Styling */
-        .modal-content {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-        }
-
-        .modal-header {
-            background-color: #fffaf7;
-            border: none;
-            border-radius: 20px 20px 0 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .modal-header .modal-title {
-            font-weight: 700;
-            color: #333;
-        }
-
-        .modal-header .btn-close {
-            filter: brightness(0);
-        }
-
-        .modal-body {
-            padding: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .form-control,
-        .form-select {
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 10px 15px;
-            font-family: 'Poppins', sans-serif;
-            transition: 0.3s;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #ff8a3d;
-            box-shadow: 0 0 0 0.2rem rgba(255, 138, 61, 0.15);
-        }
-
-        .modal-footer {
-            border: none;
-            padding: 20px 30px;
-        }
-
         .btn-modal-save {
-            background-color: #ff8a3d;
+            background: #ff8a3d;
             color: white;
             border: none;
             padding: 10px 30px;
             border-radius: 20px;
             font-weight: 600;
-            transition: 0.3s;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .btn-modal-save:hover {
-            background-color: #e66e1f;
+            background: #e66e1f;
+            transform: translateY(-2px);
         }
 
-        /* Alert Messages */
-        .alert-custom {
-            border: none;
-            border-radius: 15px;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            font-weight: 500;
+        /* Custom Modal Confirmation */
+        .confirm-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
         }
 
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
+        .confirm-modal-overlay.show {
+            display: flex;
         }
 
-        .alert-danger {
-            background-color: #f8d7da;
-            color: #721c24;
+        .confirm-modal-content {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            animation: slideUp 0.3s ease;
         }
 
-        /* Loading & Empty State */
-        .loading {
+        .confirm-modal-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 28px;
+        }
+
+        .confirm-modal-icon.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .confirm-modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 1rem 0 0.5rem;
             text-align: center;
-            padding: 40px;
+        }
+
+        .confirm-modal-message {
+            color: #666;
+            text-align: center;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .confirm-modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .confirm-modal-buttons button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-confirm-cancel {
+            background: #e9ecef;
             color: #666;
         }
 
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f0f0f0;
-            border-top: 4px solid #ff8a3d;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
+        .btn-confirm-cancel:hover {
+            background: #dee2e6;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .btn-confirm-yes {
+            background: #e74c3c;
+            color: white;
         }
 
+        .btn-confirm-yes:hover {
+            background: #c0392b;
+        }
+
+        .btn-logout-yes {
+            background: #ff8a3d;
+            color: white;
+        }
+
+        .btn-logout-yes:hover {
+            background: #e66e1f;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: #f8f9fa;
+            color: #1a1a1a;
+            font-weight: 600;
+            border-bottom: 2px solid #e9ecef;
+            padding: 1rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background: #f8f9fa;
+            transform: scale(1.01);
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #e9ecef;
+            padding: 1.5rem;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #e9ecef;
+            padding: 1.5rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #ff8a3d;
+            box-shadow: 0 0 0 0.2rem rgba(255, 138, 61, 0.25);
+        }
+
+        /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 3rem 2rem;
             color: #999;
         }
 
         .empty-state i {
-            font-size: 3rem;
+            font-size: 60px;
             color: #ddd;
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
+            display: block;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .section-title-admin {
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Loading Spinner */
+        .loading-state {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner-border {
+            color: #ff8a3d;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-select {
+            min-width: 150px;
+        }
+
+        /* Pagination */
+        .pagination {
+            margin-top: 2rem;
+        }
+
+        .page-link {
+            color: #ff8a3d;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .page-link:hover {
+            background: #ff8a3d;
+            color: white;
+            border-color: #ff8a3d;
+            transform: translateY(-2px);
+        }
+
+        .page-item.active .page-link {
+            background: #ff8a3d;
+            border-color: #ff8a3d;
+        }
+
+        .page-item.disabled .page-link {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 991px) {
+            .admin-content-wrapper {
+                margin-left: 0;
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .topbar-title {
+                margin-left: 1rem;
+            }
+
+            .admin-main {
+                padding: 1rem;
+            }
+
+            .page-title {
                 font-size: 1.5rem;
             }
 
             .data-card {
-                padding: 20px;
+                padding: 1.5rem;
             }
 
             .data-card-header {
                 flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
             }
 
             .btn-add {
                 width: 100%;
+                justify-content: center;
             }
 
-            .table {
-                font-size: 0.85rem;
+            .filter-bar {
+                flex-direction: column;
+            }
+
+            .search-input,
+            .filter-select {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .table-wrapper {
+                font-size: 0.875rem;
             }
 
             .table thead th,
             .table tbody td {
-                padding: 10px;
-            }
-
-            .btn-action {
-                padding: 5px 8px;
-                font-size: 0.75rem;
-                display: block;
-                margin-bottom: 5px;
+                padding: 0.75rem 0.5rem;
             }
         }
     </style>
+
+    <?= $this->renderSection('page_styles'); ?>
 </head>
 <body>
-    <!-- Admin Navbar -->
-    <nav class="admin-navbar">
-        <div class="container-fluid">
-            <div class="d-flex justify-content-between align-items-center">
-                <a class="navbar-brand" href="<?= base_url() ?>">
-                    <i class="fas fa-hospital"></i> Admin KBS
-                </a>
-                <div class="d-flex gap-3">
-                    <a href="<?= base_url('admin/dokter') ?>" class="nav-link <?= strpos(uri_string(), 'admin/dokter') !== false ? 'active' : '' ?>">
-                        <i class="fas fa-user-doctor"></i> Dokter
-                    </a>
-                    <a href="<?= base_url('admin/spesialis') ?>" class="nav-link <?= strpos(uri_string(), 'admin/spesialis') !== false ? 'active' : '' ?>">
-                        <i class="fas fa-star"></i> Spesialis
-                    </a>
-                    <a href="<?= base_url('admin/poli') ?>" class="nav-link <?= strpos(uri_string(), 'admin/poli') !== false ? 'active' : '' ?>">
-                        <i class="fas fa-clinic-medical"></i> Poli
-                    </a>
-                    <a href="<?= base_url('admin/jadwal') ?>" class="nav-link <?= strpos(uri_string(), 'admin/jadwal') !== false ? 'active' : '' ?>">
-                        <i class="fas fa-calendar"></i> Jadwal
-                    </a>
-                    <a href="<?= base_url('admin/artikel') ?>" class="nav-link <?= strpos(uri_string(), 'admin/artikel') !== false ? 'active' : '' ?>">
-                        <i class="fas fa-newspaper"></i> Artikel
-                    </a>
-                    <button class="btn-logout" onclick="logoutAdmin()">
-                        <i class="fas fa-sign-out-alt"></i> Logout
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <?= $this->include('admin/sidebar'); ?>
+
+        <!-- Main Content -->
+        <div class="admin-content-wrapper">
+            <!-- Topbar -->
+            <div class="admin-topbar">
+                <div class="topbar-left">
+                    <button class="sidebar-toggle" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
                     </button>
+                    <h1 class="topbar-title"><?= $pageTitle ?? 'Dashboard'; ?></h1>
+                </div>
+
+                <div class="topbar-right">
+                    <div class="topbar-user">
+                        <div class="topbar-user-avatar">A</div>
+                        <span id="adminName">Admin</span>
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
 
-    <!-- Main Content -->
-    <div class="admin-container">
-        <div class="container-fluid">
-            <?= $this->renderSection('admin_content'); ?>
+            <!-- Main Content Area -->
+            <main class="admin-main">
+                <!-- Alert Container -->
+                <div class="alert-container" id="alertContainer"></div>
+
+                <!-- Page Content -->
+                <?= $this->renderSection('admin_content'); ?>
+            </main>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirmModalOverlay" class="confirm-modal-overlay">
+        <div class="confirm-modal-content">
+            <div class="confirm-modal-icon warning">
+                <i class="fas fa-exclamation"></i>
+            </div>
+            <h2 class="confirm-modal-title" id="confirmTitle">Konfirmasi</h2>
+            <p class="confirm-modal-message" id="confirmMessage">Anda yakin dengan aksi ini?</p>
+            <div class="confirm-modal-buttons">
+                <button type="button" class="btn-confirm-cancel" onclick="closeConfirmModal()">
+                    Batal
+                </button>
+                <button type="button" class="btn-confirm-yes" id="confirmYesBtn" onclick="executeConfirmAction()">
+                    Ya, Hapus
+                </button>
+            </div>
         </div>
     </div>
 
@@ -401,65 +686,147 @@
     <script>
         const API_URL = '<?= base_url('api/admin') ?>';
 
-        // Logout Admin
-        function logoutAdmin() {
-            if (confirm('Anda yakin ingin logout?')) {
-                fetch('<?= base_url('api/admin/logout') ?>', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                    },
-                    credentials: 'include'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status) {
-                        window.location.href = '<?= base_url() ?>';
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+        // Toggle Sidebar (Mobile)
+        function toggleSidebar() {
+            const sidebar = document.getElementById('adminSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            if (sidebar) {
+                sidebar.classList.toggle('show');
+                overlay?.classList.toggle('show');
             }
         }
 
         // Show Alert
-        function showAlert(message, type) {
-            const alert = document.createElement('div');
-            alert.className = `alert alert-custom alert-${type} alert-dismissible fade show`;
-            alert.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        function showAlert(message, type = 'info') {
+            const alertHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    <strong>${type === 'success' ? '✓' : type === 'danger' ? '✕' : 'ℹ'}</strong>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             `;
-            document.querySelector('.container-fluid').insertBefore(alert, document.querySelector('.container-fluid').firstChild);
             
-            setTimeout(() => alert.remove(), 5000);
+            const container = document.getElementById('alertContainer');
+            if (container) {
+                container.innerHTML = alertHTML;
+                
+                // Auto-dismiss after 5 seconds
+                setTimeout(() => {
+                    const alert = container.querySelector('.alert');
+                    if (alert) {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    }
+                }, 5000);
+            }
         }
 
-        // Delete with confirmation
-        function confirmDelete(typeOrId, callbackOrType) {
-            // Support two calling patterns:
-            // 1. confirmDelete('dokter', callback) - where callbackOrType is a function
-            // 2. confirmDelete(id, type) - where callbackOrType is a string (legacy)
-            
-            let message, callback;
-            
-            if (typeof callbackOrType === 'function') {
-                // New pattern: confirmDelete(type, callback)
-                message = `Anda yakin ingin menghapus ${typeOrId} ini?`;
-                callback = callbackOrType;
-            } else {
-                // Legacy pattern: confirmDelete(id, type)
-                message = `Anda yakin ingin menghapus ${callbackOrType} ini?`;
-                callback = null;
-            }
-            
-            if (confirm(message)) {
-                if (callback && typeof callback === 'function') {
-                    callback();
-                }
-                return true;
-            }
-            return false;
+        // Confirm Modal Management
+        let confirmModalAction = null;
+
+        function showConfirmModal(title, message, yesButtonText = 'Ya, Hapus', onConfirm = null) {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            document.getElementById('confirmYesBtn').textContent = yesButtonText;
+            confirmModalAction = onConfirm;
+            document.getElementById('confirmModalOverlay').classList.add('show');
         }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModalOverlay').classList.remove('show');
+            confirmModalAction = null;
+        }
+
+        function executeConfirmAction() {
+            if (confirmModalAction) {
+                confirmModalAction();
+            }
+            closeConfirmModal();
+        }
+
+        // Confirm Delete - Pass callback function
+        function confirmDelete(entityName, onConfirm) {
+            showConfirmModal(
+                'Hapus ' + entityName,
+                `Yakin ingin menghapus ${entityName} ini? Aksi ini tidak bisa dibatalkan.`,
+                'Ya, Hapus',
+                onConfirm
+            );
+        }
+
+        // Logout
+        async function logoutAdmin() {
+            const overlay = document.getElementById('confirmModalOverlay');
+            showConfirmModal(
+                'Logout',
+                'Yakin ingin logout dari sistem admin?',
+                'Ya, Logout',
+                async () => {
+                    try {
+                        const response = await fetch(`${API_URL}/logout`, {
+                            method: 'POST'
+                        });
+                        const data = await response.json();
+                        
+                        if (data.status) {
+                            window.location.href = '/';
+                        } else {
+                            showAlert('Gagal logout', 'danger');
+                        }
+                    } catch (error) {
+                        console.error('Logout error:', error);
+                        showAlert('Gagal logout', 'danger');
+                    }
+                }
+            );
+            
+            // Style the button for logout action
+            const yesBtn = document.getElementById('confirmYesBtn');
+            yesBtn.className = 'btn-logout-yes';
+        }
+
+        // Close modal when clicking overlay
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('confirmModalOverlay');
+            if (overlay) {
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) {
+                        closeConfirmModal();
+                    }
+                });
+            }
+        });
+
+        // Load admin name on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch(`${API_URL}/profile`, {credentials: 'include'});
+                const data = await response.json();
+                
+                if (data.status) {
+                    document.getElementById('adminName').textContent = data.data.username;
+                    document.querySelector('.topbar-user-avatar').textContent = 
+                        data.data.username.charAt(0).toUpperCase();
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('adminSidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            if (window.innerWidth < 992 && sidebar?.classList.contains('show')) {
+                if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+                    sidebar.classList.remove('show');
+                    overlay?.classList.remove('show');
+                }
+            }
+        });
     </script>
 
     <?= $this->renderSection('admin_scripts'); ?>

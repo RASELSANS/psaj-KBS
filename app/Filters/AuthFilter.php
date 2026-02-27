@@ -23,7 +23,7 @@ class AuthFilter implements FilterInterface
 
         if (!$session->has('admin_id')) {
             // For API requests, return JSON
-            if (strpos($request->getPath(), '/api/') === 0) {
+            if (strpos($request->getUri()->getPath(), '/api/') === 0) {
                 return response()->setJSON([
                     'status' => false,
                     'errors' => ['auth' => 'Anda harus login terlebih dahulu'],
