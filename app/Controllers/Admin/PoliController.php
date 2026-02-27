@@ -28,33 +28,53 @@ class PoliController extends AdminController
     }
 
     /**
-     * Create new poli
+     * Get single poli
      */
-    public function create()
+    public function show($id_poli)
     {
         $authCheck = $this->requireLogin();
         if ($authCheck) return $authCheck;
 
-        $nama_poli = $this->request->getPost('nama_poli');
-        $deskripsi = $this->request->getPost('deskripsi');
-
-        // Validation
-        $errors = [];
-        if (!$nama_poli) $errors['nama_poli'] = 'Nama poli harus diisi';
-        if (!$deskripsi) $errors['deskripsi'] = 'Deskripsi harus diisi';
-
-        if ($errors) {
-            return $this->validationErrorResponse($errors);
+        $poli = $this->poliModel->find($id_poli);
+        if (!$poli) {
+            return $this->errorResponse(['poli' => 'Poli tidak ditemukan'], 404);
         }
 
-        $id_poli = $this->poliModel->insert([
-            'nama_poli' => $nama_poli,
-            'deskripsi' => $deskripsi,
-        ]);
+        return $this->successResponse($poli);
+    }
 
-        $poli = $this->poliModel->find($id_poli);
+    /**
+     * Create new poli
+     */
+    public function create()
+    {
+        try {
+            $authCheck = $this->requireLogin();
+            if ($authCheck) return $authCheck;
 
-        return $this->successResponse($poli, 'Poli berhasil ditambahkan', 201);
+            $nama_poli = $this->request->getPost('nama_poli');
+            $deskripsi = $this->request->getPost('deskripsi');
+
+            // Validation
+            $errors = [];
+            if (!$nama_poli) $errors['nama_poli'] = 'Nama poli harus diisi';
+            if (!$deskripsi) $errors['deskripsi'] = 'Deskripsi harus diisi';
+
+            if ($errors) {
+                return $this->validationErrorResponse($errors);
+            }
+
+            $id_poli = $this->poliModel->insert([
+                'nama_poli' => $nama_poli,
+                'deskripsi' => $deskripsi,
+            ]);
+
+            $poli = $this->poliModel->find($id_poli);
+
+            return $this->successResponse($poli, 'Poli berhasil ditambahkan', 201);
+        } catch (\Exception $e) {
+            return $this->errorResponse(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -62,34 +82,38 @@ class PoliController extends AdminController
      */
     public function update($id_poli)
     {
-        $authCheck = $this->requireLogin();
-        if ($authCheck) return $authCheck;
+        try {
+            $authCheck = $this->requireLogin();
+            if ($authCheck) return $authCheck;
 
-        $poli = $this->poliModel->find($id_poli);
-        if (!$poli) {
-            return $this->errorResponse(['poli' => 'Poli tidak ditemukan'], 404);
+            $poli = $this->poliModel->find($id_poli);
+            if (!$poli) {
+                return $this->errorResponse(['poli' => 'Poli tidak ditemukan'], 404);
+            }
+
+            $nama_poli = $this->request->getPost('nama_poli');
+            $deskripsi = $this->request->getPost('deskripsi');
+
+            // Validation
+            $errors = [];
+            if (!$nama_poli) $errors['nama_poli'] = 'Nama poli harus diisi';
+            if (!$deskripsi) $errors['deskripsi'] = 'Deskripsi harus diisi';
+
+            if ($errors) {
+                return $this->validationErrorResponse($errors);
+            }
+
+            $this->poliModel->update($id_poli, [
+                'nama_poli' => $nama_poli,
+                'deskripsi' => $deskripsi,
+            ]);
+
+            $poli = $this->poliModel->find($id_poli);
+
+            return $this->successResponse($poli);
+        } catch (\Exception $e) {
+            return $this->errorResponse(['error' => $e->getMessage()], 500);
         }
-
-        $nama_poli = $this->request->getPost('nama_poli');
-        $deskripsi = $this->request->getPost('deskripsi');
-
-        // Validation
-        $errors = [];
-        if (!$nama_poli) $errors['nama_poli'] = 'Nama poli harus diisi';
-        if (!$deskripsi) $errors['deskripsi'] = 'Deskripsi harus diisi';
-
-        if ($errors) {
-            return $this->validationErrorResponse($errors);
-        }
-
-        $this->poliModel->update($id_poli, [
-            'nama_poli' => $nama_poli,
-            'deskripsi' => $deskripsi,
-        ]);
-
-        $poli = $this->poliModel->find($id_poli);
-
-        return $this->successResponse($poli);
     }
 
     /**
@@ -97,16 +121,20 @@ class PoliController extends AdminController
      */
     public function delete($id_poli)
     {
-        $authCheck = $this->requireLogin();
-        if ($authCheck) return $authCheck;
+        try {
+            $authCheck = $this->requireLogin();
+            if ($authCheck) return $authCheck;
 
-        $poli = $this->poliModel->find($id_poli);
-        if (!$poli) {
-            return $this->errorResponse(['poli' => 'Poli tidak ditemukan'], 404);
+            $poli = $this->poliModel->find($id_poli);
+            if (!$poli) {
+                return $this->errorResponse(['poli' => 'Poli tidak ditemukan'], 404);
+            }
+
+            $this->poliModel->delete($id_poli);
+
+            return $this->successResponse(null);
+        } catch (\Exception $e) {
+            return $this->errorResponse(['error' => $e->getMessage()], 500);
         }
-
-        $this->poliModel->delete($id_poli);
-
-        return $this->successResponse(null);
     }
 }

@@ -1,0 +1,20 @@
+parameters:
+  level: 5
+  paths:
+    - app
+  excludePaths:
+    - app/Views
+    - tests
+  ignoreErrors:
+    - '#Class FormData not found#'
+    - '#Class FileReader not found#'
+    - '#Class Blob not found#'
+    - '#Class URLSearchParams not found#'
+    - '#Function fetch not found#'
+    - '#Function document_getElementById not found#'
+    - '#Undefined variable.*#'
+    - '#Access to undefined constant.*#'
+  reportUnmatchedIgnoredErrors: false
+  tmpDir: storage/phpstan
+  bootstrapFiles:
+    - .php-meta.php

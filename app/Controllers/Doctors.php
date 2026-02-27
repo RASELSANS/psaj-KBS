@@ -27,10 +27,11 @@ class Doctors extends BaseController
         $total = $this->doctorModel->countAll();
         $doctors = $this->doctorModel->limit($limit, $offset)->findAll();
 
-        // Append spesialis and poli for each doctor
+        // Append spesialis, poli, and jadwal for each doctor
         foreach ($doctors as &$doctor) {
             $doctor['spesialis'] = $this->doctorModel->getSpesialis($doctor['id_doctor']);
             $doctor['poli'] = $this->doctorModel->getPoli($doctor['id_doctor']);
+            $doctor['jadwal'] = $this->doctorModel->getJadwal($doctor['id_doctor']);
         }
 
         return $this->response->setJSON([

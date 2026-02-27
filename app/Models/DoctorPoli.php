@@ -17,10 +17,10 @@ class DoctorPoli extends Model
     protected bool $allowEmptyInserts = false;
 
     // Dates
-    protected $useTimestamps = true;
+    protected $useTimestamps = false; // Table only has created_at, not updated_at
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
+    protected $updatedField  = null;
     protected $deletedField  = 'deleted_at';
 
     // Validation

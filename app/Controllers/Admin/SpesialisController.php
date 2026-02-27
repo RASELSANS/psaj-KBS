@@ -28,6 +28,22 @@ class SpesialisController extends AdminController
     }
 
     /**
+     * Get single spesialis
+     */
+    public function show($id_spesialis)
+    {
+        $authCheck = $this->requireLogin();
+        if ($authCheck) return $authCheck;
+
+        $spesialis = $this->spesialisModel->find($id_spesialis);
+        if (!$spesialis) {
+            return $this->errorResponse(['spesialis' => 'Spesialis tidak ditemukan'], 404);
+        }
+
+        return $this->successResponse($spesialis);
+    }
+
+    /**
      * Create new spesialis
      */
     public function create()

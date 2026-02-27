@@ -23,7 +23,9 @@ class Poli extends BaseController
 
         return $this->response->setJSON([
             'status' => true,
-            'data' => $poli,
+            'data' => [
+                'poli' => $poli
+            ],
         ]);
     }
 }

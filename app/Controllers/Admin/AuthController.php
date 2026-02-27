@@ -46,10 +46,11 @@ class AuthController extends AdminController
         $this->session->set('admin_id', $admin['id_admin']);
         $this->session->set('admin_username', $admin['username']);
 
+        // Return JSON response (frontend will handle redirect)
         return $this->successResponse([
-            'id_admin' => $admin['id_admin'],
-            'username' => $admin['username'],
-        ]);
+            'admin_id' => $admin['id_admin'],
+            'username' => $admin['username']
+        ], 'Login berhasil');
     }
 
     /**
@@ -59,7 +60,7 @@ class AuthController extends AdminController
     {
         $this->session->destroy();
 
-        return $this->successResponse(null);
+        return $this->successResponse([], 'Logout berhasil');
     }
 
     /**

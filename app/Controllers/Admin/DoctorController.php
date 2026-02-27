@@ -29,15 +29,27 @@ class DoctorController extends AdminController
         if ($authCheck) return $authCheck;
 
         $page = $this->request->getGet('page') ?? 1;
+        $search = $this->request->getGet('search') ?? '';
         $limit = 10;
         $offset = ($page - 1) * $limit;
 
-        $total = $this->doctorModel->countAll();
-        $doctors = $this->doctorModel->limit($limit, $offset)->findAll();
+        // Build query with search
+        $query = $this->doctorModel;
+        if ($search) {
+            $query = $query->like('nama_doctor', $search);
+        }
+
+        $total = $query->countAllResults(false); // false = don't reset query
+        $query = $this->doctorModel; // Reset for main query
+        if ($search) {
+            $query = $query->like('nama_doctor', $search);
+        }
+        $doctors = $query->limit($limit, $offset)->findAll();
 
         foreach ($doctors as &$doctor) {
             $doctor['spesialis'] = $this->doctorModel->getSpesialis($doctor['id_doctor']);
             $doctor['poli'] = $this->doctorModel->getPoli($doctor['id_doctor']);
+            $doctor['jadwal'] = $this->doctorModel->getJadwal($doctor['id_doctor']);
         }
 
         return $this->successResponse([
@@ -49,6 +61,25 @@ class DoctorController extends AdminController
                 'total_pages' => ceil($total / $limit),
             ],
         ]);
+    }
+
+    /**
+     * Get single doctor
+     */
+    public function show($id_doctor)
+    {
+        $authCheck = $this->requireLogin();
+        if ($authCheck) return $authCheck;
+
+        $doctor = $this->doctorModel->find($id_doctor);
+        if (!$doctor) {
+            return $this->errorResponse(['doctor' => 'Dokter tidak ditemukan'], 404);
+        }
+
+        $doctor['spesialis'] = $this->doctorModel->getSpesialis($id_doctor);
+        $doctor['poli'] = $this->doctorModel->getPoli($id_doctor);
+
+        return $this->successResponse($doctor);
     }
 
     /**
