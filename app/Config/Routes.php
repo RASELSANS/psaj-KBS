@@ -1,5 +1,7 @@
 <?php
 
+namespace Config; // Pastiin namespace ini ada di baris paling atas
+
 use CodeIgniter\Router\RouteCollection;
 
 /**
@@ -13,25 +15,30 @@ use CodeIgniter\Router\RouteCollection;
 // Halaman Utama
 $routes->get('/', 'Home::index');
 
-// Halaman Layanan
-$routes->get('layanan', 'Home::layanan'); 
+$routes->setDefaultNamespace('App\Controllers');
+$routes->setDefaultController('Home');
+$routes->setDefaultMethod('index');
+$routes->setTranslateURIDashes(false);
+$routes->set404Override();
 
-// Halaman Dokter
-$routes->get('doctors', 'Home::doctors');
-// $routes->get('doctors/detail/(:any)', 'Doctors::detail/$1');
-$routes->get('doctors/detail/(:any)', 'Doctors::dummy');
+// ==================== FRONTEND PAGE ROUTES ====================
+$routes->get('/', [Home::class, 'index']);
+$routes->get('layanan', [Home::class, 'layanan']); 
+$routes->get('about', [Home::class, 'about']);
+$routes->get('artikel', [Home::class, 'artikel']);
+$routes->get('faq', [Home::class, 'faq']);
+$routes->get('kontak', [Home::class, 'kontak']);
 
-// Halaman Tentang Kami
-$routes->get('about', 'Home::about');
+// --- BAGIAN DOKTER (Urutan ini krusial) ---
+$routes->get('doctors', [Home::class, 'doctors']);
+// Pake (:segment) biar gak tabrakan sama path lain
+$routes->get('doctors/(:segment)', [Home::class, 'doctors_detail/$1']); 
 
-// Menu lain (Artikel & FAQ)
-$routes->get('artikel', 'Home::artikel');
-$routes->get('faq', 'Home::faq');
-$routes->get('kontak', 'Home::kontak');
-$routes->get('layanan/penunjang-diagnostik', 'Home::penunjang_diagnostik');
-$routes->get('layanan/poliklinik', 'Home::poliklinik');
-$routes->get('layanan/khitan-center', 'Home::khitan_center');
-$routes->get('layanan/vaksin', 'Home::vaksin');
+// Sub-Layanan
+$routes->get('layanan/penunjang-diagnostik', [Home::class, 'penunjang_diagnostik']);
+$routes->get('layanan/poliklinik', [Home::class, 'poliklinik']);
+$routes->get('layanan/khitan-center', [Home::class, 'khitan_center']);
+$routes->get('layanan/vaksin', [Home::class, 'vaksin']);
 
 // ==================== ADMIN LOGIN ROUTE (No Auth Required) ====================
 $routes->get('admin', 'Admin\AdminController::isLoggedIn');  // Shows login or redirects if already logged in
@@ -57,10 +64,15 @@ $routes->get('api/jadwal', 'Jadwal::index');
 $routes->get('api/artikel', 'Artikel::index');
 $routes->get('api/artikel/(:num)', 'Artikel::detail/$1');
 
-// ==================== API ADMIN AUTH ROUTES ====================
-$routes->post('api/admin/login', 'Admin\AuthController::login');
-$routes->post('api/admin/logout', 'Admin\AuthController::logout');
-$routes->get('api/admin/profile', 'Admin\AuthController::profile');
+// ==================== API PUBLIC ROUTES ====================
+$routes->group('api', static function($routes) {
+    $routes->get('spesialis', [Spesialis::class, 'index']);
+    $routes->get('poli', [Poli::class, 'index']);
+    $routes->get('jadwal', [Jadwal::class, 'index']);
+    $routes->get('artikel', [Artikel::class, 'index']);
+    $routes->get('artikel/(:num)', [Artikel::class, 'detail/$1']);
+    $routes->get('doctors', [Doctors::class, 'index']); // Biar API dokter jalan juga
+});
 
 // ==================== API ADMIN ROUTES (Protected) ====================
 $routes->group('api/admin', ['filter' => 'auth'], static function($routes) {
