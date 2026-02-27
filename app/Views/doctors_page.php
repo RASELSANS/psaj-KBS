@@ -121,14 +121,14 @@
                             <div class="col doctor-item" data-specialist="<?= $d['spec_key'] ?>">
                                 <div class="doctor-card">
                                     <div class="doc-img-box">
-                                        <img src="<?= base_url('img/'.$d['img']) ?>" alt="<?= $d['name'] ?>" onerror="this.src='<?= base_url('img/default-doctor.png') ?>'">
+                                        <img src="<?= base_url('uploads/doctors/'.$d['img']) ?>" alt="<?= $d['name'] ?>" onerror="this.src='<?= base_url('img/DEFAULT.jpg') ?>'">
                                     </div>
                                     <div class="doc-info">
                                         <div>
                                             <span class="doc-spec"><?= $d['spec'] ?></span>
                                             <div class="doc-name" title="<?= $d['name'] ?>"><?= $d['name'] ?></div>
                                         </div>
-                                      <a href="<?= base_url('doctors/' . $d['slug']) ?>" class="btn-more-info">LIHAT PROFIL</a>
+                                        <a href="<?= base_url('doctors/' . $d['id_doctor']) ?>" class="btn-more-info">LIHAT PROFIL</a>
                                     </div>
                                 </div>
                             </div>

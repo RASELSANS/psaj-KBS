@@ -6,8 +6,8 @@ class Home extends BaseController
 {
     public function index(): string { return view('landing_page'); }
 
-   
-  private function _allDoctors() {
+    /*
+    private function _allDoctors() {
         return [
             [
                 'slug' => 'anton-sunaryo', 
@@ -146,33 +146,7 @@ class Home extends BaseController
             ],
         ];
     }
-
-    public function doctors() {
-        return view('doctors_page', [
-            'title'   => 'Cari Dokter - Klinik Brayan Sehat',
-            'doctors' => $this->_allDoctors()
-        ]);
-    }
-
-    public function doctors_detail($slug) {
-        $doctors = $this->_allDoctors();
-        $found = null;
-        foreach ($doctors as $d) {
-            if ($d['slug'] === $slug) { 
-                $found = $d; 
-                break; 
-            }
-        }
-
-        if (!$found) { 
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(); 
-        }
-
-        return view('doctor_detail', [
-            'title'  => $found['name'],
-            'doctor' => $found // Variable ini yang dipanggil di View detail
-        ]);
-    }
+    */
 
     // Method pendukung
     public function layanan() { return view('layanan_page', ['title' => 'Layanan']); }

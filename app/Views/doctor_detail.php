@@ -10,7 +10,7 @@
                         <?php 
                             $img = (isset($doctor['img']) && $doctor['img'] != '') ? $doctor['img'] : 'DEFAULT.JPG'; 
                         ?>
-                        <img src="<?= base_url('img/' . $img) ?>" alt="<?= $doctor['name'] ?>" 
+                        <img src="<?= base_url('uploads/doctors/' . $img) ?>" alt="<?= $doctor['name'] ?>" 
                              style="width: 100%; border-radius: 20px; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.2)); transition: transform 0.3s ease;">
                         
                         <div style="position: absolute; bottom: -20px; right: -20px; width: 150px; height: 150px; background: rgba(255,255,255,0.15); border-radius: 50%;"></div>
