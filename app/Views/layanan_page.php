@@ -1,16 +1,71 @@
 <?= $this->extend('layout/main'); ?>
 
 <?= $this->section('content'); ?>
-<style>
-    /* Header Section */
-    .detail-header { 
-        padding: 100px 0 60px; 
-        background: linear-gradient(135deg, #fff2e7 0%, #ffffff 100%); 
-        text-align: center; 
-    }
-    .detail-header h1 { font-size: 2.8rem; color: #333; }
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    /* Content Section */
+<style>
+    :root {
+        --primary-orange: #ff8a3d;
+        --soft-orange: #fff2e7;
+        --dark-navy: #1e293b;
+    }
+
+    /* --- REVISI HEADER PREMIUM (GAYA BARU) --- */
+    .detail-header { 
+        padding: 180px 0 100px; 
+        background: linear-gradient(135deg, #ffffff 0%, var(--soft-orange) 100%);
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .detail-header::after {
+        content: 'SERVICES';
+        position: absolute;
+        font-size: 12vw;
+        font-weight: 900;
+        color: rgba(255, 138, 61, 0.04);
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 0;
+        white-space: nowrap;
+    }
+
+    .header-tagline {
+        display: inline-block;
+        padding: 8px 25px;
+        background: white;
+        color: var(--primary-orange);
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        box-shadow: 0 5px 15px rgba(255, 138, 61, 0.1);
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .detail-header h1 { 
+        font-size: 3rem; 
+        color: var(--dark-navy); 
+        position: relative;
+        z-index: 1;
+        font-weight: 800;
+    }
+
+    .header-desc {
+        max-width: 600px;
+        margin: 0 auto;
+        color: #64748b;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* --- ISI (KEMBALI KE STYLE SEBELUMNYA) --- */
     .detail-content { padding: 80px 0; }
     
     .list-service { list-style: none; padding-left: 0; margin-bottom: 30px; }
@@ -32,6 +87,7 @@
     .img-detail:hover { transform: scale(1.02); }
 
     .service-block { margin-bottom: 100px; }
+    
     .btn-orange { 
         background-color: #ff8a3d; 
         color: #fff; 
@@ -39,22 +95,36 @@
         border-radius: 50px; 
         font-weight: 600; 
         transition: 0.3s;
+        border: none;
+        text-decoration: none;
+        display: inline-block;
     }
-    .btn-orange:hover { background-color: #e66e1f; color: #fff; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255, 138, 61, 0.3); }
+    .btn-orange:hover { 
+        background-color: #e66e1f; 
+        color: #fff; 
+        transform: translateY(-3px); 
+        box-shadow: 0 10px 20px rgba(255, 138, 61, 0.3); 
+    }
+
+    .text-orange { color: var(--primary-orange); }
 </style>
 
 <section class="detail-header">
-    <div class="container">
-        <span class="badge mb-3" style="background: #ff8a3d; padding: 8px 20px; border-radius: 50px;">OUR SERVICES</span>
-        <h1 class="fw-bold">Layanan Medis Profesional</h1>
-        <p class="text-muted mx-auto" style="max-width: 600px;">Kami berkomitmen memberikan pelayanan kesehatan paripurna dengan teknologi modern dan hati yang tulus.</p>
+    <div class="container position-relative" style="z-index: 1;">
+        <div data-aos="fade-up">
+            <span class="header-tagline">Our Services</span>
+            <h1 class="fw-bold mb-3">Layanan Medis <span class="text-orange">Profesional</span></h1>
+            <p class="header-desc">
+                Kami berkomitmen memberikan pelayanan kesehatan paripurna dengan teknologi modern dan hati yang tulus.
+            </p>
+        </div>
     </div>
 </section>
 
 <section class="detail-content">
     <div class="container">
         
-        <div class="row align-items-center service-block">
+        <div class="row align-items-center service-block" data-aos="fade-right">
             <div class="col-md-6">
                 <img src="<?= base_url('img/Layanan1.png') ?>" alt="Layanan Umum" class="img-detail">
             </div>
@@ -71,7 +141,7 @@
             </div>
         </div>
 
-        <div class="row align-items-center service-block flex-md-row-reverse">
+        <div class="row align-items-center service-block flex-md-row-reverse" data-aos="fade-left">
             <div class="col-md-6">
                 <img src="<?= base_url('img/Layanan2.png') ?>" alt="Penunjang Diagnostik" class="img-detail">
             </div>
@@ -88,9 +158,9 @@
             </div>
         </div>
 
-        <div class="row align-items-center service-block">
+        <div class="row align-items-center service-block" data-aos="fade-right">
             <div class="col-md-6">
-                <img src="<?= base_url('img/Layanan3.png') ?>" alt="Poliklinik" class="img-detail">
+                <img src="<?= base_url('img/Layanan33.png') ?>" alt="Poliklinik" class="img-detail">
             </div>
             <div class="col-md-6 ps-md-5 mt-4 mt-md-0">
                 <h2 class="fw-bold mb-4" style="color: #ff8a3d;">Poliklinik Spesialis</h2>
@@ -107,4 +177,11 @@
 
     </div>
 </section>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        AOS.init({ duration: 1000, once: true });
+    });
+</script>
 <?= $this->endSection(); ?>

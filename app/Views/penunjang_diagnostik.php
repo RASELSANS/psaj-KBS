@@ -2,164 +2,261 @@
 
 <?= $this->section('content'); ?>
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
     :root {
         --primary-orange: #ff8a3d;
+        --dark-navy: #1e293b;
         --soft-orange: #fff2e7;
+        --bg-light: #f8fafc;
     }
 
+    body { background-color: var(--bg-light); }
+
+    /* --- Header Area --- */
     .diagnostik-header { 
-        padding: 120px 0 60px; 
-        background: linear-gradient(180deg, var(--soft-orange) 0%, #ffffff 100%); 
-        text-align: center; 
+        padding: 220px 0 100px; /* Padding atas ditambah biar ga mentok nav */
+        background-color: #ffffff;
+        position: relative;
+        overflow: hidden;
     }
 
-    /* --- Card Style --- */
-    .diag-card-mini { 
-        border: 1px solid #f0f0f0; 
-        border-radius: 20px; 
-        padding: 30px;
-        transition: all 0.3s ease; 
-        background: #fff; 
+    .diagnostik-header::before {
+        content: 'DIAGNOSTIC';
+        position: absolute;
+        font-size: 15vw;
+        font-weight: 900;
+        color: rgba(255, 138, 61, 0.03);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 0;
+        white-space: nowrap;
+    }
+
+    .header-shape {
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, var(--soft-orange) 0%, rgba(255,255,255,0) 70%);
+        top: -100px;
+        right: -100px;
+        z-index: 0;
+        border-radius: 50%;
+    }
+
+    .header-accent {
+        width: 60px; height: 5px; background: var(--primary-orange);
+        margin-bottom: 25px; border-radius: 10px;
+    }
+
+    /* --- Spacing Section --- */
+    .section-spacing {
+        padding-top: 80px; /* Jarak ekstra antara header dan kartu */
+        padding-bottom: 100px;
+    }
+
+    /* --- Grid System --- */
+    .diag-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px; /* Gap diperlebar dikit biar lega */
+        position: relative;
+        z-index: 2;
+    }
+
+    @media (max-width: 1200px) { .diag-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 992px) { .diag-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 576px) { .diag-grid { grid-template-columns: 1fr; } }
+
+    /* --- Card Design --- */
+    .diag-card-modern {
+        background: #fff;
+        border-radius: 30px;
+        padding: 40px 30px;
+        border: 1px solid rgba(0,0,0,0.05);
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        cursor: pointer;
         height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.02);
-    }
-    
-    .diag-card-mini:hover { 
-        transform: translateY(-8px); 
-        border-color: var(--primary-orange);
-        box-shadow: 0 15px 30px rgba(255, 138, 61, 0.1); 
     }
 
-    .icon-circle { 
-        width: 65px; height: 65px; 
-        background: var(--soft-orange); 
-        color: var(--primary-orange); 
-        border-radius: 50%; 
-        display: flex; align-items: center; justify-content: center; 
-        font-size: 1.8rem; margin-bottom: 20px;
-        transition: 0.3s;
+    .diag-card-modern::before {
+        content: ''; position: absolute; top: 0; left: 0; 
+        width: 100%; height: 100%; 
+        background: linear-gradient(135deg, var(--primary-orange), #ff6b00);
+        opacity: 0; z-index: -1; transition: 0.5s;
     }
 
-    .diag-card-mini:hover .icon-circle {
-        background: var(--primary-orange);
-        color: #fff;
+    .diag-card-modern:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 25px 50px -12px rgba(255, 138, 61, 0.3);
     }
 
-    .diag-card-mini h5 {
-        font-weight: 800;
-        font-size: 1.15rem;
-        color: #2c3e50;
-        margin-bottom: 10px;
-    }
+    .diag-card-modern:hover::before { opacity: 1; }
 
-    .diag-card-mini p {
-        font-size: 0.9rem;
-        color: #777;
-        margin-bottom: 0;
-    }
-
-    .section-divider {
-        font-weight: 800;
+    .icon-box {
+        width: 70px; height: 70px;
+        background: #f1f5f9;
         color: var(--primary-orange);
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        font-size: 0.9rem;
-        margin-bottom: 40px;
-        display: block;
-        text-align: center;
+        border-radius: 22px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.8rem; margin-bottom: 25px;
+        transition: 0.4s;
+    }
+
+    .diag-card-modern:hover .icon-box {
+        background: rgba(255,255,255,0.2);
+        color: #fff;
+        transform: rotate(-10deg);
+    }
+
+    .diag-card-modern h4 { font-weight: 800; color: var(--dark-navy); transition: 0.4s; }
+    .diag-card-modern p { font-size: 0.95rem; color: #64748b; transition: 0.4s; }
+    .diag-card-modern:hover h4, .diag-card-modern:hover p { color: #fff; }
+
+    .card-number {
+        position: absolute; right: -10px; bottom: -20px;
+        font-size: 8rem; font-weight: 900; color: rgba(0,0,0,0.03);
+        z-index: -1; transition: 0.4s;
+    }
+    .diag-card-modern:hover .card-number { color: rgba(255,255,255,0.1); }
+
+    /* --- Modal Custom --- */
+    .modal-content { border-radius: 30px; border: none; overflow: hidden; }
+    .modal-header-orange {
+        background: linear-gradient(135deg, var(--primary-orange), #ff6b00);
+        padding: 40px; text-align: center; color: #fff;
+    }
+    .modal-header-orange i { font-size: 4rem; }
+    .info-list { list-style: none; padding: 0; margin: 20px 0; }
+    .info-list li { padding: 12px 0; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
+    .info-list i { color: var(--primary-orange); }
+
+    /* Smooth Modal Effect */
+    .modal.fade .modal-dialog {
+        transform: scale(0.8);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .modal.show .modal-dialog {
+        transform: scale(1);
     }
 </style>
 
 <section class="diagnostik-header">
-    <div class="container" data-aos="fade-down">
-        <h1 class="fw-bold display-5">Penunjang Diagnostik</h1>
-        <p class="text-muted mx-auto" style="max-width: 650px;">
-            Dilengkapi dengan teknologi medis mutakhir untuk memberikan hasil pemeriksaan yang akurat, cepat, dan terpercaya.
-        </p>
-    </div>
-</section>
-
-<section class="pb-5">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="100">
-                <div class="diag-card-mini">
-                    <div class="icon-circle"><i class="fa-solid fa-heart-pulse"></i></div>
-                    <h5>Treadmill Test</h5>
-                    <p>Uji latih beban jantung untuk mendeteksi gangguan aliran darah koroner.</p>
-                </div>
+    <div class="header-shape"></div>
+    <div class="container position-relative" style="z-index: 1;">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="header-accent"></div>
+                <h1 class="fw-bold display-3 mb-0" style="color: var(--dark-navy); line-height: 1.1;">
+                    Fasilitas <br><span style="color: var(--primary-orange);">Diagnostik</span>
+                </h1>
             </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="150">
-                <div class="diag-card-mini">
-                    <div class="icon-circle"><i class="fa-solid fa-lungs"></i></div>
-                    <h5>Spirometri</h5>
-                    <p>Pemeriksaan fungsi paru untuk mengukur volume dan kapasitas pernapasan.</p>
+            <div class="col-lg-5 offset-lg-1" data-aos="fade-left">
+                <div class="ps-lg-4 border-start border-4" style="border-color: var(--primary-orange) !important;">
+                    <p class="lead text-muted mb-0">
+                        Kami menghadirkan fasilitas pemeriksaan lengkap dengan standar teknologi terbaru untuk memastikan diagnosa yang akurat bagi kesehatan Anda.
+                    </p>
                 </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="200">
-                <div class="diag-card-mini">
-                    <div class="icon-circle"><i class="fa-solid fa-ear-listen"></i></div>
-                    <h5>Audiometri</h5>
-                    <p>Pemeriksaan tingkat pendengaran untuk mendeteksi gangguan fungsi telinga.</p>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="250">
-                <div class="diag-card-mini">
-                    <div class="icon-circle"><i class="fa-solid fa-wave-square"></i></div>
-                    <h5>EKG / Rekam Jantung</h5>
-                    <p>Mendeteksi aktivitas listrik jantung dan gangguan irama jantung.</p>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="300">
-                <div class="diag-card-mini">
-                    <div class="icon-circle"><i class="fa-solid fa-van-shuttle"></i></div> <h5>Echocardiography</h5>
-                    <p>USG khusus jantung untuk melihat struktur dan fungsi katup jantung.</p>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="350">
-                <div class="diag-card-mini">
-                    <div class="icon-circle"><i class="fa-solid fa-hospital-user"></i></div>
-                    <h5>USG Lengkap</h5>
-                    <p>Pemeriksaan USG Abdomen, Thyroid, Mamae, dan organ lainnya.</p>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="400">
-                <div class="diag-card-mini">
-                    <div class="icon-circle"><i class="fa-solid fa-brain"></i></div>
-                    <h5>MMPI Test</h5>
-                    <p>Evaluasi psikologis untuk menilai kepribadian dan kondisi kesehatan mental.</p>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="450">
-                <div class="diag-card-mini">
-                    <div class="icon-circle"><i class="fa-solid fa-x-ray"></i></div>
-                    <h5>Rontgen</h5>
-                    <p>Pemeriksaan radiologi digital untuk melihat kondisi tulang dan organ dalam.</p>
-                </div>
-            </div>
-
-            <div class="col-lg-12 text-center mt-5" data-aos="fade-up">
-                <p class="text-muted fw-bold italic">Serta berbagai pemeriksaan penunjang medis lainnya sesuai kebutuhan pasien.</p>
             </div>
         </div>
     </div>
 </section>
 
+<section class="section-spacing">
+    <div class="container">
+        <div class="diag-grid">
+            <div class="diag-card-modern" data-aos="fade-up" data-aos-delay="100" onclick="openModal('m1')">
+                <div class="card-number">01</div>
+                <div class="icon-box"><i class="fa-solid fa-heart-pulse"></i></div>
+                <h4>Treadmill Test</h4>
+                <p>Analisa performa jantung saat beraktivitas maksimal.</p>
+            </div>
+            <div class="diag-card-modern" data-aos="fade-up" data-aos-delay="150" onclick="openModal('m2')">
+                <div class="card-number">02</div>
+                <div class="icon-box"><i class="fa-solid fa-lungs"></i></div>
+                <h4>Spirometri</h4>
+                <p>Uji fungsi paru untuk memantau kapasitas pernapasan.</p>
+            </div>
+            <div class="diag-card-modern" data-aos="fade-up" data-aos-delay="200" onclick="openModal('m3')">
+                <div class="card-number">03</div>
+                <div class="icon-box"><i class="fa-solid fa-ear-listen"></i></div>
+                <h4>Audiometri</h4>
+                <p>Pemeriksaan tajam pendengaran berstandar medis.</p>
+            </div>
+            <div class="diag-card-modern" data-aos="fade-up" data-aos-delay="250" onclick="openModal('m4')">
+                <div class="card-number">04</div>
+                <div class="icon-box"><i class="fa-solid fa-wave-square"></i></div>
+                <h4>EKG Digital</h4>
+                <p>Rekam aktivitas listrik jantung dengan hasil instan.</p>
+            </div>
+            <div class="diag-card-modern" data-aos="fade-up" data-aos-delay="300" onclick="openModal('m5')">
+                <div class="card-number">05</div>
+                <div class="icon-box"><i class="fa-solid fa-laptop-medical"></i></div>
+                <h4>Echocardiogra..</h4>
+                <p>Visualisasi struktur jantung melalui teknologi USG Jantung.</p>
+            </div>
+            <div class="diag-card-modern" data-aos="fade-up" data-aos-delay="350" onclick="openModal('m6')">
+                <div class="card-number">06</div>
+                <div class="icon-box"><i class="fa-solid fa-person-rays"></i></div>
+                <h4>USG Lengkap</h4>
+                <p>Abdomen, Thyroid, Mamae, dan organ lainnya.</p>
+            </div>
+            <div class="diag-card-modern" data-aos="fade-up" data-aos-delay="400" onclick="openModal('m7')">
+                <div class="card-number">07</div>
+                <div class="icon-box"><i class="fa-solid fa-brain"></i></div>
+                <h4>MMPI Test</h4>
+                <p>Evaluasi psikometri profesional untuk kesehatan mental.</p>
+            </div>
+            <div class="diag-card-modern" data-aos="fade-up" data-aos-delay="450" onclick="openModal('m8')">
+                <div class="card-number">08</div>
+                <div class="icon-box"><i class="fa-solid fa-x-ray"></i></div>
+                <h4>Digital X-Ray</h4>
+                <p>Radiologi modern dengan dosis radiasi rendah.</p>
+            </div>
+        </div>
+
+        <div class="text-center mt-5" data-aos="zoom-in">
+            <div class="p-4 rounded-5 d-inline-block shadow-sm bg-white border border-dashed" style="border-style: dashed !important; border-color: var(--primary-orange) !important;">
+                <p class="mb-3 fw-bold text-muted">Butuh pemeriksaan lainnya?</p>
+                <a href="https://wa.me/6285540441147" class="btn fw-bold px-5 py-3 text-white" style="background: var(--primary-orange); border-radius: 50px;">
+                    <i class="fa-brands fa-whatsapp me-2"></i> Hubungi Kami 
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="m1" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header-orange"><i class="fa-solid fa-heart-pulse"></i></div><div class="modal-body p-4 text-center"><h4 class="fw-bold">Treadmill Test</h4><p class="text-muted">Uji beban jantung untuk deteksi gangguan koroner.</p><ul class="info-list text-start"><li><i class="fa-solid fa-circle-check"></i> Monitor irama jantung saat aktivitas</li><li><i class="fa-solid fa-circle-check"></i> Cek kapasitas daya tahan jantung</li></ul><button class="btn btn-dark w-100 rounded-pill py-2" data-bs-dismiss="modal">Tutup</button></div></div></div></div>
+
+<div class="modal fade" id="m2" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header-orange"><i class="fa-solid fa-lungs"></i></div><div class="modal-body p-4 text-center"><h4 class="fw-bold">Spirometri</h4><p class="text-muted">Tes fungsi paru untuk mengukur volume udara napas.</p><ul class="info-list text-start"><li><i class="fa-solid fa-circle-check"></i> Diagnosa Asma & PPOK</li><li><i class="fa-solid fa-circle-check"></i> Evaluasi kesehatan saluran napas</li></ul><button class="btn btn-dark w-100 rounded-pill py-2" data-bs-dismiss="modal">Tutup</button></div></div></div></div>
+
+<div class="modal fade" id="m3" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header-orange"><i class="fa-solid fa-ear-listen"></i></div><div class="modal-body p-4 text-center"><h4 class="fw-bold">Audiometri</h4><p class="text-muted">Tes ketajaman pendengaran di ruang kedap suara.</p><ul class="info-list text-start"><li><i class="fa-solid fa-circle-check"></i> Screening fungsi telinga</li><li><i class="fa-solid fa-circle-check"></i> Deteksi tingkat gangguan pendengaran</li></ul><button class="btn btn-dark w-100 rounded-pill py-2" data-bs-dismiss="modal">Tutup</button></div></div></div></div>
+
+<div class="modal fade" id="m4" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header-orange"><i class="fa-solid fa-wave-square"></i></div><div class="modal-body p-4 text-center"><h4 class="fw-bold">EKG Digital</h4><p class="text-muted">Rekam listrik jantung untuk deteksi irama jantung.</p><ul class="info-list text-start"><li><i class="fa-solid fa-circle-check"></i> Deteksi kelainan irama (Aritmia)</li><li><i class="fa-solid fa-circle-check"></i> Prosedur cepat & akurat</li></ul><button class="btn btn-dark w-100 rounded-pill py-2" data-bs-dismiss="modal">Tutup</button></div></div></div></div>
+
+<div class="modal fade" id="m5" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header-orange"><i class="fa-solid fa-laptop-medical"></i></div><div class="modal-body p-4 text-center"><h4 class="fw-bold">Echocardiography</h4><p class="text-muted">USG Jantung untuk melihat struktur organ secara visual.</p><ul class="info-list text-start"><li><i class="fa-solid fa-circle-check"></i> Cek kondisi katup & otot jantung</li><li><i class="fa-solid fa-circle-check"></i> Menilai kekuatan pompa jantung</li></ul><button class="btn btn-dark w-100 rounded-pill py-2" data-bs-dismiss="modal">Tutup</button></div></div></div></div>
+
+<div class="modal fade" id="m6" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header-orange"><i class="fa-solid fa-person-rays"></i></div><div class="modal-body p-4 text-center"><h4 class="fw-bold">USG Lengkap</h4><p class="text-muted">Pemeriksaan organ dalam tanpa radiasi berbahaya.</p><ul class="info-list text-start"><li><i class="fa-solid fa-circle-check"></i> Screening abdomen & tiroid</li><li><i class="fa-solid fa-circle-check"></i> Deteksi massa atau kista dini</li></ul><button class="btn btn-dark w-100 rounded-pill py-2" data-bs-dismiss="modal">Tutup</button></div></div></div></div>
+
+<div class="modal fade" id="m7" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header-orange"><i class="fa-solid fa-brain"></i></div><div class="modal-body p-4 text-center"><h4 class="fw-bold">MMPI Test</h4><p class="text-muted">Tes psikometri untuk profil kepribadian & kesehatan mental.</p><ul class="info-list text-start"><li><i class="fa-solid fa-circle-check"></i> Syarat pemeriksaan kesehatan jiwa kerja</li><li><i class="fa-solid fa-circle-check"></i> Evaluasi kepribadian objektif</li></ul><button class="btn btn-dark w-100 rounded-pill py-2" data-bs-dismiss="modal">Tutup</button></div></div></div></div>
+
+<div class="modal fade" id="m8" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header-orange"><i class="fa-solid fa-x-ray"></i></div><div class="modal-body p-4 text-center"><h4 class="fw-bold">Digital X-Ray</h4><p class="text-muted">Radiologi digital dengan dosis radiasi minimal.</p><ul class="info-list text-start"><li><i class="fa-solid fa-circle-check"></i> Diagnosa paru & tulang tajam</li><li><i class="fa-solid fa-circle-check"></i> Hasil instan & akurasi tinggi</li></ul><button class="btn btn-dark w-100 rounded-pill py-2" data-bs-dismiss="modal">Tutup</button></div></div></div></div>
+
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     AOS.init({ duration: 800, once: true });
+
+    function openModal(modalId) {
+        var targetModal = document.getElementById(modalId);
+        if (targetModal) {
+            var myModal = new bootstrap.Modal(targetModal);
+            myModal.show();
+        }
+    }
 </script>
 <?= $this->endSection(); ?>
