@@ -8,6 +8,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.botpress.cloud/desk/webchat/v4.0/inject.js" defer></script>
+    <script src="https://files.bpcontent.cloud/2026/02/26/15/20260226155010-92JKQPD6.js" defer></script>
     
     <style>
         /* --- ELITE GLOBAL SETUP --- */
@@ -153,7 +156,7 @@
         <?= $this->renderSection('content'); ?>
     </main>
 
-    <div class="chatbox-container">
+    <!-- <div class="chatbox-container">
         <div class="chat-window" id="chatWindow">
             <div class="chat-header d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-2">
@@ -187,7 +190,7 @@
         <button class="chat-trigger" onclick="toggleChat()">
             <i class="fa-solid fa-headset"></i>
         </button>
-    </div>
+    </div> -->
 
     <?= $this->include('layout/footer'); ?>
 
