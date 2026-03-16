@@ -100,8 +100,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Jam Selesai *</label>
-                        <input type="time" class="form-control" id="jamSelesai" required>
+                        <label class="form-label">Jam Selesai</label>
+                        <input type="time" class="form-control" id="jamSelesai">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -172,7 +172,7 @@ function loadJadwal() {
                                 <td><strong>${doctor.nama_doctor}</strong></td>
                                 <td>${j.hari}</td>
                                 <td>${j.jam_mulai}</td>
-                                <td>${j.jam_selesai}</td>
+                                <td>${j.jam_selesai || 'Selesai'}</td>
                                 <td>
                                     <button class="btn-action btn-edit" onclick="editJadwal(${j.id_jadwal})">
                                         <i class="fas fa-edit"></i> Edit

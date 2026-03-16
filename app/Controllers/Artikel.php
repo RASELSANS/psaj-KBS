@@ -59,4 +59,46 @@ class Artikel extends BaseController
             'data' => $artikel,
         ]);
     }
+
+    /**
+     * Display list of all artikel (Frontend View)
+     */
+    public function page()
+    {
+        $artikel = $this->artikelModel->orderBy('tanggal_publish', 'DESC')->findAll();
+
+        return view('artikel', [
+            'title' => 'Artikel Kesehatan - Klinik Brayan Sehat',
+            'artikels' => $artikel
+        ]);
+    }
+
+    /**
+     * Display artikel detail by ID (Frontend View)
+     */
+    public function detailPage($id_artikel = null)
+    {
+        if (!$id_artikel) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        $artikel = $this->artikelModel->find($id_artikel);
+
+        if (!$artikel) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        // Get other articles for sidebar (exclude current article)
+        $otherArtikels = $this->artikelModel
+            ->where('id_artikel !=', $id_artikel)
+            ->orderBy('tanggal_publish', 'DESC')
+            ->limit(5)
+            ->findAll();
+
+        return view('artikel_detail', [
+            'title' => $artikel['judul'],
+            'artikel' => $artikel,
+            'otherArtikels' => $otherArtikels
+        ]);
+    }
 }

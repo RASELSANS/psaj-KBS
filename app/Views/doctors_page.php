@@ -88,22 +88,40 @@
                     
                     <p class="fw-bold mb-3">Pilih Spesialis</p>
                     <div class="filter-options">
+                        <?php if (!empty($allSpesialis)): ?>
+                            <?php foreach($allSpesialis as $spec): ?>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input spec-filter" type="checkbox" value="<?= $spec['id_spesialis'] ?>" id="checkSpec<?= $spec['id_spesialis'] ?>">
+                                    <label class="form-check-label small text-secondary" for="checkSpec<?= $spec['id_spesialis'] ?>"><?= $spec['nama_spesialis'] ?></label>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <!-- <hr class="my-4">
+                    
+                    <p class="fw-bold mb-3">Pilih Poli</p>
+                    <div class="filter-options">
+                        <?php if (!empty($allPoli)): ?>
+                            <?php foreach($allPoli as $poli): ?>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input poli-filter" type="checkbox" value="<?= $poli['id_poli'] ?>" id="checkPoli<?= $poli['id_poli'] ?>">
+                                    <label class="form-check-label small text-secondary" for="checkPoli<?= $poli['id_poli'] ?>"><?= $poli['nama_poli'] ?></label>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div> -->
+                    
+                    <hr class="my-4">
+                    
+                    <p class="fw-bold mb-3">Pilih Hari Jadwal</p>
+                    <div class="filter-options">
                         <?php 
-                        $specs = [
-                            'GIGI' => 'Poli Gigi', 
-                            'SARAF' => 'Psikolog/Psikiater', 
-                            'UMUM' => 'Poli Umum', 
-                            'JANTUNG' => 'Poli Jantung', 
-                            'THT' => 'Poli THT',
-                            'ANAK' => 'Poli Anak',
-                            'DALAM' => 'Penyakit Dalam',
-                            'PATOLOGI' => 'Patologi Klinik',
-                            'RADIOLOGI' => 'Radiologi'
-                        ];
-                        foreach($specs as $key => $val): ?>
+                        $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+                        foreach($days as $day): ?>
                             <div class="form-check mb-2">
-                                <input class="form-check-input spec-filter" type="checkbox" value="<?= $key ?>" id="check<?= $key ?>">
-                                <label class="form-check-label small text-secondary" for="check<?= $key ?>"><?= $val ?></label>
+                                <input class="form-check-input day-filter" type="checkbox" value="<?= $day ?>" id="checkDay<?= $day ?>">
+                                <label class="form-check-label small text-secondary" for="checkDay<?= $day ?>"><?= $day ?></label>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -118,7 +136,21 @@
                 <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4" id="doctorContainer">
                     <?php if(!empty($doctors)): ?>
                         <?php foreach($doctors as $d): ?>
-                            <div class="col doctor-item" data-specialist="<?= $d['spec_key'] ?>">
+                            <?php 
+                            // Extract spesialis IDs
+                            $specIds = array_map(function($s) { return $s['id_spesialis']; }, $d['spesialis']);
+                            
+                            // Extract poli IDs
+                            $poliIds = array_map(function($p) { return $p['id_poli']; }, $d['poli']);
+                            
+                            // Extract hari from jadwal
+                            $days = array_map(function($j) { return $j['hari']; }, $d['jadwal_array']);
+                            ?>
+                            
+                            <div class="col doctor-item" 
+                                data-specialist="<?= implode(',', $specIds) ?>"
+                                data-polis="<?= implode(',', $poliIds) ?>"
+                                data-days="<?= implode(',', $days) ?>">
                                 <div class="doctor-card">
                                     <div class="doc-img-box">
                                         <img src="<?= base_url('uploads/doctors/'.$d['img']) ?>" alt="<?= $d['name'] ?>" onerror="this.src='<?= base_url('img/DEFAULT.jpg') ?>'">
@@ -150,23 +182,81 @@
 
 <script>
     const searchInput = document.getElementById('searchDoctor');
-    const checkboxes = document.querySelectorAll('.spec-filter');
+    const specCheckboxes = document.querySelectorAll('.spec-filter');
+    const poliCheckboxes = document.querySelectorAll('.poli-filter');
+    const dayCheckboxes = document.querySelectorAll('.day-filter');
     const doctorItems = document.querySelectorAll('.doctor-item');
     const noMatchMsg = document.getElementById('noMatch');
 
+    // Helper function to parse day ranges
+    function parseDayRange(dayString) {
+        const dayOrder = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        const days = [];
+        
+        // Split by comma first (for multiple ranges like "Senin-Rabu, Jumat")
+        const ranges = dayString.split(',').map(s => s.trim());
+        
+        ranges.forEach(range => {
+            if (range.includes('-')) {
+                // Parse range like "Senin-Rabu"
+                const [start, end] = range.split('-').map(s => s.trim());
+                const startIndex = dayOrder.indexOf(start);
+                const endIndex = dayOrder.indexOf(end);
+                
+                if (startIndex !== -1 && endIndex !== -1) {
+                    if (startIndex <= endIndex) {
+                        // Normal range (Senin-Rabu)
+                        for (let i = startIndex; i <= endIndex; i++) {
+                            days.push(dayOrder[i]);
+                        }
+                    } else {
+                        // Wrap around range (Sabtu-Senin)
+                        for (let i = startIndex; i < dayOrder.length; i++) {
+                            days.push(dayOrder[i]);
+                        }
+                        for (let i = 0; i <= endIndex; i++) {
+                            days.push(dayOrder[i]);
+                        }
+                    }
+                }
+            } else {
+                // Single day
+                if (dayOrder.includes(range)) {
+                    days.push(range);
+                }
+            }
+        });
+        
+        return [...new Set(days)]; // Remove duplicates
+    }
+
     function filterDoctors() {
         const searchTerm = searchInput.value.toLowerCase().trim();
-        const activeSpecs = Array.from(checkboxes).filter(i => i.checked).map(i => i.value);
+        const activeSpecs = Array.from(specCheckboxes).filter(i => i.checked).map(i => i.value);
+        const activePolis = Array.from(poliCheckboxes).filter(i => i.checked).map(i => i.value);
+        const activeDays = Array.from(dayCheckboxes).filter(i => i.checked).map(i => i.value);
         let countVisible = 0;
 
         doctorItems.forEach(item => {
             const name = item.querySelector('.doc-name').textContent.toLowerCase();
-            const spec = item.getAttribute('data-specialist');
+            const specs = item.getAttribute('data-specialist') ? item.getAttribute('data-specialist').split(',').filter(s => s) : [];
+            const polis = item.getAttribute('data-polis') ? item.getAttribute('data-polis').split(',').filter(p => p) : [];
+            const dayRanges = item.getAttribute('data-days') ? item.getAttribute('data-days').split(',').filter(d => d) : [];
+            
+            // Parse day ranges to individual days
+            let allDays = [];
+            dayRanges.forEach(range => {
+                const parsedDays = parseDayRange(range);
+                allDays = allDays.concat(parsedDays);
+            });
+            allDays = [...new Set(allDays)]; // Remove duplicates
             
             const matchName = name.includes(searchTerm);
-            const matchSpec = activeSpecs.length === 0 || activeSpecs.includes(spec);
+            const matchSpec = activeSpecs.length === 0 || specs.some(s => activeSpecs.includes(s));
+            const matchPoli = activePolis.length === 0 || polis.some(p => activePolis.includes(p));
+            const matchDay = activeDays.length === 0 || allDays.some(d => activeDays.includes(d));
 
-            if (matchName && matchSpec) {
+            if (matchName && matchSpec && matchPoli && matchDay) {
                 item.classList.remove('d-none');
                 countVisible++;
             } else {
@@ -179,12 +269,16 @@
 
     function resetFilter() {
         searchInput.value = '';
-        checkboxes.forEach(i => i.checked = false);
+        specCheckboxes.forEach(i => i.checked = false);
+        poliCheckboxes.forEach(i => i.checked = false);
+        dayCheckboxes.forEach(i => i.checked = false);
         filterDoctors();
     }
 
     searchInput.addEventListener('input', filterDoctors);
-    checkboxes.forEach(cb => cb.addEventListener('change', filterDoctors));
+    specCheckboxes.forEach(cb => cb.addEventListener('change', filterDoctors));
+    poliCheckboxes.forEach(cb => cb.addEventListener('change', filterDoctors));
+    dayCheckboxes.forEach(cb => cb.addEventListener('change', filterDoctors));
 </script>
 
 <?= $this->endSection(); ?>

@@ -4,7 +4,20 @@ namespace App\Controllers;
 
 class Home extends BaseController
 {
-    public function index(): string { return view('landing_page'); }
+    public function index(): string 
+    { 
+        $artikelModel = new \App\Models\Artikel();
+        
+        $latestArtikels = $artikelModel
+            ->orderBy('tanggal_publish', 'DESC')
+            ->limit(3)
+            ->findAll();
+
+        return view('landing_page', [
+            'title' => 'Klinik Brayan Sehat - Solusi Kesehatan Terpercaya',
+            'artikels' => $latestArtikels
+        ]); 
+    }
 
     /*
     private function _allDoctors() {
@@ -151,7 +164,7 @@ class Home extends BaseController
     // Method pendukung
     public function layanan() { return view('layanan_page', ['title' => 'Layanan']); }
     public function about() { return view('about', ['title' => 'About']); }
-    public function artikel() { return view('artikel', ['title' => 'Artikel']); }
+    // public function artikel() { return view('artikel', ['title' => 'Artikel']); }
     public function faq() { return view('faq', ['title' => 'FAQ']); }
     public function kontak() { return view('kontak', ['title' => 'Kontak']); }
     public function penunjang_diagnostik() { return view('penunjang_diagnostik', ['title' => 'Penunjang']); }

@@ -78,6 +78,7 @@ class ArtikelController extends AdminController
         if ($authCheck) return $authCheck;
 
         $judul = $this->request->getPost('judul');
+        $kategori = $this->request->getPost('kategori');
         $isi = $this->request->getPost('isi');
         $tanggal_publish = $this->request->getPost('tanggal_publish');
         $thumbnail = $this->request->getFile('thumbnail');
@@ -113,6 +114,7 @@ class ArtikelController extends AdminController
         $id_artikel = $this->artikelModel->insert([
             'id_admin' => $id_admin,
             'judul' => $judul,
+            'kategori' => $kategori,
             'isi' => $isi,
             'tanggal_publish' => $tanggal_publish,
             'thumbnail' => $thumbnailName,
@@ -137,6 +139,7 @@ class ArtikelController extends AdminController
         }
 
         $judul = $this->request->getPost('judul');
+        $kategori = $this->request->getPost('kategori');  // TAMBAH INI
         $isi = $this->request->getPost('isi');
         $tanggal_publish = $this->request->getPost('tanggal_publish');
         $thumbnail = $this->request->getFile('thumbnail');
@@ -153,6 +156,7 @@ class ArtikelController extends AdminController
 
         $updateData = [
             'judul' => $judul,
+            'kategori' => $kategori,  // TAMBAH INI
             'isi' => $isi,
             'tanggal_publish' => $tanggal_publish,
         ];
@@ -187,6 +191,7 @@ class ArtikelController extends AdminController
 
         return $this->successResponse($artikel);
     }
+
 
     /**
      * Delete artikel

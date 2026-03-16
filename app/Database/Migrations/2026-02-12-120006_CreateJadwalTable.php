@@ -29,6 +29,7 @@ class CreateJadwalTable extends Migration
             ],
             'jam_selesai' => [
                 'type' => 'TIME',
+                'null' => true
             ],
             'created_at' => [
                 'type' => 'DATETIME',

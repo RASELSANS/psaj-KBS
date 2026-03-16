@@ -39,7 +39,8 @@ $routes->get('doctors/(:num)', 'Doctors::detail/$1');
 $routes->get('about', 'Home::about');
 
 // Menu lain (Artikel & FAQ)
-$routes->get('artikel', 'Home::artikel');
+$routes->get('artikel', 'Artikel::page');
+$routes->get('artikel/(:num)', 'Artikel::detailPage/$1');
 $routes->get('faq', 'Home::faq');
 $routes->get('kontak', 'Home::kontak');
 $routes->get('layanan/penunjang-diagnostik', 'Home::penunjang_diagnostik');
@@ -117,6 +118,11 @@ $routes->group('api/admin', ['filter' => 'auth'], static function($routes) {
     $routes->post('artikel', 'Admin\ArtikelController::create');
     $routes->put('artikel/(:num)', 'Admin\ArtikelController::update/$1');
     $routes->delete('artikel/(:num)', 'Admin\ArtikelController::delete/$1');
+    
+    // Kategori Artikel Routes
+    $routes->get('kategori-artikel', 'Admin\KategoriArtikelController::index');
+    $routes->post('kategori-artikel', 'Admin\KategoriArtikelController::create');
+    $routes->delete('kategori-artikel/(:num)', 'Admin\KategoriArtikelController::delete/$1');
 
     // Gallery Management
     $routes->get('gallery/list', 'GalleryController::listImages');

@@ -28,17 +28,28 @@ class Doctors extends BaseController
             $doctor['img'] = $doctor['foto'];
             $doctor['slug'] = strtolower(str_replace(' ', '-', $doctor['nama_doctor']));
             $doctor['desc'] = $doctor['profil'];
-            $doctor['spec'] = $this->_getFirstSpesialis($doctor['id_doctor']);
-            $doctor['spec_key'] = $this->_getFirstSpesialisKey($doctor['id_doctor']);
             $doctor['spesialis'] = $this->doctorModel->getSpesialis($doctor['id_doctor']);
             $doctor['poli'] = $this->doctorModel->getPoli($doctor['id_doctor']);
             $doctor['jadwal_array'] = $this->doctorModel->getJadwal($doctor['id_doctor']);
             $doctor['jadwal'] = $this->_formatJadwal($doctor['jadwal_array']);
+            
+            // Get first spesialis for display
+            $doctor['spec'] = !empty($doctor['spesialis']) ? $doctor['spesialis'][0]['nama_spesialis'] : 'Umum';
+            $doctor['spec_key'] = !empty($doctor['spesialis']) ? $doctor['spesialis'][0]['id_spesialis'] : 0;
         }
+
+        // Get all unique spesialis and poli for filter
+        $spesialisModel = new \App\Models\Spesialis();
+        $poliModel = new \App\Models\Poli();
+        
+        $allSpesialis = $spesialisModel->findAll();
+        $allPoli = $poliModel->findAll();
 
         return view('doctors_page', [
             'title'   => 'Cari Dokter - Klinik Brayan Sehat',
-            'doctors' => $doctors
+            'doctors' => $doctors,
+            'allSpesialis' => $allSpesialis,
+            'allPoli' => $allPoli
         ]);
     }
 
@@ -174,7 +185,7 @@ class Doctors extends BaseController
     }
 
     /**
-     * Format jadwal array to readable string
+     * Format jadwal array to readable string (untuk backward compatibility)
      */
     private function _formatJadwal($jadwal_array)
     {
@@ -182,16 +193,18 @@ class Doctors extends BaseController
             return 'Hubungi Admin untuk Jadwal';
         }
 
-        // Simple format: combine jadwal items into readable string
+        // Format: Hari (Jam - Jam)
         $jadwal_strings = array_map(function($item) {
-            // Adjust based on your jadwal table structure (hari, jam_mulai, jam_selesai, dll)
-            if (isset($item['jam_mulai']) && isset($item['jam_selesai'])) {
-                return "{$item['jam_mulai']} - {$item['jam_selesai']}";
+            if (isset($item['hari']) && isset($item['jam_mulai'])) {
+                $jam_mulai = substr($item['jam_mulai'], 0, 5); // HH:MM
+                $jam_selesai = !empty($item['jam_selesai']) ? substr($item['jam_selesai'], 0, 5) : 'Selesai';
+                return "{$item['hari']} ({$jam_mulai} - {$jam_selesai})";
             }
-            return isset($item['hari']) ? $item['hari'] : '';
+            return '';
         }, $jadwal_array);
 
         $jadwal_strings = array_filter($jadwal_strings);
         return !empty($jadwal_strings) ? implode(', ', $jadwal_strings) : 'Hubungi Admin untuk Jadwal';
     }
+
 }

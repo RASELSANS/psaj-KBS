@@ -86,6 +86,28 @@
     .btn-orange { background-color: var(--primary-orange); color: white; border-radius: 12px; transition: 0.3s; border: none; }
     .btn-orange:hover { background-color: #e6762d; color: white; transform: scale(1.05); }
 
+    /* Badge styling */
+    .badge.bg-light.text-orange {
+        background-color: #fff5ee !important;
+        color: var(--primary-orange) !important;
+        border: 1px solid #ffdec9;
+    }
+
+    .badge.bg-light.text-muted {
+        background-color: #f8f9fa !important;
+        color: #6c757d !important;
+    }
+
+    /* Card body flex untuk equal height */
+    .blog-card .card-body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .blog-card .flex-grow-1 {
+        flex-grow: 1;
+    }
+
     /* Responsive */
     @media (max-width: 991px) {
         .testi-container { padding: 0 15px; }
@@ -237,7 +259,7 @@
     </div>
 </section>
 
-<section class="container py-5 mb-5">
+<!-- <section class="container py-5 mb-5">
     <div class="d-flex justify-content-between align-items-end mb-4" data-aos="fade-up">
         <h2 class="fw-bold mb-0">Artikel Kesehatan</h2>
         <a href="<?= base_url('artikel') ?>" class="text-orange fw-bold text-decoration-none">Lihat Semua →</a>
@@ -254,7 +276,76 @@
             </div>
         </div>
         </div>
+</section> -->
+
+<section class="container py-5 mb-5">
+    <div class="d-flex justify-content-between align-items-end mb-4" data-aos="fade-up">
+        <h2 class="fw-bold mb-0">Artikel Kesehatan</h2>
+        <a href="<?= base_url('artikel') ?>" class="text-orange fw-bold text-decoration-none">Lihat Semua →</a>
+    </div>
+    <div class="row g-4">
+        <?php if (!empty($artikels)): ?>
+            <?php foreach ($artikels as $index => $artikel): ?>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="<?= ($index + 1) * 100 ?>">
+                    <div class="blog-card card h-100">
+                        <?php 
+                        $thumbnail = !empty($artikel['thumbnail']) 
+                            ? 'uploads/articles/' . $artikel['thumbnail']
+                            : 'img/artikel1.png';
+                        ?>
+                        <img src="<?= base_url($thumbnail) ?>" 
+                             class="card-img-top" 
+                             alt="<?= esc($artikel['judul']) ?>" 
+                             height="200" 
+                             style="object-fit: cover;"
+                             onerror="this.src='<?= base_url('img/artikel1.png') ?>'">
+                        <div class="card-body p-4 d-flex flex-column">
+                            <div class="mb-2">
+                                <?php if (!empty($artikel['kategori'])): ?>
+                                    <span class="badge bg-light text-orange small">
+                                        <?= esc($artikel['kategori']) ?>
+                                    </span>
+                                <?php endif; ?>
+                                <span class="badge bg-light text-muted small ms-1">
+                                    <?= date('d M Y', strtotime($artikel['tanggal_publish'])) ?>
+                                </span>
+                            </div>
+                            <h5 class="fw-bold"><?= esc($artikel['judul']) ?></h5>
+                            <p class="text-muted small flex-grow-1">
+                                <?= substr(strip_tags($artikel['isi']), 0, 100) ?>...
+                            </p>
+                            <a href="<?= base_url('artikel/' . $artikel['id_artikel']) ?>" 
+                               class="text-orange fw-bold text-decoration-none small mt-auto">
+                                Baca Selengkapnya <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <!-- Fallback jika belum ada artikel -->
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="blog-card card h-100">
+                    <img src="<?= base_url('img/artikel1.png') ?>" class="card-img-top" alt="Artikel Kesehatan" height="200" style="object-fit: cover;">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="mb-2">
+                            <span class="badge bg-light text-orange small">Tips Sehat</span>
+                        </div>
+                        <h5 class="fw-bold">Artikel Kesehatan Segera Hadir</h5>
+                        <p class="text-muted small flex-grow-1">
+                            Tim medis kami sedang menyiapkan artikel-artikel kesehatan yang bermanfaat untuk Anda...
+                        </p>
+                        <a href="<?= base_url('artikel') ?>" 
+                           class="text-orange fw-bold text-decoration-none small mt-auto">
+                            Lihat Artikel <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
 </section>
+
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>

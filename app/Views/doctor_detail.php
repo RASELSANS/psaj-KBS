@@ -41,10 +41,33 @@
                         </div>
                         
                         <div style="background: #fdfdfd; padding: 20px; border-radius: 15px; border-left: 5px solid #ff8a3d; border-top: 1px solid #f1f1f1; border-right: 1px solid #f1f1f1; border-bottom: 1px solid #f1f1f1;">
-                            <span style="font-weight: 700; color: #ff8a3d; font-size: 1.1rem;">
-                                <?= isset($doctor['jadwal']) ? $doctor['jadwal'] : 'Hubungi Admin untuk Jadwal' ?>
-                            </span>
+                            <?php if (!empty($doctor['jadwal_array'])): ?>
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                    <?php foreach ($doctor['jadwal_array'] as $jadwal): ?>
+                                        <div style="display: flex; align-items: center; padding: 12px; background: white; border-radius: 10px; border-left: 4px solid #ff8a3d;">
+                                            <div style="flex: 1;">
+                                                <div style="font-weight: 700; color: #222; font-size: 0.95rem;">
+                                                    <?= $jadwal['hari'] ?>
+                                                </div>
+                                                <div style="color: #ff8a3d; font-weight: 600; font-size: 0.9rem;">
+                                                    <?php 
+                                                    $jam_mulai = substr($jadwal['jam_mulai'], 0, 5);
+                                                    $jam_selesai = !empty($jadwal['jam_selesai']) ? substr($jadwal['jam_selesai'], 0, 5) : 'Selesai';
+                                                    echo $jam_mulai . ' - ' . $jam_selesai;
+                                                    ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php else: ?>
+                                <span style="font-weight: 700; color: #ff8a3d; font-size: 1.1rem;">
+                                    Hubungi Admin untuk Jadwal
+                                </span>
+                            <?php endif; ?>
                         </div>
+
+
 
                         <?php $whatsapp_name = isset($doctor['name']) ? urlencode($doctor['name']) : 'Dokter'; ?>
                         <a href="https://wa.me/628112519001?text=Halo%20Admin,%20saya%20mau%20buat%20janji%20dengan%20<?= $whatsapp_name ?>" 
