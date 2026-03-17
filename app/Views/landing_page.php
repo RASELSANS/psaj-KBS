@@ -122,8 +122,8 @@
         <div class="row align-items-center">
             <div class="col-lg-6 text-center text-lg-start" data-aos="fade-right">
                 <div class="badge-health">SOLUSI KESEHATAN TERPERCAYA</div>
-                <h1 class="hero-title">Memberikan Pelayanan terbaik dengan ketulusan</h1>
-                <p class="hero-desc mx-auto mx-lg-0">Konsultasikan kesehatan Anda dengan tim dokter ahli kami. Pelayanan medis modern yang mengutamakan kenyamanan pasien.</p>
+                <h1 class="hero-title">Klinik Brayan Sehat Purwokerto</h1>
+                <p class="hero-desc mx-auto mx-lg-0">Melayani berbagai jenis vaksinasi untuk dewasa dan anak dengan pelayanan yang aman, nyaman, dan sesuai standar. Kami juga menyediakan penerbitan resmi International Certificate of Vaccination (ICV) untuk mendukung kebutuhan perjalanan internasional Anda.</p>
                 <a href="https://wa.me/628112519001" class="btn btn-orange btn-lg px-5 shadow fw-bold">Reservasi</a>
             </div>
             <div class="col-lg-6 mt-5 mt-lg-0" data-aos="fade-left" data-aos-delay="200">
@@ -142,7 +142,7 @@
                 <div class="service-card d-flex flex-column text-start">
                     <div class="icon-wrapper"><i class="fa-solid fa-hand-holding-medical fa-2x"></i></div>
                     <h4 class="fw-bold">Layanan Utama</h4>
-                    <p class="text-muted">Medical Check Up Okupasi, Lab, Farmasi, Rawat Luka Modern, & Khitan Center.</p>
+                    <p class="text-muted">Medical Check Up Okupasi, Lab, Farmasi, Rawat Luka Modern, Vaksinasi, & Khitan Center.</p>
                     <div class="mt-auto"><a href="<?= base_url('layanan') ?>" class="btn-more">Selengkapnya <i class="fa-solid fa-arrow-right ms-2"></i></a></div>
                 </div>
             </div>
@@ -259,25 +259,6 @@
     </div>
 </section>
 
-<!-- <section class="container py-5 mb-5">
-    <div class="d-flex justify-content-between align-items-end mb-4" data-aos="fade-up">
-        <h2 class="fw-bold mb-0">Artikel Kesehatan</h2>
-        <a href="<?= base_url('artikel') ?>" class="text-orange fw-bold text-decoration-none">Lihat Semua →</a>
-    </div>
-    <div class="row g-4">
-        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-            <div class="blog-card card h-100">
-                <img src="<?= base_url('img/artikel1.png') ?>" class="card-img-top" alt="Vaksinasi" height="200" style="object-fit: cover;">
-                <div class="card-body p-4">
-                    <h5 class="fw-bold">Proses Vaksinasi</h5>
-                    <p class="text-muted small">Pentingnya vaksin influenza untuk daya tahan tubuh di musim pancaroba...</p>
-                    <a href="#" class="text-orange fw-bold text-decoration-none small">Baca Selengkapnya</a>
-                </div>
-            </div>
-        </div>
-        </div>
-</section> -->
-
 <section class="container py-5 mb-5">
     <div class="d-flex justify-content-between align-items-end mb-4" data-aos="fade-up">
         <h2 class="fw-bold mb-0">Artikel Kesehatan</h2>
@@ -345,7 +326,6 @@
         <?php endif; ?>
     </div>
 </section>
-
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>

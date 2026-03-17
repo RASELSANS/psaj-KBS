@@ -59,7 +59,7 @@
         }
     }
 
-    /* --- MOBILE SLIDE-IN (ASTRA STYLE - NO OVERLAP) --- */
+    /* --- MOBILE SLIDE-IN (ASTRA STYLE) --- */
     @media (max-width: 991px) {
         .navbar-collapse {
             position: fixed;
@@ -81,32 +81,30 @@
             right: 0;
         }
 
-        /* --- LAYER SUBMENU (FIXED: INI YANG BIKIN GAK TABRAKAN) --- */
         .mobile-submenu-wrapper {
             position: fixed; 
             top: 0;
-            right: -100%; /* Sembunyi di kanan luar */
-            width: 85%; /* Sama lebarnya ama menu utama */
+            right: -100%; 
+            width: 85%; 
             height: 100vh;
-            background: var(--kbs-orange) !important; /* Warna Solid */
+            background: var(--kbs-orange) !important; 
             padding: 25px;
             transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 10000; /* Di atas menu utama */
+            z-index: 10000; 
             visibility: hidden;
             overflow-y: auto;
         }
 
         .mobile-submenu-wrapper.active {
-            right: 0; /* Slide masuk nutupin menu utama */
+            right: 0; 
             visibility: visible;
         }
 
-        /* Font Mobile Extra Bold */
         .nav-link, .dropdown-item {
             color: white !important;
-            font-size: 1.2rem !important;
-            font-weight: 900 !important;
-            padding: 22px 0 !important;
+            font-size: 1.1rem !important;
+            font-weight: 800 !important;
+            padding: 20px 0 !important;
             border-bottom: 1px solid rgba(255,255,255,0.2);
             display: flex;
             justify-content: space-between;
@@ -128,8 +126,6 @@
             border: none;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        
-        .navbar-nav { padding-top: 10px; }
     }
 
     /* Button Reservasi */
@@ -157,7 +153,7 @@
         </a>
 
         <button class="navbar-toggler border-0 shadow-none" type="button" onclick="toggleMobileMenu()">
-            <span class="navbar-toggler-icon"></span>
+            <i class="fa-solid fa-bars-staggered" style="color: var(--kbs-orange); font-size: 1.5rem;"></i>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -183,6 +179,7 @@
                             <i class="fa-solid fa-arrow-left me-2"></i> KEMBALI
                         </div>
                         <h4 class="text-white fw-bold mb-4">LAYANAN KAMI</h4>
+                        <a class="dropdown-item" href="<?= base_url('layanan/mcu') ?>">Medical Check Up</a>
                         <a class="dropdown-item" href="<?= base_url('layanan/penunjang-diagnostik') ?>">Penunjang Diagnostik</a>
                         <a class="dropdown-item" href="<?= base_url('layanan/poliklinik') ?>">Poliklinik</a>
                         <a class="dropdown-item" href="<?= base_url('layanan/khitan-center') ?>">Khitan Center</a>
@@ -194,6 +191,7 @@
                         <li><a class="dropdown-item" href="<?= base_url('layanan/poliklinik') ?>">Poliklinik</a></li>
                         <li><a class="dropdown-item" href="<?= base_url('layanan/khitan-center') ?>">Khitan Center</a></li>
                         <li><a class="dropdown-item" href="<?= base_url('layanan/vaksin') ?>">Vaksinasi</a></li>
+                         <li><a class="dropdown-item" href="<?= base_url('layanan/mcu') ?>">Medical Check Up</a></li>
                     </ul>
                 </li>
 
@@ -237,7 +235,7 @@
             </div>
 
             <div class="d-lg-none mt-4">
-                <a href="https://wa.me/628112519001" target="_blank" class="btn btn-light w-100 fw-bold py-3" style="color: var(--kbs-orange); border-radius: 15px;">
+                <a href="https://wa.me/6285540441147" target="_blank" class="btn btn-light w-100 fw-bold py-3" style="color: var(--kbs-orange); border-radius: 15px;">
                     <i class="fab fa-whatsapp me-2"></i> WHATSAPP SEKARANG
                 </a>
             </div>
@@ -249,7 +247,6 @@
     function toggleMobileMenu() {
         const nav = document.getElementById('navbarNav');
         nav.classList.toggle('show');
-        // Kalo menu ditutup, reset submenu
         if (!nav.classList.contains('show')) {
             document.querySelectorAll('.mobile-submenu-wrapper').forEach(el => el.classList.remove('active'));
         }
@@ -263,7 +260,7 @@
         document.getElementById(id).classList.remove('active');
     }
 
-    // Handle klik parent link di desktop (Direct link)
+    // Auto-link untuk Parent Menu di Desktop
     document.querySelectorAll('.nav-link.dropdown-toggle').forEach(function(el) {
         el.addEventListener('click', function(e) {
             if (window.innerWidth >= 992) {

@@ -8,15 +8,25 @@
         --dark-navy: #2c3e50;
     }
 
-    .contact-header { 
-        padding: 120px 0 60px; 
-        background: var(--bg-soft-orange); 
-        text-align: center; 
+    .contact-header {
+        padding: 120px 0 60px;
+        text-align: center;
+        position: relative;
+        background: linear-gradient(rgba(32, 49, 66, 0.65), rgba(32, 49, 66, 0.65)), url('<?= base_url('img/kontak.jpeg'); ?>') center/cover no-repeat;
+    }
+
+    .contact-header .container {
+        position: relative;
+        z-index: 1;
     }
     
     .contact-header h1 {
         font-weight: 800;
-        color: var(--dark-navy);
+        color: #fff;
+    }
+
+    .contact-header p {
+        color: rgba(255, 255, 255, 0.92) !important;
     }
 
     .contact-card { 
