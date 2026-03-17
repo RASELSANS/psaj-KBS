@@ -47,6 +47,7 @@ $routes->get('layanan/penunjang-diagnostik', 'Home::penunjang_diagnostik');
 $routes->get('layanan/poliklinik', 'Home::poliklinik');
 $routes->get('layanan/khitan-center', 'Home::khitan_center');
 $routes->get('layanan/vaksin', 'Home::vaksin');
+$routes->get('/layanan/mcu', 'Home::mcu');
 
 // ==================== ADMIN LOGIN ROUTE (No Auth Required) ====================
 $routes->get('admin', 'Admin\AdminController::isLoggedIn');

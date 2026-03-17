@@ -86,7 +86,7 @@
                         </span>
                     </div>
                     
-                    <p class="fw-bold mb-3">Pilih Spesialis</p>
+                    <p class="fw-bold mb-3">Pilih Dokter</p>
                     <div class="filter-options">
                         <?php if (!empty($allSpesialis)): ?>
                             <?php foreach($allSpesialis as $spec): ?>

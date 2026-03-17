@@ -171,4 +171,5 @@ class Home extends BaseController
     public function poliklinik() { return view('poliklinik', ['title' => 'Poliklinik']); }
     public function khitan_center() { return view('khitan_center', ['title' => 'Khitan']); }
     public function vaksin() { return view('vaksin', ['title' => 'Vaksin']); }
+    public function mcu() { return view('mcu', ['title' => 'Medical Check Up']);}
 }
