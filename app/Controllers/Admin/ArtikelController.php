@@ -22,25 +22,29 @@ class ArtikelController extends AdminController
         $authCheck = $this->requireLogin();
         if ($authCheck) return $authCheck;
 
-        $page = $this->request->getGet('page') ?? 1;
+        $page = (int)($this->request->getGet('page') ?? 1);
         $search = $this->request->getGet('search') ?? '';
         $limit = 10;
         $offset = ($page - 1) * $limit;
 
         // Build query with search
-        $query = $this->artikelModel;
+        $builder = $this->artikelModel->builder();
+        
         if ($search) {
-            $query = $query->like('judul', $search)->orLike('isi', $search);
+            $builder->groupStart()
+                    ->like('judul', $search)
+                    ->orLike('isi', $search)
+                    ->groupEnd();
         }
 
-        $total = $query->countAllResults(false); // false = don't reset query
-        $query = $this->artikelModel; // Reset for main query
-        if ($search) {
-            $query = $query->like('judul', $search)->orLike('isi', $search);
-        }
-        $artikel = $query->orderBy('tanggal_publish', 'DESC')
-            ->limit($limit, $offset)
-            ->findAll();
+        // Get total count
+        $total = $builder->countAllResults(false);
+
+        // Get artikel with pagination
+        $artikel = $builder->orderBy('tanggal_publish', 'DESC')
+                        ->limit($limit, $offset)
+                        ->get()
+                        ->getResultArray();
 
         return $this->successResponse([
             'artikel' => $artikel,
@@ -82,6 +86,7 @@ class ArtikelController extends AdminController
         $isi = $this->request->getPost('isi');
         $tanggal_publish = $this->request->getPost('tanggal_publish');
         $thumbnail = $this->request->getFile('thumbnail');
+        $galleryImage = $this->request->getPost('gallery_image');
         $id_admin = $this->getAdminId();
 
         // Validation
@@ -94,9 +99,11 @@ class ArtikelController extends AdminController
             return $this->validationErrorResponse($errors);
         }
 
-        // Handle thumbnail upload
+        // Handle thumbnail upload or gallery image
         $thumbnailName = null;
+        
         if ($thumbnail && $thumbnail->isValid() && !$thumbnail->hasMoved()) {
+            // Upload new file
             if ($thumbnail->getSize() > 2097152) {
                 return $this->validationErrorResponse(['thumbnail' => 'Ukuran thumbnail maksimal 2MB']);
             }
@@ -109,6 +116,22 @@ class ArtikelController extends AdminController
             $newName = $thumbnail->getRandomName();
             $thumbnail->move('uploads/articles', $newName);
             $thumbnailName = $newName;
+        } elseif ($galleryImage) {
+            // Copy from gallery
+            $sourcePath = FCPATH . 'uploads/' . $galleryImage;
+            
+            if (file_exists($sourcePath)) {
+                $newName = time() . '_' . basename($galleryImage);
+                $destPath = FCPATH . 'uploads/articles/' . $newName;
+                
+                if (copy($sourcePath, $destPath)) {
+                    $thumbnailName = $newName;
+                } else {
+                    return $this->validationErrorResponse(['thumbnail' => 'Gagal menyalin foto dari galeri']);
+                }
+            } else {
+                return $this->validationErrorResponse(['thumbnail' => 'Foto galeri tidak ditemukan']);
+            }
         }
 
         $id_artikel = $this->artikelModel->insert([
@@ -143,6 +166,7 @@ class ArtikelController extends AdminController
         $isi = $this->request->getPost('isi');
         $tanggal_publish = $this->request->getPost('tanggal_publish');
         $thumbnail = $this->request->getFile('thumbnail');
+        $galleryImage = $this->request->getPost('gallery_image');
 
         // Validation
         $errors = [];
@@ -161,8 +185,9 @@ class ArtikelController extends AdminController
             'tanggal_publish' => $tanggal_publish,
         ];
 
-        // Handle thumbnail upload
+        // Handle thumbnail upload or gallery image
         if ($thumbnail && $thumbnail->isValid() && !$thumbnail->hasMoved()) {
+            // Upload new file
             if ($thumbnail->getSize() > 2097152) {
                 return $this->validationErrorResponse(['thumbnail' => 'Ukuran thumbnail maksimal 2MB']);
             }
@@ -183,6 +208,30 @@ class ArtikelController extends AdminController
             $newName = $thumbnail->getRandomName();
             $thumbnail->move('uploads/articles', $newName);
             $updateData['thumbnail'] = $newName;
+        } elseif ($galleryImage) {
+            // Copy from gallery
+            $sourcePath = FCPATH . 'uploads/' . $galleryImage;
+            
+            if (file_exists($sourcePath)) {
+                // Delete old thumbnail
+                if ($artikel['thumbnail']) {
+                    $oldPath = 'uploads/articles/' . $artikel['thumbnail'];
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
+                }
+                
+                $newName = time() . '_' . basename($galleryImage);
+                $destPath = FCPATH . 'uploads/articles/' . $newName;
+                
+                if (copy($sourcePath, $destPath)) {
+                    $updateData['thumbnail'] = $newName;
+                } else {
+                    return $this->validationErrorResponse(['thumbnail' => 'Gagal menyalin foto dari galeri']);
+                }
+            } else {
+                return $this->validationErrorResponse(['thumbnail' => 'Foto galeri tidak ditemukan']);
+            }
         }
 
         $this->artikelModel->update($id_artikel, $updateData);

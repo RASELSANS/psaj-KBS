@@ -82,6 +82,20 @@
         object-fit: cover;
     }
 
+    .folder-badge {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        background: rgba(255, 138, 61, 0.9);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
     .image-info {
         padding: 12px;
         background: white;
@@ -219,6 +233,7 @@
             <div class="image-card">
                 <div class="image-container">
                     <img src="${image.url}" alt="${image.filename}" loading="lazy">
+                    <!-- <div class="folder-badge">${image.folder}</div> -->
                 </div>
                 <div class="image-info">
                     <div class="image-name" title="${image.filename}">${image.filename}</div>
@@ -228,7 +243,7 @@
                         <button class="btn-view" onclick="viewImage('${image.url}')">
                             <i class="fas fa-eye"></i> Lihat
                         </button>
-                        <button class="btn-delete" onclick="deleteImage('${image.filename}')" ${isDeletingFile === image.filename ? 'disabled' : ''}>
+                        <button class="btn-delete" onclick="deleteImage('${image.relative_path}')" ${isDeletingFile === image.relative_path ? 'disabled' : ''}>
                             <i class="fas fa-trash"></i> Hapus
                         </button>
                     </div>
@@ -351,16 +366,19 @@
     /**
      * Delete image
      */
-    async function deleteImage(filename) {
+    async function deleteImage(relativePath) {
         confirmDelete('foto', async () => {
-            isDeletingFile = filename;
+            isDeletingFile = relativePath;
             showAlert('Menghapus foto...', 'info');
 
             try {
                 const params = new URLSearchParams();
                 params.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
 
-                const response = await fetch(`${API_URL}/gallery/delete/${filename}`, {
+                // Encode path for URL
+                const encodedPath = encodeURIComponent(relativePath);
+                
+                const response = await fetch(`${API_URL}/gallery/delete/${encodedPath}`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                     body: params,

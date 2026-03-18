@@ -541,6 +541,7 @@
         /* Pagination */
         .pagination {
             margin-top: 2rem;
+            gap: 0.5rem;
         }
 
         .page-link {

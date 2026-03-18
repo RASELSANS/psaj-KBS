@@ -78,15 +78,15 @@
             </li>
 
             <!-- Account Section -->
-            <li class="nav-section-title">Akun</li>
+            <li class="nav-section-title">Logout</li>
 
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a href="<?= base_url('admin/profile') ?>" 
                    class="nav-link <?= strpos(uri_string(), 'admin/profile') !== false ? 'active' : '' ?>">
                     <i class="fas fa-user-circle"></i>
                     <span>Profil</span>
                 </a>
-            </li>
+            </li> -->
 
             <li class="nav-item">
                 <a href="javascript:void(0);" onclick="logoutAdmin()" class="nav-link nav-logout">

@@ -58,14 +58,21 @@
                 </label>
                 <div style="display: flex; gap: 1rem; align-items: flex-start;">
                     <div style="flex: 1;">
-                        <input 
-                            type="file" 
-                            class="form-control" 
-                            id="thumbnail" 
-                            accept="image/jpeg,image/png,image/gif"
-                            onchange="previewThumbnail(event)"
-                        >
-                        <small style="color: #999; margin-top: 0.25rem; display: block;">JPG, PNG, GIF • Max 2MB • Minimum 400x300px rekomendasi 800x600px</small>
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <input 
+                                type="file" 
+                                class="form-control" 
+                                id="thumbnail" 
+                                accept="image/jpeg,image/png,image/gif"
+                                onchange="previewThumbnail(event)"
+                                style="flex: 1;"
+                            >
+                            <button type="button" class="btn-action" onclick="openGalleryPickerArtikel()" style="white-space: nowrap; padding: 0.5rem 1rem;">
+                                <i class="fas fa-images"></i> Pilih dari Galeri
+                            </button>
+                        </div>
+                        <input type="hidden" id="selectedGalleryImageArtikel">
+                        <small style="color: #999; margin-top: 0.25rem; display: block;">JPG, PNG, GIF • Max 2MB • Minimum 400x300px rekomendasi 800x600px atau pilih dari galeri</small>
                     </div>
                     <img id="thumbnailPreview" src="" alt="Preview" style="width: 120px; height: 120px; border-radius: 8px; object-fit: cover; display: none; border: 2px solid #f0f0f0;">
                 </div>
@@ -200,6 +207,85 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Gallery Picker -->
+<div class="modal fade" id="galleryPickerModalArtikel" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pilih Foto dari Galeri</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <div id="galleryPickerGridArtikel" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 32px; color: #999;"></i>
+                        <p style="color: #999; margin-top: 10px;">Memuat galeri...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .gallery-picker-item-artikel {
+        cursor: pointer;
+        border: 3px solid transparent;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .gallery-picker-item-artikel:hover {
+        border-color: #ff8a3d;
+        transform: scale(1.05);
+    }
+    
+    .gallery-picker-item-artikel.selected {
+        border-color: #28a745;
+        box-shadow: 0 0 15px rgba(40, 167, 69, 0.5);
+    }
+    
+    .gallery-picker-item-artikel img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        display: block;
+    }
+    
+    .gallery-picker-item-artikel .folder-badge {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        background: rgba(255, 138, 61, 0.9);
+        color: white;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 9px;
+        font-weight: 600;
+    }
+    
+    .gallery-picker-item-artikel .check-icon {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: #28a745;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+    
+    .gallery-picker-item-artikel.selected .check-icon {
+        display: flex;
+    }
+</style>
 
 <?= $this->endSection(); ?>
 
@@ -401,20 +487,25 @@ function saveArtikel(e) {
     const id = document.getElementById('artikelID').value;
     const url = id ? `${API_URL}/artikel/${id}` : `${API_URL}/artikel`;
     const thumbnailFile = document.getElementById('thumbnail').files.length > 0 ? document.getElementById('thumbnail').files[0] : null;
+    const selectedGalleryPath = document.getElementById('selectedGalleryImageArtikel').value;
 
     let body, method = 'POST';
 
     // For CREATE or UPDATE with thumbnail: use FormData
-    if (!id && thumbnailFile) {
+    if (!id && (thumbnailFile || selectedGalleryPath)) {
         const formData = new FormData();
         formData.append('judul', judul);
         formData.append('kategori', kategori);
         formData.append('isi', isi);
         formData.append('tanggal_publish', document.getElementById('tanggalPublish').value);
         formData.append('status', 'published');
-        formData.append('thumbnail', thumbnailFile);
+        if (thumbnailFile) {
+            formData.append('thumbnail', thumbnailFile);
+        } else if (selectedGalleryPath) {
+            formData.append('gallery_image', selectedGalleryPath);
+        }
         body = formData;
-    } else if (id && thumbnailFile) {
+    } else if (id && (thumbnailFile || selectedGalleryPath)) {
         // UPDATE with new thumbnail: use FormData + _method=PUT
         const formData = new FormData();
         formData.append('_method', 'PUT');
@@ -423,7 +514,11 @@ function saveArtikel(e) {
         formData.append('isi', isi);
         formData.append('tanggal_publish', document.getElementById('tanggalPublish').value);
         formData.append('status', 'published');
-        formData.append('thumbnail', thumbnailFile);
+        if (thumbnailFile) {
+            formData.append('thumbnail', thumbnailFile);
+        } else if (selectedGalleryPath) {
+            formData.append('gallery_image', selectedGalleryPath);
+        }
         body = formData;
     } else {
         // Without thumbnail: use URLSearchParams
@@ -475,6 +570,66 @@ function saveArtikel(e) {
 // Save as draft (not implemented yet - can be added later)
 function saveDraft() {
     showAlert('Fitur draft akan segera tersedia', 'info');
+}
+
+// Gallery Picker Functions for Artikel
+let selectedGalleryImageDataArtikel = null;
+
+function openGalleryPickerArtikel() {
+    selectedGalleryImageDataArtikel = null;
+    loadGalleryForPickerArtikel();
+    new bootstrap.Modal(document.getElementById('galleryPickerModalArtikel')).show();
+}
+
+async function loadGalleryForPickerArtikel() {
+    const grid = document.getElementById('galleryPickerGridArtikel');
+    grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin" style="font-size: 32px; color: #999;"></i><p style="color: #999; margin-top: 10px;">Memuat galeri...</p></div>';
+    
+    try {
+        const response = await fetch(`${API_URL}/gallery/list`, {credentials: 'include'});
+        const result = await response.json();
+        
+        if (result.success && result.data.length > 0) {
+            grid.innerHTML = result.data.map(image => `
+                <div class="gallery-picker-item-artikel" onclick="selectGalleryImageArtikel('${image.relative_path}', '${image.url}', '${image.folder}')">
+                    <img src="${image.url}" alt="${image.filename}">
+                    <!-- <div class="folder-badge">${image.folder}</div> -->
+                    <div class="check-icon"><i class="fas fa-check"></i></div>
+                </div>
+            `).join('');
+        } else {
+            grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px;"><i class="fas fa-images" style="font-size: 48px; color: #ddd;"></i><p style="color: #999; margin-top: 10px;">Belum ada foto di galeri</p></div>';
+        }
+    } catch (error) {
+        console.error('Error loading gallery:', error);
+        grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px;"><i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #e74c3c;"></i><p style="color: #999; margin-top: 10px;">Error memuat galeri</p></div>';
+    }
+}
+
+function selectGalleryImageArtikel(relativePath, url, folder) {
+    // Remove previous selection
+    document.querySelectorAll('.gallery-picker-item-artikel').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // Add selection to clicked item
+    event.currentTarget.classList.add('selected');
+    
+    // Store selected image data
+    selectedGalleryImageDataArtikel = { relativePath, url, folder };
+    
+    // Show preview
+    document.getElementById('thumbnailPreview').style.display = 'block';
+    document.getElementById('thumbnailPreview').src = url;
+    document.getElementById('selectedGalleryImageArtikel').value = relativePath;
+    
+    // Clear file input
+    document.getElementById('thumbnail').value = '';
+    
+    // Close modal after short delay
+    setTimeout(() => {
+        bootstrap.Modal.getInstance(document.getElementById('galleryPickerModalArtikel')).hide();
+    }, 300);
 }
 
 // Initialize

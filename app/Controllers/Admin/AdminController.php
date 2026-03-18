@@ -18,8 +18,22 @@ class AdminController extends BaseController
      */
     public function isLoggedIn()
     {
+        // Check if session exists and is valid
         if($this->session->has('admin_id')){
-            return redirect("/admin/dashboard");
+            $adminId = $this->session->get('admin_id');
+            
+            // Verify admin still exists in database
+            $adminModel = new \App\Models\Admin();
+            $admin = $adminModel->find($adminId);
+            
+            if ($admin) {
+                // Session valid, show dashboard directly
+                return view('admin/dashboard');
+            } else {
+                // Admin not found, clear invalid session
+                $this->session->destroy();
+                return view('admin/login');
+            }
         }
         else{
             return view('admin/login');

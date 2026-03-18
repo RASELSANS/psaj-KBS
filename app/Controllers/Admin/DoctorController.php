@@ -28,24 +28,27 @@ class DoctorController extends AdminController
         $authCheck = $this->requireLogin();
         if ($authCheck) return $authCheck;
 
-        $page = $this->request->getGet('page') ?? 1;
+        $page = (int)($this->request->getGet('page') ?? 1);
         $search = $this->request->getGet('search') ?? '';
         $limit = 10;
         $offset = ($page - 1) * $limit;
 
         // Build query with search
-        $query = $this->doctorModel;
+        $builder = $this->doctorModel->builder();
+        
         if ($search) {
-            $query = $query->like('nama_doctor', $search);
+            $builder->like('nama_doctor', $search);
         }
 
-        $total = $query->countAllResults(false); // false = don't reset query
-        $query = $this->doctorModel; // Reset for main query
-        if ($search) {
-            $query = $query->like('nama_doctor', $search);
-        }
-        $doctors = $query->limit($limit, $offset)->findAll();
+        // Get total count
+        $total = $builder->countAllResults(false);
 
+        // Get doctors with pagination
+        $doctors = $builder->limit($limit, $offset)
+                        ->get()
+                        ->getResultArray();
+
+        // Add relations
         foreach ($doctors as &$doctor) {
             $doctor['spesialis'] = $this->doctorModel->getSpesialis($doctor['id_doctor']);
             $doctor['poli'] = $this->doctorModel->getPoli($doctor['id_doctor']);
@@ -93,6 +96,7 @@ class DoctorController extends AdminController
         $nama_doctor = $this->request->getPost('nama_doctor');
         $profil = $this->request->getPost('profil');
         $foto = $this->request->getFile('foto');
+        $galleryImage = $this->request->getPost('gallery_image');
         $id_spesialis = $this->request->getPost('id_spesialis'); // array
         $id_poli = $this->request->getPost('id_poli'); // array
 
@@ -105,10 +109,11 @@ class DoctorController extends AdminController
             return $this->validationErrorResponse($errors);
         }
 
-        // Handle file upload
+        // Handle file upload or gallery image
         $fotoName = null;
+        
         if ($foto && $foto->isValid() && !$foto->hasMoved()) {
-            // Validate file
+            // Upload new file
             if ($foto->getSize() > 2097152) { // 2MB
                 return $this->validationErrorResponse(['foto' => 'Ukuran foto maksimal 2MB']);
             }
@@ -121,6 +126,22 @@ class DoctorController extends AdminController
             $newName = $foto->getRandomName();
             $foto->move('uploads/doctors', $newName);
             $fotoName = $newName;
+        } elseif ($galleryImage) {
+            // Copy from gallery
+            $sourcePath = FCPATH . 'uploads/' . $galleryImage;
+            
+            if (file_exists($sourcePath)) {
+                $newName = time() . '_' . basename($galleryImage);
+                $destPath = FCPATH . 'uploads/doctors/' . $newName;
+                
+                if (copy($sourcePath, $destPath)) {
+                    $fotoName = $newName;
+                } else {
+                    return $this->validationErrorResponse(['foto' => 'Gagal menyalin foto dari galeri']);
+                }
+            } else {
+                return $this->validationErrorResponse(['foto' => 'Foto galeri tidak ditemukan']);
+            }
         }
 
         // Create doctor
@@ -175,6 +196,7 @@ class DoctorController extends AdminController
         $nama_doctor = $this->request->getPost('nama_doctor');
         $profil = $this->request->getPost('profil');
         $foto = $this->request->getFile('foto');
+        $galleryImage = $this->request->getPost('gallery_image');
         $id_spesialis = $this->request->getPost('id_spesialis');
         $id_poli = $this->request->getPost('id_poli');
 
@@ -192,8 +214,9 @@ class DoctorController extends AdminController
             'profil' => $profil,
         ];
 
-        // Handle file upload
+        // Handle file upload or gallery image
         if ($foto && $foto->isValid() && !$foto->hasMoved()) {
+            // Upload new file
             if ($foto->getSize() > 2097152) {
                 return $this->validationErrorResponse(['foto' => 'Ukuran foto maksimal 2MB']);
             }
@@ -214,6 +237,30 @@ class DoctorController extends AdminController
             $newName = $foto->getRandomName();
             $foto->move('uploads/doctors', $newName);
             $updateData['foto'] = $newName;
+        } elseif ($galleryImage) {
+            // Copy from gallery
+            $sourcePath = FCPATH . 'uploads/' . $galleryImage;
+            
+            if (file_exists($sourcePath)) {
+                // Delete old photo
+                if ($doctor['foto']) {
+                    $oldPath = 'uploads/doctors/' . $doctor['foto'];
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
+                }
+                
+                $newName = time() . '_' . basename($galleryImage);
+                $destPath = FCPATH . 'uploads/doctors/' . $newName;
+                
+                if (copy($sourcePath, $destPath)) {
+                    $updateData['foto'] = $newName;
+                } else {
+                    return $this->validationErrorResponse(['foto' => 'Gagal menyalin foto dari galeri']);
+                }
+            } else {
+                return $this->validationErrorResponse(['foto' => 'Foto galeri tidak ditemukan']);
+            }
         }
 
         $this->doctorModel->update($id_doctor, $updateData);

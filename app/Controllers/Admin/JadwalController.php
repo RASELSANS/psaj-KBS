@@ -23,14 +23,34 @@ class JadwalController extends AdminController
         if ($authCheck) return $authCheck;
 
         $id_doctor = $this->request->getGet('id_doctor');
+        $page = (int)($this->request->getGet('page') ?? 1);
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
 
-        if (!$id_doctor) {
-            return $this->validationErrorResponse(['id_doctor' => 'Parameter id_doctor harus disediakan']);
+        // Build query
+        $builder = $this->jadwalModel->builder();
+        
+        if ($id_doctor) {
+            $builder->where('id_doctor', $id_doctor);
         }
 
-        $jadwal = $this->jadwalModel->where('id_doctor', $id_doctor)->findAll();
+        // Get total count
+        $total = $builder->countAllResults(false);
 
-        return $this->successResponse(['jadwal' => $jadwal]);
+        // Get jadwal with pagination
+        $jadwal = $builder->limit($limit, $offset)
+                        ->get()
+                        ->getResultArray();
+
+        return $this->successResponse([
+            'jadwal' => $jadwal,
+            'pagination' => [
+                'page' => $page,
+                'limit' => $limit,
+                'total' => $total,
+                'total_pages' => ceil($total / $limit),
+            ],
+        ]);
     }
 
     /**

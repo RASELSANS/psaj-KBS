@@ -24,7 +24,7 @@ class GalleryController extends AdminController
     }
 
     /**
-     * Get all gallery images
+     * Get all gallery images from all subfolders in uploads/
      * Returns JSON array of images
      */
     public function listImages()
@@ -34,25 +34,11 @@ class GalleryController extends AdminController
 
         try {
             $images = [];
-            $dir = FCPATH . 'uploads/gallery/';
+            $baseDir = FCPATH . 'uploads/';
 
-            if (is_dir($dir)) {
-                $files = array_diff(scandir($dir), array('.', '..'));
-                
-                foreach ($files as $file) {
-                    $filePath = $dir . $file;
-                    
-                    // Only include image files
-                    if (is_file($filePath) && $this->isImageFile($filePath)) {
-                        $images[] = [
-                            'filename' => $file,
-                            'url' => base_url('uploads/gallery/' . $file),
-                            'size' => filesize($filePath),
-                            'date' => filemtime($filePath),
-                            'date_formatted' => date('d/m/Y H:i', filemtime($filePath))
-                        ];
-                    }
-                }
+            if (is_dir($baseDir)) {
+                // Recursively scan all subdirectories
+                $images = $this->scanImagesRecursive($baseDir, $baseDir);
             }
 
             // Sort by date DESC (newest first)
@@ -71,6 +57,50 @@ class GalleryController extends AdminController
                 'message' => 'Error loading images: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Recursively scan directory for images
+     */
+    private function scanImagesRecursive($dir, $baseDir)
+    {
+        $images = [];
+        
+        if (!is_dir($dir)) {
+            return $images;
+        }
+
+        $items = array_diff(scandir($dir), array('.', '..'));
+        
+        foreach ($items as $item) {
+            $fullPath = $dir . $item;
+            
+            if (is_dir($fullPath)) {
+                // Recursively scan subdirectory
+                $subImages = $this->scanImagesRecursive($fullPath . '/', $baseDir);
+                $images = array_merge($images, $subImages);
+            } elseif (is_file($fullPath) && $this->isImageFile($fullPath)) {
+                // Get relative path from uploads folder
+                $relativePath = str_replace($baseDir, '', $fullPath);
+                $relativePath = str_replace('\\', '/', $relativePath); // Windows compatibility
+                
+                // Get folder name for display
+                $folderPath = dirname($relativePath);
+                $folderName = $folderPath === '.' ? 'Root' : ucfirst(basename($folderPath));
+                
+                $images[] = [
+                    'filename' => basename($fullPath),
+                    'folder' => $folderName,
+                    'relative_path' => $relativePath,
+                    'url' => base_url('uploads/' . $relativePath),
+                    'size' => filesize($fullPath),
+                    'date' => filemtime($fullPath),
+                    'date_formatted' => date('d/m/Y H:i', filemtime($fullPath))
+                ];
+            }
+        }
+        
+        return $images;
     }
 
     /**
@@ -150,28 +180,31 @@ class GalleryController extends AdminController
     /**
      * Delete image
      */
-    public function delete($filename = null)
+    public function delete($relativePath = null)
     {
         $authCheck = $this->requireLogin();
         if ($authCheck) return $authCheck;
 
         try {
-            if (!$filename) {
+            if (!$relativePath) {
                 return $this->response->setJSON([
                     'success' => false,
                     'message' => 'Filename required'
                 ], 400);
             }
 
-            // Sanitize filename to prevent path traversal
-            $filename = basename($filename);
-            $filePath = FCPATH . 'uploads/gallery/' . $filename;
+            // Decode URL-encoded path
+            $relativePath = urldecode($relativePath);
+            
+            // Sanitize path to prevent directory traversal
+            $relativePath = str_replace(['../', '..\\'], '', $relativePath);
+            $filePath = FCPATH . 'uploads/' . $relativePath;
 
             // Check if file exists
             if (!file_exists($filePath)) {
                 return $this->response->setJSON([
                     'success' => false,
-                    'message' => 'File not found'
+                    'message' => 'File not found: ' . $relativePath
                 ], 404);
             }
 
