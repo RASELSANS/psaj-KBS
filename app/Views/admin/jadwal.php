@@ -128,7 +128,7 @@ function loadJadwal() {
     document.getElementById('tableContainer').style.display = 'none';
     document.getElementById('emptyState').style.display = 'none';
 
-    fetch(`${API_URL}/doctors`, {credentials: 'include'})
+    fetch(`${API_URL}/doctors?all=1`, {credentials: 'include'})
         .then(response => response.text().then(text => ({
             text: text,
             status: response.status,
@@ -231,7 +231,7 @@ function resetFilters() {
 // Load dokter options for modal AND filter dropdown
 async function loadDokterOptions() {
     try {
-        const response = await fetch(`${API_URL}/doctors`, {credentials: 'include'});
+        const response = await fetch(`${API_URL}/doctors?all=1`, {credentials: 'include'});
         const data = await response.json();
         if (data.status) {
             let modalHtml = '<option value="">-- Pilih Dokter --</option>';

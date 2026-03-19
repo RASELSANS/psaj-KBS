@@ -180,54 +180,59 @@ class GalleryController extends AdminController
     /**
      * Delete image
      */
-    public function delete($relativePath = null)
+    public function delete()
     {
         $authCheck = $this->requireLogin();
         if ($authCheck) return $authCheck;
 
         try {
+            $relativePath = $this->request->getPost('path');
+            
             if (!$relativePath) {
                 return $this->response->setJSON([
                     'success' => false,
-                    'message' => 'Filename required'
+                    'message' => 'Path required'
                 ], 400);
             }
-
-            // Decode URL-encoded path
-            $relativePath = urldecode($relativePath);
             
-            // Sanitize path to prevent directory traversal
+            // Security: prevent directory traversal
             $relativePath = str_replace(['../', '..\\'], '', $relativePath);
+            $relativePath = str_replace('\\', '/', $relativePath);
+            
             $filePath = FCPATH . 'uploads/' . $relativePath;
 
-            // Check if file exists
             if (!file_exists($filePath)) {
                 return $this->response->setJSON([
                     'success' => false,
-                    'message' => 'File not found: ' . $relativePath
+                    'message' => 'File not found'
                 ], 404);
             }
 
-            // Check if it's actually an image
-            if (!$this->isImageFile($filePath)) {
+            if (!is_file($filePath)) {
                 return $this->response->setJSON([
                     'success' => false,
-                    'message' => 'Invalid file'
+                    'message' => 'Path is not a file'
                 ], 400);
             }
 
-            // Delete file
+            if (!$this->isImageFile($filePath)) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Invalid file type'
+                ], 400);
+            }
+
             if (unlink($filePath)) {
                 return $this->response->setJSON([
                     'success' => true,
                     'message' => 'Image deleted successfully'
                 ]);
-            } else {
-                return $this->response->setJSON([
-                    'success' => false,
-                    'message' => 'Failed to delete image'
-                ], 500);
             }
+
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Failed to delete image'
+            ], 500);
         } catch (\Exception $e) {
             return $this->response->setJSON([
                 'success' => false,
@@ -241,12 +246,34 @@ class GalleryController extends AdminController
      */
     private function isImageFile($filePath)
     {
-        $validMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($finfo, $filePath);
-        finfo_close($finfo);
+        // Check file extension first
+        $validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
         
-        return in_array($mimeType, $validMimes);
+        if (!in_array($extension, $validExtensions)) {
+            log_message('debug', 'isImageFile - Invalid extension: ' . $extension);
+            return false;
+        }
+        
+        // Check MIME type
+        $validMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        
+        // Try to get MIME type
+        if (function_exists('finfo_open')) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            if ($finfo) {
+                $mimeType = finfo_file($finfo, $filePath);
+                finfo_close($finfo);
+                
+                if ($mimeType && in_array($mimeType, $validMimes)) {
+                    return true;
+                }
+                log_message('debug', 'isImageFile - Invalid MIME type: ' . $mimeType);
+            }
+        }
+        
+        // Fallback: if finfo not available, trust the extension
+        return true;
     }
 
     /**

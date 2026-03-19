@@ -128,7 +128,7 @@ $routes->group('api/admin', ['filter' => 'auth'], static function($routes) {
     // Gallery Management
     $routes->get('gallery/list', 'GalleryController::listImages');
     $routes->post('gallery/upload', 'GalleryController::upload');
-    $routes->post('gallery/delete/(:any)', 'GalleryController::delete/$1');
+    $routes->post('gallery/delete', 'GalleryController::delete');
 });
 
 // ==================== DEBUG ROUTES (For troubleshooting) ====================

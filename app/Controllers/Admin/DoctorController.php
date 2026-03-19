@@ -30,7 +30,8 @@ class DoctorController extends AdminController
 
         $page = (int)($this->request->getGet('page') ?? 1);
         $search = $this->request->getGet('search') ?? '';
-        $limit = 10;
+        $all = $this->request->getGet('all') ?? false; // Get all without pagination
+        $limit = $all ? 9999 : 10;
         $offset = ($page - 1) * $limit;
 
         // Build query with search

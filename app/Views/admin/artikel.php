@@ -122,10 +122,10 @@ function loadArtikel(page = 1) {
                                 <td>${thumbnailHtml}</td>
                                 <td>${new Date(item.tanggal_publish).toLocaleDateString('id-ID')}</td>
                                 <td>
-                                    <a href="/admin/artikel_form?id=${item.id_artikel}" class="btn-action btn-edit" style="text-decoration: none; display: inline-block;">
+                                    <a href="/admin/artikel_form?id=${item.id_artikel}" class="btn-action btn-edit" style="text-decoration: none; display: inline-block; margin-right: 5px;">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
-                                    <button class="btn-action btn-delete" onclick="deleteArtikel(${item.id_artikel})" style="border: none; background: none; cursor: pointer; padding: 0.5rem 1rem; display: inline-block;">
+                                    <button class="btn-action btn-delete" onclick="deleteArtikel(${item.id_artikel})" style="padding: 0.5rem 1rem; display: inline-block;">
                                         <i class="fas fa-trash"></i> Hapus
                                     </button>
                                 </td>
@@ -193,8 +193,13 @@ function deleteArtikel(id) {
                 showAlert('Artikel berhasil dihapus', 'success');
                 loadArtikel(currentPage);
             } else {
-                showAlert('Gagal menghapus artikel', 'danger');
+                const errorMsg = data.errors ? Object.values(data.errors).join(', ') : 'Gagal menghapus artikel';
+                showAlert(errorMsg, 'danger');
             }
+        })
+        .catch(error => {
+            console.error('deleteArtikel Error:', error);
+            showAlert('Terjadi kesalahan saat menghapus artikel', 'danger');
         });
     });
 }
