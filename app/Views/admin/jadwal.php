@@ -55,6 +55,7 @@
                         <th>Hari</th>
                         <th>Jam Mulai</th>
                         <th>Jam Selesai</th>
+                        <th>Jadwal Khusus</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -95,13 +96,20 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Jam Mulai *</label>
-                        <input type="time" class="form-control" id="jamMulai" required>
+                        <label class="form-label">Jam Mulai</label>
+                        <input type="time" class="form-control" id="jamMulai">
+                        <small class="text-muted">Kosongkan jika menggunakan jadwal khusus</small>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Jam Selesai</label>
                         <input type="time" class="form-control" id="jamSelesai">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Jadwal Khusus</label>
+                        <textarea class="form-control" id="jadwalKhusus" rows="2" placeholder="Contoh: Berdasarkan perjanjian, Hubungi 08123456789"></textarea>
+                        <small class="text-muted">Isi jika jadwal tidak tetap (by appointment)</small>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -171,8 +179,9 @@ function loadJadwal() {
                                 <td>${rowNum}</td>
                                 <td><strong>${doctor.nama_doctor}</strong></td>
                                 <td>${j.hari}</td>
-                                <td>${j.jam_mulai}</td>
+                                <td>${j.jam_mulai || '-'}</td>
                                 <td>${j.jam_selesai || 'Selesai'}</td>
+                                <td>${j.jadwal_khusus || '-'}</td>
                                 <td>
                                     <button class="btn-action btn-edit" onclick="editJadwal(${j.id_jadwal})">
                                         <i class="fas fa-edit"></i> Edit
@@ -291,8 +300,9 @@ async function editJadwal(id) {
         document.getElementById('jadwalID').value = jadwal.id_jadwal;
         document.getElementById('idDokter').value = doctorId;
         document.getElementById('hari').value = jadwal.hari;
-        document.getElementById('jamMulai').value = jadwal.jam_mulai;
-        document.getElementById('jamSelesai').value = jadwal.jam_selesai;
+        document.getElementById('jamMulai').value = jadwal.jam_mulai || '';
+        document.getElementById('jamSelesai').value = jadwal.jam_selesai || '';
+        document.getElementById('jadwalKhusus').value = jadwal.jadwal_khusus || '';
         document.getElementById('modalTitle').textContent = 'Edit Jadwal';
 
         new bootstrap.Modal(document.getElementById('jadwalModal')).show();
@@ -317,6 +327,7 @@ function saveJadwal(e) {
     params.append('hari', document.getElementById('hari').value);
     params.append('jam_mulai', document.getElementById('jamMulai').value);
     params.append('jam_selesai', document.getElementById('jamSelesai').value);
+    params.append('jadwal_khusus', document.getElementById('jadwalKhusus').value);
 
     fetch(url, {
         method: 'POST',

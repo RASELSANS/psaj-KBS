@@ -64,14 +64,18 @@ class JadwalController extends AdminController
         $id_doctor = $this->request->getPost('id_doctor');
         $hari = $this->request->getPost('hari');
         $jam_mulai = $this->request->getPost('jam_mulai');
-        $jam_selesai = $this->request->getPost('jam_selesai'); // Bisa kosong
+        $jam_selesai = $this->request->getPost('jam_selesai');
+        $jadwal_khusus = $this->request->getPost('jadwal_khusus');
 
         // Validation
         $errors = [];
         if (!$id_doctor) $errors['id_doctor'] = 'ID dokter harus diisi';
         if (!$hari) $errors['hari'] = 'Hari harus diisi';
-        if (!$jam_mulai) $errors['jam_mulai'] = 'Jam mulai harus diisi';
-        // jam_selesai tidak wajib
+        
+        // Jika ada jadwal_khusus, jam tidak wajib. Jika tidak ada jadwal_khusus, jam_mulai wajib
+        if (!$jadwal_khusus && !$jam_mulai) {
+            $errors['jam_mulai'] = 'Jam mulai harus diisi atau isi jadwal khusus';
+        }
 
         if ($errors) {
             return $this->validationErrorResponse($errors);
@@ -80,8 +84,9 @@ class JadwalController extends AdminController
         $id_jadwal = $this->jadwalModel->insert([
             'id_doctor' => $id_doctor,
             'hari' => $hari,
-            'jam_mulai' => $jam_mulai,
-            'jam_selesai' => $jam_selesai ?: null, // Null jika kosong
+            'jam_mulai' => $jam_mulai ?: null,
+            'jam_selesai' => $jam_selesai ?: null,
+            'jadwal_khusus' => $jadwal_khusus ?: null,
         ]);
 
         $jadwal = $this->jadwalModel->find($id_jadwal);
@@ -105,14 +110,18 @@ class JadwalController extends AdminController
         $id_doctor = $this->request->getPost('id_doctor');
         $hari = $this->request->getPost('hari');
         $jam_mulai = $this->request->getPost('jam_mulai');
-        $jam_selesai = $this->request->getPost('jam_selesai'); // Bisa kosong
+        $jam_selesai = $this->request->getPost('jam_selesai');
+        $jadwal_khusus = $this->request->getPost('jadwal_khusus');
 
         // Validation
         $errors = [];
         if (!$id_doctor) $errors['id_doctor'] = 'ID dokter harus diisi';
         if (!$hari) $errors['hari'] = 'Hari harus diisi';
-        if (!$jam_mulai) $errors['jam_mulai'] = 'Jam mulai harus diisi';
-        // jam_selesai tidak wajib
+        
+        // Jika ada jadwal_khusus, jam tidak wajib. Jika tidak ada jadwal_khusus, jam_mulai wajib
+        if (!$jadwal_khusus && !$jam_mulai) {
+            $errors['jam_mulai'] = 'Jam mulai harus diisi atau isi jadwal khusus';
+        }
 
         if ($errors) {
             return $this->validationErrorResponse($errors);
@@ -121,8 +130,9 @@ class JadwalController extends AdminController
         $this->jadwalModel->update($id_jadwal, [
             'id_doctor' => $id_doctor,
             'hari' => $hari,
-            'jam_mulai' => $jam_mulai,
-            'jam_selesai' => $jam_selesai ?: null, // Null jika kosong
+            'jam_mulai' => $jam_mulai ?: null,
+            'jam_selesai' => $jam_selesai ?: null,
+            'jadwal_khusus' => $jadwal_khusus ?: null,
         ]);
 
         $jadwal = $this->jadwalModel->find($id_jadwal);

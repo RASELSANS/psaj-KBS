@@ -12,7 +12,7 @@ class Jadwal extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_doctor', 'hari', 'jam_mulai', 'jam_selesai'];
+    protected $allowedFields    = ['id_doctor', 'hari', 'jam_mulai', 'jam_selesai', 'jadwal_khusus'];
 
     protected bool $allowEmptyInserts = false;
 

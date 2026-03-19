@@ -51,9 +51,13 @@
                                                 </div>
                                                 <div style="color: #ff8a3d; font-weight: 600; font-size: 0.9rem;">
                                                     <?php 
-                                                    $jam_mulai = substr($jadwal['jam_mulai'], 0, 5);
-                                                    $jam_selesai = !empty($jadwal['jam_selesai']) ? substr($jadwal['jam_selesai'], 0, 5) : 'Selesai';
-                                                    echo $jam_mulai . ' - ' . $jam_selesai;
+                                                    if (!empty($jadwal['jadwal_khusus'])) {
+                                                        echo $jadwal['jadwal_khusus'];
+                                                    } else {
+                                                        $jam_mulai = substr($jadwal['jam_mulai'], 0, 5);
+                                                        $jam_selesai = !empty($jadwal['jam_selesai']) ? substr($jadwal['jam_selesai'], 0, 5) : 'Selesai';
+                                                        echo $jam_mulai . ' - ' . $jam_selesai;
+                                                    }
                                                     ?>
                                                 </div>
                                             </div>
