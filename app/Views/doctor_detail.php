@@ -74,7 +74,7 @@
 
 
                         <?php $whatsapp_name = isset($doctor['name']) ? urlencode($doctor['name']) : 'Dokter'; ?>
-                        <a href="https://wa.me/628112519001?text=Halo%20Admin,%20saya%20mau%20buat%20janji%20dengan%20<?= $whatsapp_name ?>" 
+                        <a href="https://wa.me/6285540441147?text=Halo%20Admin,%20saya%20mau%20buat%20janji%20dengan%20<?= $whatsapp_name ?>" 
                            target="_blank" 
                            class="btn w-100 mt-4" 
                            style="padding: 15px; border-radius: 15px; font-weight: 700; background: #ff8a3d; color: white; border: none; box-shadow: 0 8px 20px rgba(255, 138, 61, 0.3); transition: 0.3s;">

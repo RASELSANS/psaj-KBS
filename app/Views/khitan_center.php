@@ -208,7 +208,7 @@
                 <div class="col-lg-4">
                     <h3 class="fw-bold">Pilihan Paket Khitan</h3>
                     <p class="text-muted">Tersedia berbagai pilihan paket yang dapat disesuaikan dengan kebutuhan Anda.</p>
-                    <a href="https://wa.me/6281234567890" class="btn btn-warning px-4 py-3 rounded-pill fw-bold w-100 mt-2 shadow-sm">
+                    <a href="https://wa.me/6285540441147" class="btn btn-warning px-4 py-3 rounded-pill fw-bold w-100 mt-2 shadow-sm">
                         <i class="fa-brands fa-whatsapp me-2"></i> Tanya Harga Paket
                     </a>
                 </div>

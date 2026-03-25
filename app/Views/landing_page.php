@@ -124,7 +124,7 @@
                 <div class="badge-health">SOLUSI KESEHATAN TERPERCAYA</div>
                 <h1 class="hero-title">Klinik Brayan Sehat Purwokerto</h1>
                 <p class="hero-desc mx-auto mx-lg-0">Melayani berbagai jenis vaksinasi untuk dewasa dan anak dengan pelayanan yang aman, nyaman, dan sesuai standar. Kami juga menyediakan penerbitan resmi International Certificate of Vaccination (ICV) untuk mendukung kebutuhan perjalanan internasional Anda.</p>
-                <a href="https://wa.me/628112519001" class="btn btn-orange btn-lg px-5 shadow fw-bold">Reservasi</a>
+                <a href="https://wa.me/6285540441147" class="btn btn-orange btn-lg px-5 shadow fw-bold">Reservasi</a>
             </div>
             <div class="col-lg-6 mt-5 mt-lg-0" data-aos="fade-left" data-aos-delay="200">
                 <img src="<?= base_url('img/klinik.jpeg') ?>" alt="Klinik Brayan Sehat" class="hero-img">

@@ -248,7 +248,7 @@
                         <li>Diberikan rutin 1 kali setiap tahun.</li>
                     </ul>
                 </div>
-                <a href="https://wa.me/628112519001" class="btn btn-register shadow-lg"><i class="fa-brands fa-whatsapp me-2"></i>Daftar Sekarang</a>
+                <a href="https://wa.me/6285540441147" class="btn btn-register shadow-lg"><i class="fa-brands fa-whatsapp me-2"></i>Daftar Sekarang</a>
             </div>
         </div>
     </div>
@@ -272,7 +272,7 @@
                         <li>Mencegah penularan virus melalui cairan tubuh.</li>
                     </ul>
                 </div>
-                <a href="https://wa.me/628112519001" class="btn btn-register shadow-lg"><i class="fa-brands fa-whatsapp me-2"></i>Daftar Sekarang</a>
+                <a href="https://wa.me/6285540441147" class="btn btn-register shadow-lg"><i class="fa-brands fa-whatsapp me-2"></i>Daftar Sekarang</a>
             </div>
         </div>
     </div>
@@ -316,7 +316,7 @@
                         </li>
                     </ul>
                 </div>
-                <a href="https://wa.me/628112519001" class="btn btn-register shadow-lg"><i class="fa-brands fa-whatsapp me-2"></i>Daftar Sekarang</a>
+                <a href="https://wa.me/6285540441147" class="btn btn-register shadow-lg"><i class="fa-brands fa-whatsapp me-2"></i>Daftar Sekarang</a>
             </div>
         </div>
     </div>
@@ -348,7 +348,7 @@
                         <li>Diberikan dalam 2 atau 3 dosis sesuai usia.</li>
                     </ul>
                 </div>
-                <a href="https://wa.me/628112519001" class="btn btn-register shadow-lg"><i class="fa-brands fa-whatsapp me-2"></i>Daftar Sekarang</a>
+                <a href="https://wa.me/6285540441147" class="btn btn-register shadow-lg"><i class="fa-brands fa-whatsapp me-2"></i>Daftar Sekarang</a>
             </div>
         </div>
     </div>
@@ -372,7 +372,7 @@
                         <li>Kecacatan janin (Rubella) pada ibu hamil.</li>
                     </ul>
                 </div>
-                <a href="https://wa.me/628112519001" class="btn btn-register shadow-lg"><i class="fa-brands fa-whatsapp me-2"></i>Daftar Sekarang</a>
+                <a href="https://wa.me/6285540441147" class="btn btn-register shadow-lg"><i class="fa-brands fa-whatsapp me-2"></i>Daftar Sekarang</a>
             </div>
         </div>
     </div>
@@ -396,7 +396,7 @@
                         <li>Perlu diulang (booster) setiap 3 tahun sekali.</li>
                     </ul>
                 </div>
-                <a href="https://wa.me/628112519001" class="btn btn-register shadow-lg"><i class="fa-brands fa-whatsapp me-2"></i>Daftar Sekarang</a>
+                <a href="https://wa.me/6285540441147" class="btn btn-register shadow-lg"><i class="fa-brands fa-whatsapp me-2"></i>Daftar Sekarang</a>
             </div>
         </div>
     </div>
